@@ -39,8 +39,6 @@ normative:
   RFC9147:
   RFC9260:
 
-
-
   I-D.westerlund-tsvwg-sctp-crypto-chunk:
     target: "https://datatracker.ietf.org"
     title: "Stream Control Transmission Protocol (SCTP) Encryption Chunk"
@@ -85,7 +83,7 @@ rekeying.
 
    This document describes the usage of the Datagram Transport Layer
    Security (DTLS) protocol, as defined in DTLS 1.2 {{RFC6347}}, and
-   DTLS 1.3 {{RFC9147}}, over the Stream Control
+   DTLS 1.3 {{RFC9147}}, as Encryption Engine in the Stream Control
    Transmission Protocol (SCTP), as defined in {{RFC9260}} with
    SCTP encryption chunk {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
 
@@ -288,7 +286,6 @@ in regard to SCTP and upper layer protocol"}
    that fully support the requirements in DTLS/SCTP. It is
    expected that a DTLS/SCTP implemetnation will have to also
    extended a DTLS implementation.
-
 
 
 # DTLS usage of Encryption Chunk
