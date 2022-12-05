@@ -29,8 +29,10 @@ author:
 
 informative:
    RFC3758:
+   RFC4895:
    RFC5061:
    RFC6083:
+   RFC8996:
    I-D.ietf-tsvwg-dtls-over-sctp-bis:
 
 normative:
@@ -58,7 +60,6 @@ normative:
        name: Claudio Porfiri
        org: Ericsson
        email: claudio.porfiri@ericsson.com
-
     date: December 2022
 
 
@@ -71,7 +72,8 @@ encryption, source authentication, integrity and replay protection for
 the SCTP association with mutual authetication of the peers. The
 specification is also targeting very long lived sessions of weeks and
 months and supports mutual re-authentication and forward secerecy
-rekeying.
+rekeying. This is inteded as an alternative to using DTLS/SCTP (RFC
+6083) and SCTP-AUTH (RFC 4895).
 
 --- middle
 
@@ -84,8 +86,10 @@ rekeying.
    This document describes the usage of the Datagram Transport Layer
    Security (DTLS) protocol, as defined in DTLS 1.2 {{RFC6347}}, and
    DTLS 1.3 {{RFC9147}}, as Encryption Engine in the Stream Control
-   Transmission Protocol (SCTP), as defined in {{RFC9260}} with
-   SCTP encryption chunk {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
+   Transmission Protocol (SCTP), as defined in {{RFC9260}} with SCTP
+   encryption chunk {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.  This
+   specifcation is intended as an alternative to DTLS/SCTP {{RFC6083}}
+   and usage of SCTP-AUTH {{RFC4895}}.
 
    This specification provides mutual authentication of endpoints,
    data confidentiality, data origin authentication, data integrity
@@ -122,7 +126,7 @@ rekeying.
    Encryption chunk {{I-D.westerlund-tsvwg-sctp-crypto-chunk}} that
    utilizes DTLS 1.2 or 1.3 for the security functions like
    encryption, authentication, replay protection and security
-   handshakes. The basic functionalities and how things related are
+   handshakes. The basic functionalities and how things are related are
    described below.
 
    In a SCTP association initiation where DTLS in SCTP is choosen as
@@ -142,25 +146,29 @@ rekeying.
    association is established and the ULP can start sending data over
    the SCTP assocation. From this point all sets of chunks intended to
    form a packet will be protected just like EVALID chunk by being the
-   plaint text application data input to DTLS.
+   plaint text application data input to DTLS. When DTLS has proteced
+   the plaint text input, the produced encrypted DTLS application data
+   record is encaspulated in the Encryption Chunk and the packet is
+   transmitted.
 
    In the receiving SCTP stack each incomming SCTP packet on any of
    its interfaces and ports are matched to the SCTP association based
    on ports and VTAG in the common header. In that association context
    for the Encryption chunk there will exist reference to one or more
-   DTLS sessions used to protect the data. The DTLS session actually
-   used to protect this packet is identifed by two bits in the
+   DTLS connections used to protect the data. The DTLS connection actually
+   used to protect this packet is identifed by two DCI bits in the
    Encryption chunk's flags. Using the identified DTLS session the
    content of the Encryption chunk is attempted to be processed,
    including replay protection, decryption and integrity. And if
    decryption was successful the produced plain text of one or more
    SCTP chunks are provided for normal SCTP processing in the
-   identified SCTP association.
+   identified SCTP association along with associated meta data such as
+   path received on, original packet size, and ECN bits.
 
    When mutual re-authentication or forward secrecy rekeying is
-   needed/desired by either endpoint a new DTLS connection handshake
+   needed or desired by either endpoint a new DTLS connection handshake
    is performed between the SCTP endpoints. A differnt DTLS Connection
-   ID than currently used among the Encryption chunk flags are used to
+   ID (DCI) than currently used among the Encryption chunk flags are used to
    indicate that this a new handshake. When the handshake has
    completed the DTLS in SCTP implementation can simply switch to use
    this DTLS connection to protect the plain text payload. After a
@@ -201,6 +209,37 @@ in regard to SCTP and upper layer protocol"}
 
    DTLS in SCTP has a number of properties that are attractive.
 
+   * Provides Confidentiality, Integrity protection and source
+     authentication for each packet.
+
+   * Provides replay protection on SCTP packet level preventing
+     malicous replay attacks on SCTP, both protecting the data as well
+     as the SCTP functions themselves.
+
+   * Provides Mutual authentication of the endpoints based on any
+     authentication mechanism supported by DTLS.
+
+   * Uses parallel DTLS connections to enable mutual re-authentication
+     and forward secrecy rekeying. Thus, enabling SCTP association
+     life times without known limitations.
+
+   * Uses core of DTLS as it is and updates and fixes to DTLS security
+     properties can be implemented without further changes to this
+     specification.
+
+   * Secures all SCTP packets exchanged after SCTP association has
+     reached the established state. Making targeted attacks against
+     the SCTP protocol and implementation much harder.
+
+   * DTLS in SCTP results in no limitations on user message
+     transmission, those properties are the same as for an unproteced
+     SCTP association.
+
+   * Limited overhead on a per packet basis, with 4 bytes for the
+     Encryption Chunk plus the DTLS record overhead. That DTLS
+     overhead is dependent on the DTLS version.
+
+
 
 ### Benefits compared to DTLS/SCTP
 
@@ -209,7 +248,7 @@ in regard to SCTP and upper layer protocol"}
    SCTP. This section reviews these differences.
 
    * Replay Protection in DTLS/SCTP has some limitations due to
-     SCTP-AUTH and its interaction with the SCTP implementation and
+     SCTP-AUTH {{RFC4895}} and its interaction with the SCTP implementation and
      dependencies on the actual SCTP-AUTH rekeying frequency. DTLS
      in SCTP relies on DTLS mechanism for replay protection that can
      prevent both duplicates from being delivered as well as
@@ -245,6 +284,15 @@ in regard to SCTP and upper layer protocol"}
      unless the right APIs exist to the SCTP implementation to
      determine the state of user messages. No such restriction exist
      in DTLS in SCTP.
+
+   * By using the Encryption chunk that is acting on SCTP packet level
+     instead of user messages the consideration for extensions are
+     quite different. Only extensions that would affect the common
+     header or how packets are formed would have interaction with this
+     mechanism, any extension that just defines new chunks or
+     parameters for existing chunks is expected to just work and be
+     secured by the mechanism. DTLS/SCTP do has interaction with
+     anything that affects how user messages are handled.
 
    There are several significant difference in regards to
    implementation between the two realizations.
@@ -288,5 +336,156 @@ in regard to SCTP and upper layer protocol"}
    extended a DTLS implementation.
 
 
+
+## Terminology
+
+   This document uses the following terms:
+
+   Association:
+   : An SCTP association.
+
+   Connection:
+   : A DTLS connection. It is uniquely identified by a
+   connection identifier.
+
+   Stream:
+   : A unidirectional stream of an SCTP association.  It is
+   uniquely identified by a stream identifier.
+
+## Abbreviations
+
+   AEAD:
+   : Authenticated Encryption with Associated Data
+
+   DTLS:
+   : Datagram Transport Layer Security
+
+   HMAC:
+   : Keyed-Hash Message Authentication Code
+
+   MTU:
+   : Maximum Transmission Unit
+
+   PPID:
+   : Payload Protocol Identifier
+
+   SCTP:
+   : Stream Control Transmission Protocol
+
+   SCTP-AUTH:
+   : Authenticated Chunks for SCTP {{RFC4895}}
+
+   TCP:
+   : Transmission Control Protocol
+
+   TLS:
+   : Transport Layer Security
+
+   ULP:
+   : Upper Layer Protocol
+
+
 # DTLS usage of Encryption Chunk
+
+   DTLS in SCTP uses the Encryption chunk in the following way. Fields
+   not discussed are used as specified in
+   {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
+
+
+~~~~~~~~~~~ aasvg
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| Type = 0x0x   |   Flags   |DCI|             Length            |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                                                               |
+\                            Payload                            /
+/                                                               \
+|                               +-------------------------------+
+|                               |           Padding             |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~~~~~~~~~
+{: #sctp-encryption-chunk-structure title="ENCRYPT Chunk Structure"}
+
+   DCI:
+   : DTLS Connection Identifier is the lower two bits of an DTLS
+   Connection Identifier counter. This is a counter implemented in
+   DTLS in SCTP that is used to identify which DTLS connection
+   instance that is capable of processing any received packet.
+
+   Flags: : Chunk Flag bits not currently used by DTLS in SCTP. They
+   MUST be set to zero (0) and MUST be ignored on reception. They may
+   be used in future updated specifications for DTLS in SCTP.
+
+   Payload: : One or More DTLS record. In cases more than one DTLS
+   record is included all DTLS records except the last needs to
+   include a length field as specified in DTLS 1.3 {{RFC9147}}.
+
+
+## DTLS Considerations
+
+### Version of DTLS
+
+   This document defines the usage of either DTLS 1.3 {{RFC9147}}, or
+   DTLS 1.2 {{RFC6347}}.  Earlier versions of DTLS MUST NOT be used
+   (see {{RFC8996}}).  DTLS 1.3 is RECOMMENDED for security and
+   performance reasons.  It is expected that DTLS/SCTP as described in
+   this document will work with future versions of DTLS.
+
+   Only one version of DTLS MUST be used during the lifetime of an
+   SCTP Association, meaning that the procedure for replacing the DTLS
+   version in use requires the existing SCTP Association to be
+   terminated and a new SCTP Association with the desired DTLS version
+   to be instantiated.
+
+### Configuration of DTLS Record
+
+It is RECOMMENDED that the DTLS Connection ID is not included in the
+Does not need to use DTLS Connection IDs, instead relies on DCI bits
+
+Length field not need as the Encryption Chunk provides a length field
+unless multiple records are put in same packet payload.
+
+Sequence number can be adapted based on how quickly it wraps.
+
+
+# Establishing DTLS in SCTP
+
+
+
+## Negotiation of Encryption Engine
+
+
+## DTLS Handshake
+
+
+## Validation against Downgrade Attacks
+
+
+# Processing a Encryption Chunk
+
+## Sending
+
+
+## Receiving
+
+
+# Parallel DTLS Rekeying
+
+
+
+# Security Considerations
+
+## General
+
+
+## DTLS 1.2
+
+
+## DTLS 1.3
+
+
+# IANA Consideration
+
+## Registartion of DTLS as Encryption Engine
 
