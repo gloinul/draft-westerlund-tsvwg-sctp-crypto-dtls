@@ -422,9 +422,9 @@ in regard to SCTP and upper layer protocol"}
    include a length field as specified in DTLS 1.3 {{RFC9147}}.
 
 
-## DTLS Considerations
+# DTLS Considerations
 
-### Version of DTLS
+## Version of DTLS
 
    This document defines the usage of either DTLS 1.3 {{RFC9147}}, or
    DTLS 1.2 {{RFC6347}}.  Earlier versions of DTLS MUST NOT be used
@@ -438,36 +438,85 @@ in regard to SCTP and upper layer protocol"}
    terminated and a new SCTP Association with the desired DTLS version
    to be instantiated.
 
-### Configuration of DTLS Record
+## Configuration of DTLS
 
-It is RECOMMENDED that the DTLS Connection ID is not included in the
-Does not need to use DTLS Connection IDs, instead relies on DCI bits
+### General
 
-Length field not need as the Encryption Chunk provides a length field
-unless multiple records are put in same packet payload.
+   It is RECOMMENDED that the DTLS Connection ID is not included in
+   the DTLS records as it is need, the Encryption Chunk indicate which
+   DTLS connection this is inteded for using the the DCI bits.
+
+   The DTLS record length field is normally need as the Encryption
+   Chunk provides a length field unless multiple records are put in
+   same chunk payload.
 
 Sequence number can be adapted based on how quickly it wraps.
+
+### DTLS 1.2
+
+Is renegotation allowed?
+
+### DTLS 1.3
+
+Key-Update MAY be used
 
 
 # Establishing DTLS in SCTP
 
-
-
-## Negotiation of Encryption Engine
-
+   This sections specifies how DTLS in SCTP is established after
+   having been selected by the Encryption Chunk with DTLS as
+   Encryption Engine has been negotatied in the Init and Init-ACK
+   exchange per {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
 
 ## DTLS Handshake
+
+   As soon the SCTP Association has entered the SCTP state Crypt
+   Pending as defined by {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}
+   the DTLS handshake procedure is initated by the SCTP client.
+
+   The DTLS endpoint needs if necessary fragment the handshake into
+   multiple records each meeting the known MTU limit of the path
+   between SCTP endpoints. Each DTLS handshake message fragment is
+   encapsulated in a Encryption Chunk. The DTLS instance SHALL use
+   DTLS retransmission to repair any packet losses of handshake
+   message framgenet.
+
+   Both SCTP endpoints SHALL perform authentication of the peer
+   endpoint. This may require exchange or input from the ULP
+   application for what peer identity that is accepted.
+
+   If the DTLS handshake is successful to establish a security context
+   to protect further communication and the peer identity is accepted
+   then the SCTP assocation shall be informed that it can move to the
+   Encrypted state.
+
+   If the DTLS handshake failed the SCTP assocation SHALL be aborted
+   and the appropriate error is generated.
 
 
 ## Validation against Downgrade Attacks
 
+   When the SCTP association has entered the Encrypted State after the
+   DTLS handshake has completed the protection against encryption
+   engine negotiation downgrade is perforemd per
+   {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}. The EVALID chunk will
+   sent inside a Encryption chunk protecting the plain text chunk
+   as defined in {{chunk-processing}}.
 
-# Processing a Encryption Chunk
+   If the validation completes successful the SCTP association will
+   enter Established State and all future SCTP packet exchanges will
+   be protected by SCTP. If the validation fails the SCTP association
+   will be aborted.
+
+# Processing a Encryption Chunk {#chunk-processing}
 
 ## Sending
 
 
+
 ## Receiving
+
+
 
 
 # Parallel DTLS Rekeying
