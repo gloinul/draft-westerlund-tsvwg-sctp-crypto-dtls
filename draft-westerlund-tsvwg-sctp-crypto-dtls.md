@@ -515,6 +515,8 @@ Key-Update MAY be used
 Encryption Chunk sending happens either when DTLS needs to send own
 data directly to the DTLS peer i.e. due to handshaking or when SCTP
 requires to transfer Control or Data chunk to the remote SCTP Endpoint.
+For a proper handling, CID shall be set to an established instance
+of DTLS connection.
 
 ### DTLS signaling
 
@@ -549,8 +551,25 @@ than one single dtls record.
 
 ## Receiving
 
+When receiving an SCTP packet containing an Encrypted Chunk it may
+be part of the DTLS signaling or SCTP signaling. Since there's at most
+one Crypto Chunk per SCTP packet, the payload of that chunk will
+be transferred to the proper DTLS instance according to CID for
+decryption.
 
+### DTLS Signaling
 
+The payload contains a dtls record that is addressed to DTLS,
+i.e. handshaking, DTLS will handle it and behave according. 
+
+### SCTP Signaling
+
+When DTLS detects a dtls record addressed to SCTP, it will decode
+the data as an array of bytes and transfer it to SCTP Chunk Handler.
+
+SCTP Chunk handler will threat the array as the payload of an SCTP
+packet, thus it will exctract all the chunks and handle them according
+to {{RFC9260}}
 
 # Parallel DTLS Rekeying
 
