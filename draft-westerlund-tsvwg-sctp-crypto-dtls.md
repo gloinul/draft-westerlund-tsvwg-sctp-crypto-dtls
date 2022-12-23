@@ -560,7 +560,7 @@ decryption.
 ### DTLS Signaling
 
 The payload contains a dtls record that is addressed to DTLS,
-i.e. handshaking, DTLS will handle it and behave according. 
+i.e. handshaking, DTLS will handle it and behave according.
 
 ### SCTP Signaling
 
