@@ -69,10 +69,10 @@ This document defines a usage of DTLS 1.2 or 1.3 to protect the
 content of SCTP packets using the framework provided by the SCTP
 Crypto Chunk which we name DTLS in SCTP. DTLS in SCTP provides
 encryption, source authentication, integrity and replay protection for
-the SCTP association with mutual authetication of the peers. The
-specification is also targeting very long lived sessions of weeks and
-months and supports mutual re-authentication and forward secerecy
-rekeying. This is inteded as an alternative to using DTLS/SCTP (RFC
+the SCTP association with mutual authentication of the peers. The
+specification is also targeting very long-lived sessions of weeks and
+months and supports mutual re-authentication and forward secrecy
+rekeying. This is intended as an alternative to using DTLS/SCTP (RFC
 6083) and SCTP-AUTH (RFC 4895).
 
 --- middle
@@ -88,7 +88,7 @@ rekeying. This is inteded as an alternative to using DTLS/SCTP (RFC
    DTLS 1.3 {{RFC9147}}, as Encryption Engine in the Stream Control
    Transmission Protocol (SCTP), as defined in {{RFC9260}} with SCTP
    encryption chunk {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.  This
-   specifcation is intended as an alternative to DTLS/SCTP {{RFC6083}}
+   pecification is intended as an alternative to DTLS/SCTP {{RFC6083}}
    and usage of SCTP-AUTH {{RFC4895}}.
 
    This specification provides mutual authentication of endpoints,
@@ -122,17 +122,17 @@ rekeying. This is inteded as an alternative to using DTLS/SCTP (RFC
 
 ## Protocol Overview
 
-   DTLS in SCTP is a encryption engine specification for the SCTP
+   DTLS in SCTP is an encryption engine specification for the SCTP
    Encryption chunk {{I-D.westerlund-tsvwg-sctp-crypto-chunk}} that
    utilizes DTLS 1.2 or 1.3 for the security functions like
    encryption, authentication, replay protection and security
    handshakes. The basic functionalities and how things are related are
    described below.
 
-   In a SCTP association initiation where DTLS in SCTP is choosen as
+   In a SCTP association initiation where DTLS in SCTP is chosen as
    the encryption engine for the Encryption Chunk the DTLS handshakes
-   are exchanged encapsulated in the Encryption Chunk until an intial
-   DTLS session has been established. If the DTLS handshake fails the
+   are exchanged encapsulated in the Encryption Chunk until an initial
+   DTLS session has been established. If the DTLS handshake fails, the
    SCTP association is aborted. When the DTSL session has been
    established the EVALID chunk is exchanged to verify that no
    downgrade attack between different encryption engines has
@@ -142,24 +142,24 @@ rekeying. This is inteded as an alternative to using DTLS/SCTP (RFC
    Encryption Chunk and provided with a SCTP common header to form a
    complete SCTP packet.
 
-   Assuming that the EVALID valdiation is successful the SCTP
+   Assuming that the EVALID validation is successful the SCTP
    association is established and the ULP can start sending data over
-   the SCTP assocation. From this point all sets of chunks intended to
+   the SCTP association. From this point all sets of chunks intended to
    form a packet will be protected just like EVALID chunk by being the
-   plaint text application data input to DTLS. When DTLS has proteced
+   plaint text application data input to DTLS. When DTLS has protected
    the plaint text input, the produced encrypted DTLS application data
-   record is encaspulated in the Encryption Chunk and the packet is
+   record is encapsulated in the Encryption Chunk and the packet is
    transmitted.
 
-   In the receiving SCTP stack each incomming SCTP packet on any of
+   In the receiving SCTP stack each incoming SCTP packet on any of
    its interfaces and ports are matched to the SCTP association based
    on ports and VTAG in the common header. In that association context
    for the Encryption chunk there will exist reference to one or more
    DTLS connections used to protect the data. The DTLS connection actually
-   used to protect this packet is identifed by two DCI bits in the
+   used to protect this packet is identified by two DCI bits in the
    Encryption chunk's flags. Using the identified DTLS session the
    content of the Encryption chunk is attempted to be processed,
-   including replay protection, decryption and integrity. And if
+   including replay protection, decryption, and integrity. And if
    decryption was successful the produced plain text of one or more
    SCTP chunks are provided for normal SCTP processing in the
    identified SCTP association along with associated meta data such as
@@ -167,7 +167,7 @@ rekeying. This is inteded as an alternative to using DTLS/SCTP (RFC
 
    When mutual re-authentication or forward secrecy rekeying is
    needed or desired by either endpoint a new DTLS connection handshake
-   is performed between the SCTP endpoints. A differnt DTLS Connection
+   is performed between the SCTP endpoints. A different DTLS Connection
    ID (DCI) than currently used among the Encryption chunk flags are used to
    indicate that this a new handshake. When the handshake has
    completed the DTLS in SCTP implementation can simply switch to use
@@ -213,7 +213,7 @@ in regard to SCTP and upper layer protocol"}
      authentication for each packet.
 
    * Provides replay protection on SCTP packet level preventing
-     malicous replay attacks on SCTP, both protecting the data as well
+     malicious replay attacks on SCTP, both protecting the data as well
      as the SCTP functions themselves.
 
    * Provides Mutual authentication of the endpoints based on any
@@ -221,7 +221,7 @@ in regard to SCTP and upper layer protocol"}
 
    * Uses parallel DTLS connections to enable mutual re-authentication
      and forward secrecy rekeying. Thus, enabling SCTP association
-     life times without known limitations.
+     lifetimes without known limitations.
 
    * Uses core of DTLS as it is and updates and fixes to DTLS security
      properties can be implemented without further changes to this
@@ -232,7 +232,7 @@ in regard to SCTP and upper layer protocol"}
      the SCTP protocol and implementation much harder.
 
    * DTLS in SCTP results in no limitations on user message
-     transmission, those properties are the same as for an unproteced
+     transmission, those properties are the same as for an unprotected
      SCTP association.
 
    * Limited overhead on a per packet basis, with 4 bytes for the
@@ -258,10 +258,10 @@ in regard to SCTP and upper layer protocol"}
      duplicated packets.
 
    * Encryption in DTLS/SCTP is only applied to ULP data. For
-     DTLS in SCTP all chunk type after the assocation has reached
+     DTLS in SCTP all chunk type after the association has reached
      established state will be encrypted. This, makes protocol attacks
-     harder as a third party attacker will have less insight into SCTP
-     protocol state. Also protocol header information likes PPIDs will
+     harder as a third-party attacker will have less insight into SCTP
+     protocol state. Also, protocol header information likes PPIDs will
      also be encrypted, which makes targeted attacks harder but also
      make management and debugging harder.
 
@@ -277,29 +277,29 @@ in regard to SCTP and upper layer protocol"}
      established DTLS connection. Any outstanding packets that have
      not been decoded yet will simply be treated as lost between the
      SCTP endpoints and SCTP's retransmission will retransmit any user
-     message data that requires it. Also the algorithm for when to
+     message data that requires it. Also, the algorithm for when to
      discard a DTLS connection can be much simpler.
 
    * DTLS/SCTP rekeying can put restrictions on user message sizes
      unless the right APIs exist to the SCTP implementation to
-     determine the state of user messages. No such restriction exist
+     determine the state of user messages. No such restriction exists
      in DTLS in SCTP.
 
    * By using the Encryption chunk that is acting on SCTP packet level
      instead of user messages the consideration for extensions are
      quite different. Only extensions that would affect the common
-     header or how packets are formed would have interaction with this
+     header or how packets are formed would interact with this
      mechanism, any extension that just defines new chunks or
      parameters for existing chunks is expected to just work and be
-     secured by the mechanism. DTLS/SCTP do has interaction with
+     secured by the mechanism. DTLS/SCTP do interact with
      anything that affects how user messages are handled.
 
-   There are several significant difference in regards to
+   There are several significant differences in regard to
    implementation between the two realizations.
 
    * DTLS in SCTP do requires the Encryption Chunk to be implemented
      in the SCTP stack implementation, and not as an adaptation layer
-     above it as DTLS/SCTP. This have some extra challenges for
+     above it as DTLS/SCTP. This has some extra challenges for
      operating system level implementations. However, as some updates
      anyway will be required to support the corrected SCTP-AUTH the
      implementation burden is likely similar in this regard.
@@ -313,11 +313,11 @@ in regard to SCTP and upper layer protocol"}
 
         * Support for DTLS records of maximum size of 16 KB.
 
-        * Optinal to support negotiation of maximum DTLS record size
+        * Optional to support negotiation of maximum DTLS record size
           unless not supporting 16 KB records when it is
-          required. Even if implementing the negotation,
-          interoperability failure may occurr. DTLS in SCTP will only
-          require to support DTLS record sizes that matches the
+          required. Even if implementing the negotiation,
+          interoperability failure may occur. DTLS in SCTP will only
+          require supporting DTLS record sizes that matches the
           largest SCTP packets that the SCTP stack can support.
 
         * Implementation is required to support turning of the DTLS
@@ -325,14 +325,14 @@ in regard to SCTP and upper layer protocol"}
 
         * Implementation is required to not use DTLS Key-update
           functionality. Where DTLS in SCTP is agnostic to its usage,
-          and it provides a useful tools to ensure that the key life
+          and it provides a useful tool to ensure that the key life
           time never is an issue.
 
    The conclusion of these implementation details is that where DTLS
    in SCTP can use existing DTLS implementations, include OpenSSL's
    DTLS 1.2 implementation it is not known if any DTLS stack exist
    that fully support the requirements in DTLS/SCTP. It is
-   expected that a DTLS/SCTP implemetnation will have to also
+   expected that a DTLS/SCTP implementation will have to also
    extended a DTLS implementation.
 
 
