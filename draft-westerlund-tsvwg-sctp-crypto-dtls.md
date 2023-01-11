@@ -421,6 +421,103 @@ in regard to SCTP and upper layer protocol"}
    record is included all DTLS records except the last needs to
    include a length field as specified in DTLS 1.3 {{RFC9147}}.
 
+# Crypto Chunk Integration
+
+There are a set of requirements stated in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}} that
+need to be addressed in this specification, this section deals with those
+requirements and how they are met in the current specification.
+
+## State Machine
+
+The Crypto Chunk state machine allows the Crypto Engine to have inband
+or offband configuration. DTLS SHALL use inband configuration, thus
+the implementation SHALL provide proper certificates to DTLS
+and then let DTLS handshake the keys with the remote peer.
+As soon as the SCTP State Machine enters CRYPT PENDING state, DTLS
+is responsible for enabling the ENCRYPTED state.
+
+### CRYPT PENDING state
+
+When entering CRYPT PENDING state, DTLS will start the handshake
+by means of preparing DTLS records with size lesser than the known MTU
+and deliver to Encryption Chunk Handler for delivery.
+Details of the handshake are described in {{dtls-handshake}}.
+
+Encryption Chunk Handler will choose an available DCI for being
+used by the DTLS Connection and will use it for all Crypto Chunks
+belonging to this DTLS Connection.
+Encryption Chunk Handler in this state will put DTLS records in
+Crypto Chunks and deliver to the remote peer.
+
+When receiving a Crypto Chunk, Encryption Chunk Handler will deliver
+the payload to DTLS which will handle it as DTLS record.
+
+Encryption Chunk Handler will deliver any other chunk received from
+the peer to the SCTP Chunks Handler transnparently, in the same way all control chunks
+received from SCTP Chunks Handler will be transparently delivered to the remote
+peer.
+
+When a successfull handshake has been completed, DTLS will inform
+Encryption Chunk Handler that will move SCTP State Machine into
+ENCRYPTED state.
+
+### ENCRYPTED state
+
+When entering ENCRYPTED state, Encryption Chunk Handler will start
+sending all chunks received from SCTP Chunks Handler to DTLS for
+encryption and at the same time all payload from Crypto chunks received from
+the remote peer will be delivered to DTLS as DTLS records.
+Plain data received from DTLS as decrypted data will be delivered
+to SCTP Chunks Handler as SCTP Chunks.
+
+## DTLS Connection Handling {#dtls-connection-handling}
+
+It's up to Encryption Chunk Handler to manage SCTP Connection and
+the related DCI.
+
+### Add a new DTLS Connection {#add-dtls-connection}
+
+When needed, Encryption Chunk Handler will add a new DTLS connection
+to the current SCTP Association.
+
+Encryption Chunk Handler will choose an available DCI for being
+used by the DTLS Connection and will use it for all Crypto Chunks
+belonging to this DTLS Connection.
+A new handshake will be initiated by DTLS using the chosen DCI.
+Details of the handshake are described in {{dtls-handshake}}.
+When the handshake has been completed, DTLS will inform
+the Encryption Chunk Handler so that the new DTLS Connection
+will be possible to use for traffic.
+
+When receiving traffic for a free DCI, Encryption Chunk Handler
+will assume that the remote peer wants to add a new DTLS connection
+to the existing SCTP Association. In such case Encryption Chunk Handler
+will set that DCI as in use and then forward all the payload
+from the Crypto Chunk to DTLS for creating a new connection.
+When the handshake has been completed, DTLS will inform
+the Encryption Chunk Handler so that the new DTLS Connection
+will be possible to use for traffic.
+
+### Remove an existing DTLS Connection {#remove-dtls-connection}
+
+When needed, Encryption Chunk Handler will remove a DTLS connection
+from the current SCTP Association.
+
+Encryption Chunk Handler will stop using the DTLS connection for traffic
+by using other DTLS connections, then it will ask DTLS to close that
+connection.
+
+DTLS will handshake the connection closure with the remote peer and
+will communicate to Encryption Chunk Handler that the DTLS connection
+has been closed. Encryption Chunk Handler will set free the related DCI.
+
+When receiving from DTLS the information that a DTLS connection has been
+removed because the removal has been initiated by the remote peer,
+the Encryption Chunk Handler will set free the related DCI.
+
+## Error cases
+
+Any error in DTLS will be handled according to {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
 
 # DTLS Considerations
 
@@ -468,7 +565,7 @@ Key-Update MAY be used
    Encryption Engine has been negotatied in the Init and Init-ACK
    exchange per {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
 
-## DTLS Handshake
+## DTLS Handshake {#dtls-handshake}
 
    As soon the SCTP Association has entered the SCTP state Crypt
    Pending as defined by {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}
@@ -515,7 +612,7 @@ Key-Update MAY be used
 Encryption Chunk sending happens either when DTLS needs to send own
 data directly to the DTLS peer i.e. due to handshaking or when SCTP
 requires to transfer Control or Data chunk to the remote SCTP Endpoint.
-For a proper handling, CID shall be set to an established instance
+For a proper handling, DCI shall be set to an established instance
 of DTLS connection.
 
 ### DTLS signaling
