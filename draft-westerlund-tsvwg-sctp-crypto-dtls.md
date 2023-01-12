@@ -384,6 +384,28 @@ in regard to SCTP and upper layer protocol"}
    ULP:
    : Upper Layer Protocol
 
+# DTLS identification
+
+In this section the extension described in this document will
+be specified.
+
+## New Encryption Engines
+
+This document specifies the adoption of DTLS as Encryprion Engine
+for SCTP Crypto Chunks for DTLS1.2 and DTLS1.3
+
+The following table applies.
+
+~~~~~~~~~~~ aasvg
+   VALUE            DTLS VERSION                             REFERENCE
+  ------           -----------------                        ----------
+   xxx (0xxxxx)     DTLS 1.2                                 nnnn
+   xxx (0xxxxx)     DTLS 1.3                                 nnnn
+~~~~~~~~~~~
+{: #dtls-encryption-engines title="DTLS Encryption Engines"}
+
+The values specified above shall be used in the parameter CRYPT
+as Encryption Engines as specified in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
 
 # DTLS usage of Encryption Chunk
 
@@ -434,28 +456,18 @@ or offband configuration. DTLS SHALL use inband configuration, thus
 the implementation SHALL provide proper certificates to DTLS
 and then let DTLS handshake the keys with the remote peer.
 As soon as the SCTP State Machine enters CRYPT PENDING state, DTLS
-is responsible for enabling the ENCRYPTED state.
+is responsible for enabling the ENCRYPTED state. At the same time
+DCI shall be initialized to the value zero.
 
 ### CRYPT PENDING state
 
 When entering CRYPT PENDING state, DTLS will start the handshake
-by means of preparing DTLS records with size lesser than the known MTU
-and deliver to Encryption Chunk Handler for delivery.
-Details of the handshake are described in {{dtls-handshake}}.
+according to {{dtls-handshake}}.
 
-Encryption Chunk Handler will choose an available DCI for being
-used by the DTLS Connection and will use it for all Crypto Chunks
-belonging to this DTLS Connection.
+Encryption Chunk Handler will use DCI = 0 for the initial
+DTLS Connection.
 Encryption Chunk Handler in this state will put DTLS records in
 Crypto Chunks and deliver to the remote peer.
-
-When receiving a Crypto Chunk, Encryption Chunk Handler will deliver
-the payload to DTLS which will handle it as DTLS record.
-
-Encryption Chunk Handler will deliver any other chunk received from
-the peer to the SCTP Chunks Handler transnparently, in the same way all control chunks
-received from SCTP Chunks Handler will be transparently delivered to the remote
-peer.
 
 When a successfull handshake has been completed, DTLS will inform
 Encryption Chunk Handler that will move SCTP State Machine into
@@ -463,12 +475,7 @@ ENCRYPTED state.
 
 ### ENCRYPTED state
 
-When entering ENCRYPTED state, Encryption Chunk Handler will start
-sending all chunks received from SCTP Chunks Handler to DTLS for
-encryption and at the same time all payload from Crypto chunks received from
-the remote peer will be delivered to DTLS as DTLS records.
-Plain data received from DTLS as decrypted data will be delivered
-to SCTP Chunks Handler as SCTP Chunks.
+Compliant to {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
 
 ## DTLS Connection Handling {#dtls-connection-handling}
 
@@ -477,43 +484,29 @@ the related DCI.
 
 ### Add a new DTLS Connection {#add-dtls-connection}
 
-When needed, Encryption Chunk Handler will add a new DTLS connection
-to the current SCTP Association.
+Either peers can add a new DTLS connection to the current
+SCTP Association at any time, but no more
+than 2 DTLS connection can be active at the same time.
+The new DCI value shall be the last active DCI increased by one module 4,
+this makes the attempt to create a new DTLS connection to use
+the same, known, value of DCI from both peers so that DTLS
+can solve the race condition.
 
-Encryption Chunk Handler will choose an available DCI for being
-used by the DTLS Connection and will use it for all Crypto Chunks
-belonging to this DTLS Connection.
-A new handshake will be initiated by DTLS using the chosen DCI.
+If there are no active DTLS connections, the DCI will be set to zero.
+
+A new handshake will be initiated by DTLS using the new DCI.
 Details of the handshake are described in {{dtls-handshake}}.
-When the handshake has been completed, DTLS will inform
-the Encryption Chunk Handler so that the new DTLS Connection
-will be possible to use for traffic.
-
-When receiving traffic for a free DCI, Encryption Chunk Handler
-will assume that the remote peer wants to add a new DTLS connection
-to the existing SCTP Association. In such case Encryption Chunk Handler
-will set that DCI as in use and then forward all the payload
-from the Crypto Chunk to DTLS for creating a new connection.
-When the handshake has been completed, DTLS will inform
-the Encryption Chunk Handler so that the new DTLS Connection
-will be possible to use for traffic.
+When the handshake has been completed successfully, the new DTLS Connection
+will be possible to use for traffic, if the handshake is not
+completed successfully, the new DCI value will not be considered
+and a next attempt will reuse that DCI.
 
 ### Remove an existing DTLS Connection {#remove-dtls-connection}
 
-When needed, Encryption Chunk Handler will remove a DTLS connection
-from the current SCTP Association.
+Either peers can remove a DTLS connection from the current SCTP Association.
 
-Encryption Chunk Handler will stop using the DTLS connection for traffic
-by using other DTLS connections, then it will ask DTLS to close that
-connection.
-
-DTLS will handshake the connection closure with the remote peer and
-will communicate to Encryption Chunk Handler that the DTLS connection
-has been closed. Encryption Chunk Handler will set free the related DCI.
-
-When receiving from DTLS the information that a DTLS connection has been
-removed because the removal has been initiated by the remote peer,
-the Encryption Chunk Handler will set free the related DCI.
+When DTLS closure for a DTLS connection is completed, the related DCI is
+released.
 
 ## Error cases
 
@@ -670,7 +663,71 @@ to {{RFC9260}}
 
 # Parallel DTLS Rekeying
 
+Rekeyng in this specification is implemented by replacing the DTLS connection
+getting old with a new one. This feature exploits the capability of parallel
+DTLS connections and the possibility to add and remove DTLS connections
+during the lifetime of the SCTP Association.
 
+## Criteria for rekeying
+
+It shall be specified rule for deciding that a DTLS connection is too old,
+based on age and data consumption.
+
+## Procedure for rekeiyng
+
+This specification allows up to 2 DTLS connection to be active at the same
+time for the current SCTP Association.
+The following state machine applies.
+
+~~~~~~~~~~~ aasvg
+           +---------+
++--------->|  YOUNG  |  There's only one
+|          +----+----+  DTLS connection until
+|               |       aging criteria are met
+|               |
+|        AGING  |  REMOTE AGING
+|               V
+|          +---------+
+|          |  AGED   |  When in AGED state a
+|          +----+----+  new DTLS connection
+|               |       is added with a new DCI
+|      NEW DTLS |
+|               V
+|          +---------+
+|          |   OLD   |  In OLD state there
+|          +----+----+  are 2 active DTLS connections
+|               |       Traffic is switched to the new one
+|      SWITCH   |
+|               V
+|          +---------+
+|          |  DEAD   |  In DEAD state the aged
+|          +----+----+  connection is removed
+|               |
+|      REMOVED  |
++---------------+
+
+~~~~~~~~~~~
+{: #dtls-rekeying-state-diagram title="State Diagram for Rekeying"}
+
+Trigger for rekeying can either be a local AGING event, triggered by
+the DTLS connection meeting the criteria for rekeying, or a REMOTE AGING
+event, triggered by receiving a DTLS record on the DCI that would be
+used for new DTLS connection. In such case a new DTLS connection
+shall be added according to {{add-dtls-connection}} with a new DCI.
+
+As soon as the new DTLS connection completes handshaking, the traffic is moved
+from the old one, then the procedure for closing the old DTLS connection is
+initiated.
+
+## Race condition in rekeying
+
+A race condition may happen when both peer experience local AGING event at
+the same time and start creation of a new DTLS connection.
+
+Since the criteria for calculating a new DCI is known and specified
+in {{add-dtls-connection}}, the peers will use the same DCI for
+identifying the new DTLS connection. Race condition will be solved
+by means of DTLS protocol.
 
 # Security Considerations
 
