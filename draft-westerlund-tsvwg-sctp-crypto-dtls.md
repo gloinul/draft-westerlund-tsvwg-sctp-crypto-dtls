@@ -1,6 +1,6 @@
 ---
 docname: draft-westerlund-tsvwg-sctp-crypto-dtls-latest
-title: Datagram Transport Layer Security (DTLS) in the Stream Control Transmission Protocol (SCTP) Encryption Chunk
+title: Datagram Transport Layer Security (DTLS) in the Stream Control Transmission Protocol (SCTP) CRYPTO chunk
 abbrev: DTLS in SCTP
 obsoletes:
 cat: std
@@ -43,7 +43,7 @@ normative:
 
   I-D.westerlund-tsvwg-sctp-crypto-chunk:
     target: "https://datatracker.ietf.org"
-    title: "Stream Control Transmission Protocol (SCTP) Encryption Chunk"
+    title: "Stream Control Transmission Protocol (SCTP) CRYPTO chunk"
     author:
       -
        ins:  M. Westerlund
@@ -85,10 +85,10 @@ rekeying. This is intended as an alternative to using DTLS/SCTP (RFC
 
    This document describes the usage of the Datagram Transport Layer
    Security (DTLS) protocol, as defined in DTLS 1.2 {{RFC6347}}, and
-   DTLS 1.3 {{RFC9147}}, as Encryption Engine in the Stream Control
+   DTLS 1.3 {{RFC9147}}, as protection engine in the Stream Control
    Transmission Protocol (SCTP), as defined in {{RFC9260}} with SCTP
-   encryption chunk {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.  This
-   pecification is intended as an alternative to DTLS/SCTP {{RFC6083}}
+   CRYPTO chunk {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.  This
+   specification is intended as an alternative to DTLS/SCTP {{RFC6083}}
    and usage of SCTP-AUTH {{RFC4895}}.
 
    This specification provides mutual authentication of endpoints,
@@ -122,43 +122,43 @@ rekeying. This is intended as an alternative to using DTLS/SCTP (RFC
 
 ## Protocol Overview
 
-   DTLS in SCTP is an encryption engine specification for the SCTP
-   Encryption chunk {{I-D.westerlund-tsvwg-sctp-crypto-chunk}} that
+   DTLS in SCTP is an protection engine specification for the SCTP
+   CRYPTO chunk {{I-D.westerlund-tsvwg-sctp-crypto-chunk}} that
    utilizes DTLS 1.2 or 1.3 for the security functions like
    encryption, authentication, replay protection and security
    handshakes. The basic functionalities and how things are related are
    described below.
 
    In a SCTP association initiation where DTLS in SCTP is chosen as
-   the encryption engine for the Encryption Chunk the DTLS handshakes
-   are exchanged encapsulated in the Encryption Chunk until an initial
+   the protection engine for the CRYPTO chunk the DTLS handshakes
+   are exchanged encapsulated in the CRYPTO chunk until an initial
    DTLS session has been established. If the DTLS handshake fails, the
    SCTP association is aborted. When the DTSL session has been
-   established the EVALID chunk is exchanged to verify that no
-   downgrade attack between different encryption engines has
-   occurred. To prevent manipulation of the EVALID chunk it is
+   established the PVALID chunk is exchanged to verify that no
+   downgrade attack between different protection engines has
+   occurred. To prevent manipulation of the PVALID chunk it is
    encrypted and integrity protected as plain text SCTP chunk in an
    DTLS application data record that is then encapsulated in an
-   Encryption Chunk and provided with a SCTP common header to form a
+   CRYPTO chunk and provided with a SCTP common header to form a
    complete SCTP packet.
 
-   Assuming that the EVALID validation is successful the SCTP
+   Assuming that the PVALID validation is successful the SCTP
    association is established and the ULP can start sending data over
    the SCTP association. From this point all sets of chunks intended to
-   form a SCTP packet will be protected just like EVALID chunk by being the
+   form a SCTP packet will be protected just like PVALID chunk by being the
    plaint text application data input to DTLS. When DTLS has protected
    the plaint text input, the produced encrypted DTLS application data
-   record is encapsulated in the Encryption Chunk and the packet is
+   record is encapsulated in the CRYPTO chunk and the packet is
    transmitted.
 
    In the receiving SCTP stack each incoming SCTP packet on any of
    its interfaces and ports are matched to the SCTP association based
    on ports and VTAG in the common header. In that association context
-   for the Encryption chunk there will exist reference to one or more
+   for the CRYPTO chunk there will exist reference to one or more
    DTLS connections used to protect the data. The DTLS connection actually
    used to protect this packet is identified by two DCI bits in the
-   Encryption chunk's flags. Using the identified DTLS session the
-   content of the Encryption chunk is attempted to be processed,
+   CRYPTO chunk's flags. Using the identified DTLS session the
+   content of the CRYPTO chunk is attempted to be processed,
    including replay protection, decryption, and integrity. And if
    decryption was successful the produced plain text of one or more
    SCTP chunks are provided for normal SCTP processing in the
@@ -168,7 +168,7 @@ rekeying. This is intended as an alternative to using DTLS/SCTP (RFC
    When mutual re-authentication or forward secrecy rekeying is
    needed or desired by either endpoint a new DTLS connection handshake
    is performed between the SCTP endpoints. A different DTLS Connection
-   ID (DCI) than currently used among the Encryption chunk flags are used to
+   ID (DCI) than currently used among the CRYPTO chunk flags are used to
    indicate that this a new handshake. When the handshake has
    completed the DTLS in SCTP implementation can simply switch to use
    this DTLS connection to protect the plain text payload. After a
@@ -185,18 +185,17 @@ rekeying. This is intended as an alternative to using DTLS/SCTP (RFC
 |                     |
 |        ULP          |
 |                     |
-+---------------------+ <- User Level Messages
++---------------------+ <-- User Level Messages
 |                     |
-| SCTP Chunks Handler |
-|                     |
-+---------------------+ <- SCTP Plain Payload
-|  Encryption Chunk   |  +-------------------+
-|      Handler        |<-| DTLS in SCTP      |
-|                     |->|                   |
-|                     |  +-------------------+
-+---------------------+ <- SCTP Encrypted Payload
-|                     |
-| SCTP Header Handler |
+| SCTP Chunks Handler | +-- SCTP Unprotected Payload
+|                     |/
++---------------------+    +--------------+
+|        CRYPTO       +--->|              |
+|        Chunk        |    + DTLS in SCTP +
+|       Handler       |<---+              |
++---------------------+    +--------------+
+|                     |\
+| SCTP Header Handler | +-- SCTP Protected Payload
 |                     |
 +---------------------+
 
@@ -236,7 +235,7 @@ in regard to SCTP and upper layer protocol"}
      SCTP association.
 
    * Limited overhead on a per packet basis, with 4 bytes for the
-     Encryption Chunk plus the DTLS record overhead. That DTLS
+     CRYPTO chunk plus the DTLS record overhead. That DTLS
      overhead is dependent on the DTLS version.
 
    * Support of SCTP packet plain text payload sizes up to
@@ -287,7 +286,7 @@ in regard to SCTP and upper layer protocol"}
      determine the state of user messages. No such restriction exists
      in DTLS in SCTP.
 
-   * By using the Encryption chunk that is acting on SCTP packet level
+   * By using the CRYPTO chunk that is acting on SCTP packet level
      instead of user messages the consideration for extensions are
      quite different. Only extensions that would affect the common
      header or how packets are formed would interact with this
@@ -308,7 +307,7 @@ in regard to SCTP and upper layer protocol"}
    There are several significant differences in regard to
    implementation between the two realizations.
 
-   * DTLS in SCTP do requires the Encryption Chunk to be implemented
+   * DTLS in SCTP do requires the CRYPTO chunk to be implemented
      in the SCTP stack implementation, and not as an adaptation layer
      above it as DTLS/SCTP. This has some extra challenges for
      operating system level implementations. However, as some updates
@@ -404,7 +403,7 @@ in regard to SCTP and upper layer protocol"}
 In this section the extension described in this document will
 be specified.
 
-## New Encryption Engines
+## New protection engines {protection-engines}
 
 This document specifies the adoption of DTLS as Encryprion Engine
 for SCTP Crypto Chunks for DTLS1.2 and DTLS1.3
@@ -417,14 +416,14 @@ The following table applies.
    xxx (0xxxxx)     DTLS 1.2                                 nnnn
    xxx (0xxxxx)     DTLS 1.3                                 nnnn
 ~~~~~~~~~~~
-{: #dtls-encryption-engines title="DTLS Encryption Engines"}
+{: #dtls-protection-engines title="DTLS protection engines"}
 
-The values specified above shall be used in the parameter CRYPT
-as Encryption Engines as specified in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
+The values specified above shall be used in the Protected Association parameter
+as protection engines as specified in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
 
-# DTLS usage of Encryption Chunk
+# DTLS usage of CRYPTO chunk
 
-   DTLS in SCTP uses the Encryption chunk in the following way. Fields
+   DTLS in SCTP uses the CRYPTO chunk in the following way. Fields
    not discussed are used as specified in
    {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
 
@@ -433,7 +432,7 @@ as Encryption Engines as specified in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-| Type = 0x0x   |   Flags   |DCI|             Length            |
+| Type = 0x4x   |   Flags   |DCI|             Length            |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |                                                               |
 \                            Payload                            /
@@ -442,7 +441,7 @@ as Encryption Engines as specified in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}
 |                               |           Padding             |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~~~~~~~~~
-{: #sctp-encryption-chunk-structure title="ENCRYPT Chunk Structure"}
+{: #sctp-CRYPTO-chunk-structure title="CRYPTO Chunk Structure"}
 
    DCI:
    : DTLS Connection Identifier is the lower two bits of an DTLS
@@ -467,7 +466,7 @@ requirements and how they are met in the current specification.
 ## State Machine
 
 The Crypto Chunk state machine allows the Crypto Engine to have inband
-or offband configuration. DTLS SHALL use inband configuration, thus
+or offband configuration. DTLS in SCTP SHALL use inband configuration, thus
 the implementation SHALL provide proper certificates to DTLS
 and then let DTLS handshake the keys with the remote peer.
 As soon as the SCTP State Machine enters CRYPT PENDING state, DTLS
@@ -476,38 +475,36 @@ DCI shall be initialized to the value zero.
 
 ### CRYPT PENDING state
 
-When entering CRYPT PENDING state, DTLS will start the handshake
+When entering PROTECTION PENDING state, DTLS will start the handshake
 according to {{dtls-handshake}}.
 
-Encryption Chunk Handler will use DCI = 0 for the initial
+CRYPTO chunk Handler will use DCI = 0 for the initial
 DTLS Connection.
-Encryption Chunk Handler in this state will put DTLS records in
+CRYPTO chunk Handler in this state will put DTLS records in
 Crypto Chunks and deliver to the remote peer.
 
 When a successfull handshake has been completed, DTLS will inform
-Encryption Chunk Handler that will move SCTP State Machine into
-ENCRYPTED state.
+CRYPTO chunk Handler that will move SCTP State Machine into
+PROTECTED state.
 
-### ENCRYPTED state
+### PROTECTED state
 
 Compliant to {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
 
 ## DTLS Connection Handling {#dtls-connection-handling}
 
-It's up to Encryption Chunk Handler to manage SCTP Connection and
+It's up to CRYPTO chunk Handler to manage SCTP Connection and
 the related DCI.
 
 ### Add a new DTLS Connection {#add-dtls-connection}
 
 Either peers can add a new DTLS connection to the current
 SCTP Association at any time, but no more
-than 2 DTLS connection can be active at the same time.
+than 2 DTLS connection can exist at the same time.
 The new DCI value shall be the last active DCI increased by one module 4,
 this makes the attempt to create a new DTLS connection to use
 the same, known, value of DCI from both peers so that DTLS
-can solve the race condition.
-
-If there are no active DTLS connections, the DCI will be set to zero.
+can solve race conditions on DCI.
 
 A new handshake will be initiated by DTLS using the new DCI.
 Details of the handshake are described in {{dtls-handshake}}.
@@ -548,10 +545,10 @@ Any error in DTLS will be handled according to {{I-D.westerlund-tsvwg-sctp-crypt
 ### General
 
    It is RECOMMENDED that the DTLS Connection ID is not included in
-   the DTLS records as it is need, the Encryption Chunk indicate which
+   the DTLS records as it is need, the CRYPTO chunk indicates which
    DTLS connection this is inteded for using the the DCI bits.
 
-   The DTLS record length field is normally not need as the Encryption
+   The DTLS record length field is normally not needed as the CRYPTO
    Chunk provides a length field unless multiple records are put in
    same chunk payload.
 
@@ -569,20 +566,20 @@ Key-Update MAY be used
 # Establishing DTLS in SCTP
 
    This sections specifies how DTLS in SCTP is established after
-   having been selected by the Encryption Chunk with DTLS as
-   Encryption Engine has been negotatied in the Init and Init-ACK
+   Protected Association Parameter with DTLS1.2 or DTLS1.3 as
+   protection engine has been negotatied in the Init and Init-ACK
    exchange per {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
 
 ## DTLS Handshake {#dtls-handshake}
 
-   As soon the SCTP Association has entered the SCTP state Crypt
-   Pending as defined by {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}
+   As soon the SCTP Association has entered the SCTP state PROTECTION
+   PENDING as defined by {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}
    the DTLS handshake procedure is initated by the SCTP client.
 
    The DTLS endpoint needs if necessary fragment the handshake into
    multiple records each meeting the known MTU limit of the path
    between SCTP endpoints. Each DTLS handshake message fragment is
-   encapsulated in a Encryption Chunk. The DTLS instance SHALL use
+   encapsulated in a CRYPTO chunk. The DTLS instance SHALL use
    DTLS retransmission to repair any packet losses of handshake
    message fragment.
 
@@ -593,7 +590,7 @@ Key-Update MAY be used
    If the DTLS handshake is successful to establish a security context
    to protect further communication and the peer identity is accepted
    then the SCTP assocation shall be informed that it can move to the
-   Encrypted state.
+   PROTECTED state.
 
    If the DTLS handshake failed the SCTP assocation SHALL be aborted
    and the appropriate error is generated.
@@ -602,10 +599,10 @@ Key-Update MAY be used
 ## Validation against Downgrade Attacks
 
    When the SCTP association has entered the Encrypted State after the
-   DTLS handshake has completed the protection against encryption
+   DTLS handshake has completed the protection against protection
    engine negotiation downgrade is perforemd per
-   {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}. The EVALID chunk will
-   sent inside a Encryption chunk protecting the plain text chunk
+   {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}. The PVALID chunk will
+   sent inside a CRYPTO chunk protecting the plain text chunk
    as defined in {{chunk-processing}}.
 
    If the validation completes successful the SCTP association will
@@ -613,11 +610,11 @@ Key-Update MAY be used
    be protected by SCTP. If the validation fails the SCTP association
    will be aborted.
 
-# Processing a Encryption Chunk {#chunk-processing}
+# Processing a CRYPTO chunk {#chunk-processing}
 
 ## Sending
 
-Encryption Chunk sending happens either when DTLS needs to send own
+CRYPTO chunk sending happens either when DTLS needs to send own
 data directly to the DTLS peer i.e. due to handshaking or when SCTP
 requires to transfer Control or Data chunk to the remote SCTP Endpoint.
 For a proper handling, DCI shall be set to an established instance
@@ -627,17 +624,17 @@ of DTLS connection.
 
 DTLS shall transfer DTLS records to SCTP Header Handler as array of bytes
 (unsigned char). Each array has maximum size equal to the maximum size
-of SCTP payload as computed by SCTP minus the size of the Encryption Chunk
+of SCTP payload as computed by SCTP minus the size of the CRYPTO chunk
 header.
 Each array shall contain one or more DTLS records, this is up to DTLS.
 From SCTP perspective each array is opaque data and will be used as
-payload of one Encryption Chunk.
+payload of one CRYPTO chunk.
 
 ### SCTP signaling
 
 SCTP Chunk handler will create the payload of a legacy SCTP packet
 according to {{RFC9260}}. Such payload will assume a PMTU that is
-equal to the value computed by SCTP minus the size of the Encryption
+equal to the value computed by SCTP minus the size of the CRYPTO
 Chunk header.
 It's up to SCTP Chunk Handler to implement all the SCTP rules
 for bundling and take care of retransmission mechanisms.
@@ -757,5 +754,5 @@ by means of DTLS protocol.
 
 # IANA Consideration
 
-## Registartion of DTLS as Encryption Engine
+## Registartion of DTLS as protection engine
 
