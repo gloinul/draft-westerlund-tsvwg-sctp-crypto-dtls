@@ -587,10 +587,10 @@ Key-Update MAY be used
 
    If the DTLS handshake is successful to establish a security context
    to protect further communication and the peer identity is accepted
-   then the SCTP assocation shall be informed that it can move to the
+   then the SCTP association shall be informed that it can move to the
    PROTECTED state.
 
-   If the DTLS handshake failed the SCTP assocation SHALL be aborted
+   If the DTLS handshake failed the SCTP association SHALL be aborted
    and the appropriate error is generated.
 
 
@@ -598,7 +598,7 @@ Key-Update MAY be used
 
    When the SCTP association has entered the Encrypted State after the
    DTLS handshake has completed the protection against protection
-   engine negotiation downgrade is perforemd per
+   engine negotiation downgrade is performed per
    {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}. The PVALID chunk will
    sent inside a CRYPTO chunk protecting the plain text chunk
    as defined in {{chunk-processing}}.
