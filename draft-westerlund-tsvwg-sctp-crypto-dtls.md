@@ -336,8 +336,8 @@ in regard to SCTP and upper layer protocol"}
 
         * Implementation is required to not use DTLS Key-update
           functionality. Where DTLS in SCTP is agnostic to its usage,
-          and it provides a useful tool to ensure that the key life
-          time never is an issue.
+          and it provides a useful tool to ensure that the key lifetime
+          never is an issue.
 
    The conclusion of these implementation details is that where DTLS
    in SCTP can use existing DTLS implementations, including OpenSSL's
@@ -405,7 +405,7 @@ be specified.
 
 ## New protection Engines {protection-engines}
 
-This document specifies the adoption of DTLS as Encryprion Engine
+This document specifies the adoption of DTLS as protection engine
 for SCTP Crypto Chunks for DTLS1.2 and DTLS1.3
 
 The following table applies.
@@ -464,7 +464,7 @@ requirements and how they are met in the current specification.
 ## State Machine
 
 The Crypto Chunk state machine allows the Crypto Engine to have inband
-or offband configuration. DTLS in SCTP SHALL use inband configuration, thus
+or out-of-band configuration. DTLS in SCTP SHALL use inband configuration, thus
 the implementation SHALL provide proper certificates to DTLS
 and then let DTLS handshake the keys with the remote peer.
 As soon as the SCTP State Machine enters CRYPT PENDING state, DTLS
@@ -481,7 +481,7 @@ DTLS Connection.
 CRYPTO chunk Handler in this state will put DTLS records in
 Crypto Chunks and deliver to the remote peer.
 
-When a successfull handshake has been completed, DTLS will inform
+When a successful handshake has been completed, DTLS will inform
 CRYPTO chunk Handler that will move SCTP State Machine into
 PROTECTED state.
 
@@ -544,7 +544,7 @@ Any error in DTLS will be handled according to {{I-D.westerlund-tsvwg-sctp-crypt
 
    It is RECOMMENDED that the DTLS Connection ID is not included in
    the DTLS records as it is need, the CRYPTO chunk indicates which
-   DTLS connection this is inteded for using the the DCI bits.
+   DTLS connection this is intended for using the DCI bits.
 
    The DTLS record length field is normally not needed as the CRYPTO
    Chunk provides a length field unless multiple records are put in
@@ -554,7 +554,7 @@ Any error in DTLS will be handled according to {{I-D.westerlund-tsvwg-sctp-crypt
 
 ### DTLS 1.2
 
-Is renegotation allowed?
+Is renegotiation allowed?
 
 ### DTLS 1.3
 
