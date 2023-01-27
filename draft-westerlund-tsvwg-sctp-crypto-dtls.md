@@ -242,7 +242,7 @@ in regard to SCTP and upper layer protocol"}
      2<sup>14</sup> bytes.
 
 
-### Benefits compared to DTLS/SCTP
+### Benefits Compared to DTLS/SCTP
 
    DTLS/SCTP as defined by {{I-D.ietf-tsvwg-dtls-over-sctp-bis}}
    has several important differences most to the benefit of DTLS in
@@ -398,12 +398,12 @@ in regard to SCTP and upper layer protocol"}
    ULP:
    : Upper Layer Protocol
 
-# DTLS identification
+# DTLS Identification
 
 In this section the extension described in this document will
 be specified.
 
-## New protection engines {protection-engines}
+## New protection Engines {protection-engines}
 
 This document specifies the adoption of DTLS as Encryprion Engine
 for SCTP Crypto Chunks for DTLS1.2 and DTLS1.3
@@ -418,7 +418,7 @@ The following table applies.
 The values specified above shall be used in the Protected Association parameter
 as protection engines as specified in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
 
-# DTLS usage of CRYPTO chunk
+# DTLS Usage of CRYPTO Chunk
 
    DTLS in SCTP uses the CRYPTO chunk in the following way. Fields
    not discussed are used as specified in
@@ -494,7 +494,7 @@ Compliant to {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
 It's up to CRYPTO chunk Handler to manage SCTP Connection and
 the related DCI.
 
-### Add a new DTLS Connection {#add-dtls-connection}
+### Add a New DTLS Connection {#add-dtls-connection}
 
 Either peers can add a new DTLS connection to the current
 SCTP Association at any time, but no more
@@ -518,7 +518,7 @@ Either peers can remove a DTLS connection from the current SCTP Association.
 When DTLS closure for a DTLS connection is completed, the related DCI is
 released.
 
-## Error cases
+## Error Cases
 
 Any error in DTLS will be handled according to {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
 
@@ -594,7 +594,7 @@ Key-Update MAY be used
    and the appropriate error is generated.
 
 
-## Validation against Downgrade Attacks
+## Validation Against Downgrade Attacks
 
    When the SCTP association has entered the Encrypted State after the
    DTLS handshake has completed the protection against protection
@@ -608,7 +608,7 @@ Key-Update MAY be used
    be protected by SCTP. If the validation fails the SCTP association
    will be aborted.
 
-# Processing a CRYPTO chunk {#chunk-processing}
+# Processing a CRYPTO Chunk {#chunk-processing}
 
 ## Sending
 
@@ -618,7 +618,7 @@ requires to transfer Control or Data chunk to the remote SCTP Endpoint.
 For a proper handling, DCI shall be set to an established instance
 of DTLS connection.
 
-### DTLS signaling
+### DTLS Signaling
 
 DTLS shall transfer DTLS records to SCTP Header Handler as array of bytes
 (unsigned char). Each array has maximum size equal to the maximum size
@@ -628,7 +628,7 @@ Each array shall contain one or more DTLS records, this is up to DTLS.
 From SCTP perspective each array is opaque data and will be used as
 payload of one CRYPTO chunk.
 
-### SCTP signaling
+### SCTP Signaling
 
 SCTP Chunk handler will create the payload of a legacy SCTP packet
 according to {{RFC9260}}. Such payload will assume a PMTU that is
@@ -678,12 +678,12 @@ getting old with a new one. This feature exploits the capability of parallel
 DTLS connections and the possibility to add and remove DTLS connections
 during the lifetime of the SCTP Association.
 
-## Criteria for rekeying
+## Criteria for Rekeying
 
 It shall be specified rule for deciding that a DTLS connection is too old,
 based on age and data consumption.
 
-## Procedure for rekeiyng
+## Procedure for Rekeiyng
 
 This specification allows up to 2 DTLS connection to be active at the same
 time for the current SCTP Association.
@@ -729,7 +729,7 @@ As soon as the new DTLS connection completes handshaking, the traffic is moved
 from the old one, then the procedure for closing the old DTLS connection is
 initiated.
 
-## Race condition in rekeying
+## Race Condition in Rekeying
 
 A race condition may happen when both peer experience local AGING event at
 the same time and start creation of a new DTLS connection.
@@ -761,5 +761,5 @@ PMTUD in DTLS will be disabled.
 
 # IANA Consideration
 
-## Registartion of DTLS as protection engine
+## Registartion of DTLS as Protection Engine
 
