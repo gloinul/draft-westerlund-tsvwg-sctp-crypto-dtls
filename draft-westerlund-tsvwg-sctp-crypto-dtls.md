@@ -614,7 +614,7 @@ Key-Update MAY be used
 
 CRYPTO chunk sending happens either when DTLS needs to send own
 data directly to the DTLS peer i.e. due to handshaking or when SCTP
-requires to transfer Control or Data chunk to the remote SCTP Endpoint.
+requires transfering Control or Data chunk to the remote SCTP Endpoint.
 For a proper handling, DCI shall be set to an established instance
 of DTLS connection.
 
@@ -668,12 +668,12 @@ When DTLS detects a dtls record addressed to SCTP, it will decode
 the data as an array of bytes and transfer it to SCTP Chunk Handler.
 
 SCTP Chunk handler will threat the array as the payload of an SCTP
-packet, thus it will exctract all the chunks and handle them according
+packet, thus it will extract all the chunks and handle them according
 to {{RFC9260}}
 
 # Parallel DTLS Rekeying
 
-Rekeyng in this specification is implemented by replacing the DTLS connection
+Rekeying in this specification is implemented by replacing the DTLS connection
 getting old with a new one. This feature exploits the capability of parallel
 DTLS connections and the possibility to add and remove DTLS connections
 during the lifetime of the SCTP Association.
