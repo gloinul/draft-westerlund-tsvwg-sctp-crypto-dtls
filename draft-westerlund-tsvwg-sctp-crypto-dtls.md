@@ -71,8 +71,8 @@ Crypto Chunk which we name DTLS in SCTP. DTLS in SCTP provides
 encryption, source authentication, integrity and replay protection for
 the SCTP association with mutual authentication of the peers. The
 specification is also targeting very long-lived sessions of weeks and
-months and supports mutual re-authentication and forward secrecy
-rekeying. This is intended as an alternative to using DTLS/SCTP (RFC
+months and supports mutual re-authentication and rekeying with ephemeral
+key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
 6083) and SCTP-AUTH (RFC 4895).
 
 --- middle
@@ -125,15 +125,15 @@ rekeying. This is intended as an alternative to using DTLS/SCTP (RFC
    DTLS in SCTP is a protection engine specification for the SCTP
    CRYPTO chunk {{I-D.westerlund-tsvwg-sctp-crypto-chunk}} that
    utilizes DTLS 1.2 or 1.3 for the security functions like
-   encryption, authentication, replay protection and security
-   handshakes. The basic functionalities and how things are related are
-   described below.
+   key exchange, authentication, encryption, integrity protection,
+   and replay protection. The basic functionalities and how things
+   are related are described below.   
 
    In a SCTP association initiation where DTLS in SCTP is chosen as
-   the protection engine for the CRYPTO chunk the DTLS handshakes
-   are exchanged encapsulated in the CRYPTO chunk until an initial
-   DTLS session has been established. If the DTLS handshake fails, the
-   SCTP association is aborted. When the DTSL session has been
+   the protection engine for the CRYPTO chunk the DTLS handshake
+   is exchanged encapsulated in the CRYPTO chunk until an initial
+   DTLS connection has been established. If the DTLS handshake fails, the
+   SCTP association is aborted. When the DTLS connection has been
    established the PVALID chunk is exchanged to verify that no
    downgrade attack between different protection engines has
    occurred. To prevent manipulation of the PVALID chunk it is
