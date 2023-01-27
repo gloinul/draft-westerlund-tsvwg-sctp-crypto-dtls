@@ -374,9 +374,6 @@ in regard to SCTP and upper layer protocol"}
    DTLS:
    : Datagram Transport Layer Security
 
-   HMAC:
-   : Keyed-Hash Message Authentication Code
-
    MTU:
    : Maximum Transmission Unit
 
@@ -388,12 +385,6 @@ in regard to SCTP and upper layer protocol"}
 
    SCTP-AUTH:
    : Authenticated Chunks for SCTP {{RFC4895}}
-
-   TCP:
-   : Transmission Control Protocol
-
-   TLS:
-   : Transport Layer Security
 
    ULP:
    : Upper Layer Protocol
@@ -444,7 +435,7 @@ as protection engines as specified in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}
 ~~~~~~~~~~~
 {: #sctp-CRYPTO-chunk-structure title="CRYPTO Chunk Structure"}
 
-   DCI: 2 bits
+   DCI: 2 bits (unsigned integer)
    : DTLS Connection Identifier is the lower two bits of an DTLS
    Connection Identifier counter. This is a counter implemented in
    DTLS in SCTP that is used to identify which DTLS connection
@@ -468,7 +459,7 @@ requirements and how they are met in the current specification.
 
 ## State Machine
 
-The Crypto Chunk state machine allows the Crypto Engine to have inband
+The Crypto Chunk state machine allows the protection engine to have inband
 or out-of-band configuration. DTLS in SCTP SHALL use inband configuration, thus
 the implementation SHALL provide proper certificates to DTLS
 and then let DTLS handshake the keys with the remote peer.
@@ -504,7 +495,7 @@ the related DCI.
 Either peers can add a new DTLS connection to the current
 SCTP Association at any time, but no more
 than 2 DTLS connection can exist at the same time.
-The new DCI value shall be the last active DCI increased by one module 4,
+The new DCI value shall be the last active DCI increased by one modulo 4,
 this makes the attempt to create a new DTLS connection to use
 the same, known, value of DCI from both peers so that DTLS
 can solve race conditions on DCI.
