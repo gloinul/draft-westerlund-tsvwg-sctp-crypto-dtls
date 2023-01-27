@@ -254,7 +254,7 @@ in regard to SCTP and upper layer protocol"}
      in SCTP relies on DTLS mechanism for replay protection that can
      prevent both duplicates from being delivered as well as
      preventing packets from outside the current window to be
-     delivered. Thus, a stronger protection especially for non DATA
+     delivered. Thus, a stronger protection especially for non-DATA
      chunk are provided and protects the SCTP stack from replayed or
      duplicated packets.
 
@@ -301,7 +301,7 @@ in regard to SCTP and upper layer protocol"}
      the maximum DTLS record size the maximum supported packet size
      might be even lower. However, this value needs to be compared to
      the supported MTU of IP, and are thus in reality often not an
-     actual limiation. Only for some special deployments or over loop
+     actual limitation. Only for some special deployments or over loop
      back may this limitation be visible.
 
    There are several significant differences in regard to
