@@ -741,6 +741,15 @@ in {{add-dtls-connection}}, the peers will use the same DCI for
 identifying the new DTLS connection. Race condition will be solved
 by means of DTLS protocol.
 
+# PMTU Discovery Considerations
+
+If PMTU Discovery is enabled in the SCTP Host,
+DTLS in SCTP will let SCTP dealing with PMTU Discovery whereas DTLS
+will not influence it.
+SCTP will use  2<sup>14</sup> as maximum PMTU when running PMTUD,
+whereas DTLS will be set for a PMTU equal to  2<sup>14</sup> and
+PMTUD in DTLS will be disabled.
+
 # Security Considerations
 
 ## General
