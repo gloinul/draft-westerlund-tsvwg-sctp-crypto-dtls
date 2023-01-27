@@ -410,13 +410,10 @@ for SCTP Crypto Chunks for DTLS1.2 and DTLS1.3
 
 The following table applies.
 
-~~~~~~~~~~~ aasvg
-   VALUE            DTLS VERSION                             REFERENCE
-  ------           -----------------                        ----------
-   xxx (0xxxxx)     DTLS 1.2                                 nnnn
-   xxx (0xxxxx)     DTLS 1.3                                 nnnn
-~~~~~~~~~~~
-{: #dtls-protection-engines title="DTLS protection engines"}
+| VALUE | DTLS VERSION | REFERENCE |
+| 0 | DTLS 1.2 | RFC-To-Be |
+| 1 | DTLS 1.3 | RFC-To-Be |
+{: #dtls-protection-engines title="DTLS protection engines" cols="r l l"}
 
 The values specified above shall be used in the Protected Association parameter
 as protection engines as specified in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
@@ -427,33 +424,34 @@ as protection engines as specified in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}
    not discussed are used as specified in
    {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
 
-
 ~~~~~~~~~~~ aasvg
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-| Type = 0x4x   |   Flags   |DCI|             Length            |
+| Type = 0x4x   |   Flags   |DCI|         Chunk Length          |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |                                                               |
-\                            Payload                            /
-/                                                               \
+|                            Payload                            |
+|                                                               |
 |                               +-------------------------------+
 |                               |           Padding             |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~~~~~~~~~
 {: #sctp-CRYPTO-chunk-structure title="CRYPTO Chunk Structure"}
 
-   DCI:
+   DCI: 2 bits
    : DTLS Connection Identifier is the lower two bits of an DTLS
    Connection Identifier counter. This is a counter implemented in
    DTLS in SCTP that is used to identify which DTLS connection
    instance that is capable of processing any received packet.
 
-   Flags: : Chunk Flag bits not currently used by DTLS in SCTP. They
+   Flags: 6 bits
+   : Chunk Flag bits not currently used by DTLS in SCTP. They
    MUST be set to zero (0) and MUST be ignored on reception. They may
    be used in future updated specifications for DTLS in SCTP.
 
-   Payload: : One or More DTLS record. In cases more than one DTLS
+   Payload: variable length
+   : One or More DTLS record. In cases more than one DTLS
    record is included all DTLS records except the last needs to
    include a length field as specified in DTLS 1.3 {{RFC9147}}.
 
