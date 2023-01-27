@@ -127,7 +127,7 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
    utilizes DTLS 1.2 or 1.3 for the security functions like
    key exchange, authentication, encryption, integrity protection,
    and replay protection. The basic functionalities and how things
-   are related are described below.   
+   are related are described below.
 
    In a SCTP association initiation where DTLS in SCTP is chosen as
    the protection engine for the CRYPTO chunk the DTLS handshake
@@ -219,7 +219,7 @@ in regard to SCTP and upper layer protocol"}
      authentication mechanism supported by DTLS.
 
    * Uses parallel DTLS connections to enable mutual re-authentication
-     and forward secrecy rekeying. Thus, enabling SCTP association
+     and rekeying with ephemeral key exchange. Thus, enabling SCTP association
      lifetimes without known limitations.
 
    * Uses core of DTLS as it is and updates and fixes to DTLS security
@@ -235,7 +235,7 @@ in regard to SCTP and upper layer protocol"}
      SCTP association.
 
    * Limited overhead on a per packet basis, with 4 bytes for the
-     CRYPTO chunk plus the DTLS record overhead. That DTLS
+     CRYPTO chunk plus the DTLS record overhead. The DTLS
      overhead is dependent on the DTLS version.
 
    * Support of SCTP packet plain text payload sizes up to
