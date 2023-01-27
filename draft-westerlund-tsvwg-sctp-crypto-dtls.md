@@ -136,8 +136,8 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
    SCTP association is aborted. When the DTLS connection has been
    established the PVALID chunk is exchanged to verify that no
    downgrade attack between different protection engines has
-   occurred. To prevent manipulation of the PVALID chunk it is
-   encrypted and integrity protected as plain text SCTP chunk in an
+   occurred. To prevent manipulation, the PVALID chunk is protected
+   by encrypted and integrity protected as plain text SCTP chunk in an
    DTLS application data record that is then encapsulated in a
    CRYPTO chunk and provided with a SCTP common header to form a
    complete SCTP packet.
@@ -165,11 +165,11 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
    identified SCTP association along with associated meta data such as
    path received on, original packet size, and ECN bits.
 
-   When mutual re-authentication or forward secrecy rekeying is
+   When mutual re-authentication or rekeying with ephemeral key exchange is
    needed or desired by either endpoint a new DTLS connection handshake
    is performed between the SCTP endpoints. A different DTLS Connection
    ID (DCI) than currently used among the CRYPTO chunk flags are used to
-   indicate that this a new handshake. When the handshake has
+   indicate that this is a new handshake. When the handshake has
    completed the DTLS in SCTP implementation can simply switch to use
    this DTLS connection to protect the plain text payload. After a
    short while (no longer than 2 min) to enable any outstanding
