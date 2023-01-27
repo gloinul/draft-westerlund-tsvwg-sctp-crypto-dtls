@@ -563,16 +563,16 @@ Key-Update MAY be used
 
 # Establishing DTLS in SCTP
 
-   This sections specifies how DTLS in SCTP is established after
+   This section specifies how DTLS in SCTP is established after
    Protected Association Parameter with DTLS1.2 or DTLS1.3 as
-   protection engine has been negotatied in the Init and Init-ACK
+   protection engine has been negotiated in the Init and Init-ACK
    exchange per {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
 
 ## DTLS Handshake {#dtls-handshake}
 
    As soon the SCTP Association has entered the SCTP state PROTECTION
    PENDING as defined by {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}
-   the DTLS handshake procedure is initated by the SCTP client.
+   the DTLS handshake procedure is initiated by the SCTP client.
 
    The DTLS endpoint needs if necessary fragment the handshake into
    multiple records each meeting the known MTU limit of the path
