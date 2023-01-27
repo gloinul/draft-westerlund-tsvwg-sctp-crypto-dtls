@@ -33,10 +33,10 @@ informative:
    RFC5061:
    RFC6083:
    RFC8996:
+   RFC9325:
    I-D.ietf-tsvwg-dtls-over-sctp-bis:
 
 normative:
-  RFC2119:
   RFC6347:
   RFC9147:
   RFC9260:
@@ -397,6 +397,11 @@ in regard to SCTP and upper layer protocol"}
 
    ULP:
    : Upper Layer Protocol
+
+
+## Conventions
+
+{::boilerplate bcp14}
 
 # DTLS Identification
 
