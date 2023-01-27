@@ -1,6 +1,6 @@
 ---
 docname: draft-westerlund-tsvwg-sctp-crypto-dtls-latest
-title: Datagram Transport Layer Security (DTLS) in the Stream Control Transmission Protocol (SCTP) CRYPTO chunk
+title: Datagram Transport Layer Security (DTLS) in the Stream Control Transmission Protocol (SCTP) CRYPTO Chunk
 abbrev: DTLS in SCTP
 obsoletes:
 cat: std
