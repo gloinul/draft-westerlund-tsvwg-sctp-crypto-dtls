@@ -122,7 +122,7 @@ rekeying. This is intended as an alternative to using DTLS/SCTP (RFC
 
 ## Protocol Overview
 
-   DTLS in SCTP is an protection engine specification for the SCTP
+   DTLS in SCTP is a protection engine specification for the SCTP
    CRYPTO chunk {{I-D.westerlund-tsvwg-sctp-crypto-chunk}} that
    utilizes DTLS 1.2 or 1.3 for the security functions like
    encryption, authentication, replay protection and security
@@ -138,7 +138,7 @@ rekeying. This is intended as an alternative to using DTLS/SCTP (RFC
    downgrade attack between different protection engines has
    occurred. To prevent manipulation of the PVALID chunk it is
    encrypted and integrity protected as plain text SCTP chunk in an
-   DTLS application data record that is then encapsulated in an
+   DTLS application data record that is then encapsulated in a
    CRYPTO chunk and provided with a SCTP common header to form a
    complete SCTP packet.
 
@@ -177,7 +177,7 @@ rekeying. This is intended as an alternative to using DTLS/SCTP (RFC
    old DTLS connection can be terminated.
 
    The DTLS connection is free to send any alert, handshake message or
-   other non application data to its peer at any point in time. Thus,
+   other non-application data to its peer at any point in time. Thus,
    enabling DTLS 1.3 Key Updates usage for example.
 
 ~~~~~~~~~~~ aasvg
@@ -683,7 +683,7 @@ during the lifetime of the SCTP Association.
 It shall be specified rule for deciding that a DTLS connection is too old,
 based on age and data consumption.
 
-## Procedure for Rekeiyng
+## Procedure for Rekeying
 
 This specification allows up to 2 DTLS connection to be active at the same
 time for the current SCTP Association.
@@ -761,5 +761,5 @@ PMTUD in DTLS will be disabled.
 
 # IANA Consideration
 
-## Registartion of DTLS as Protection Engine
+## Registration of DTLS as Protection Engine
 
