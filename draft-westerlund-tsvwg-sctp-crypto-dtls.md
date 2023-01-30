@@ -65,9 +65,10 @@ normative:
 
 --- abstract
 
-This document defines a usage of DTLS 1.2 or 1.3 to protect the
-content of SCTP packets using the framework provided by the SCTP
-Crypto Chunk which we name DTLS in SCTP. DTLS in SCTP provides
+This document defines a usage of Datagram Transport Layer Security (DTLS)
+1.2 or 1.3 to protect the content of Stream Control Transmission Protocol
+(SCTP) packets using the framework provided by the SCTP
+CRYPTO chunk which we name DTLS in SCTP. DTLS in SCTP provides
 encryption, source authentication, integrity and replay protection for
 the SCTP association with mutual authentication of the peers. The
 specification is also targeting very long-lived sessions of weeks and
@@ -134,22 +135,18 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
    is exchanged encapsulated in the CRYPTO chunk until an initial
    DTLS connection has been established. If the DTLS handshake fails, the
    SCTP association is aborted. When the DTLS connection has been
-   established the PVALID chunk is exchanged to verify that no
+   established PVALID chunks are exchanged to verify that no
    downgrade attack between different protection engines has
-   occurred. To prevent manipulation, the PVALID chunk is protected
-   by encrypted and integrity protected as plain text SCTP chunk in an
-   DTLS application data record that is then encapsulated in a
-   CRYPTO chunk and provided with a SCTP common header to form a
-   complete SCTP packet.
+   occurred. To prevent manipulation, the PVALID chunks are protected
+   by encapsulating them in DTLS protected CRYPTO chunks.
 
    Assuming that the PVALID validation is successful the SCTP
-   association is established and the ULP can start sending data over
-   the SCTP association. From this point all sets of chunks intended to
-   form a SCTP packet will be protected just like PVALID chunk by being the
-   plaint text application data input to DTLS. When DTLS has protected
-   the plaint text input, the produced encrypted DTLS application data
-   record is encapsulated in the CRYPTO chunk and the packet is
-   transmitted.
+   association is established and the Upper Layer Protocol (ULP) can start sending data over
+   the SCTP association. From this point all chunks will be protected
+   by encapsulating them in DTLS protected CRYPTO chunks. The chunks
+   are input as plaint text application data input to DTLS. The
+   encrypted DTLS application data record is then encapsulated in
+   the CRYPTO chunk and the packet is transmitted. TODO forward ref to DTLS CRYPTO chunk processing
 
    In the receiving SCTP stack each incoming SCTP packet on any of
    its interfaces and ports are matched to the SCTP association based
