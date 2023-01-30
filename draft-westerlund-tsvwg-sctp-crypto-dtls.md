@@ -38,8 +38,6 @@ informative:
 
 normative:
   RFC6347:
-  RFC8449:
-  RFC8899:
   RFC9147:
   RFC9260:
 
@@ -158,7 +156,7 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
    used to protect this packet is identified by two DCI bits in the
    CRYPTO chunk's flags. Using the identified DTLS session the
    content of the CRYPTO chunk is attempted to be processed,
-   including replay protection, decryption, and integrity. And if
+   including replay protection, decryption, and integrity checking. And if
    decryption was successful the produced plain text of one or more
    SCTP chunks are provided for normal SCTP processing in the
    identified SCTP association along with associated meta data such as
@@ -734,13 +732,14 @@ in {{add-dtls-connection}}, the peers will use the same DCI for
 identifying the new DTLS connection. Race condition will be solved
 by means of DTLS protocol.
 
-# PMTU Considerations
+# PMTU Discovery Considerations
 
-Due to DTLS, the maximum PMTU for SCTP is set to 2<sup>14</sup>.
-
-DTLS implementing Record Size Limits management by means of {{RFC8449}}
-will possibly further limit the DTLS record size, in such case
-DTLS SHALL inform SCTP Host about.
+If PMTU Discovery is enabled in the SCTP Host,
+DTLS in SCTP will let SCTP dealing with PMTU Discovery whereas DTLS
+will not influence it.
+SCTP will use  2<sup>14</sup> as maximum PMTU when running PMTUD,
+whereas DTLS will be set for a PMTU equal to  2<sup>14</sup> and
+PMTUD in DTLS will be disabled.
 
 # Security Considerations
 
