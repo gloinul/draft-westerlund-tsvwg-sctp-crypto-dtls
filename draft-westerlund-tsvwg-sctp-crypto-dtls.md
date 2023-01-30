@@ -113,6 +113,8 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
 
    * the partial reliability extension as defined in {{RFC3758}}.
 
+   * multi-homing of the SCTP association per {{RFC9260}}.
+
    * the dynamic address reconfiguration extension as defined in
       {{RFC5061}}.
 
@@ -120,6 +122,8 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
 
    * SCTP Packets with a protected set of chunks up to a size of
      2<sup>14</sup> bytes.
+
+
 
 ## Protocol Overview
 
@@ -141,31 +145,33 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
    by encapsulating them in DTLS protected CRYPTO chunks.
 
    Assuming that the PVALID validation is successful the SCTP
-   association is established and the Upper Layer Protocol (ULP) can start sending data over
-   the SCTP association. From this point all chunks will be protected
-   by encapsulating them in DTLS protected CRYPTO chunks. The chunks
+   association is established and the Upper Layer Protocol (ULP) can
+   start sending data over the SCTP association. From this point all
+   chunks will be protected by encapsulating them in DTLS protected
+   CRYPTO chunks. The SCTP chunks to be included in an SCTP packet
    are input as plaint text application data input to DTLS. The
-   encrypted DTLS application data record is then encapsulated in
-   the CRYPTO chunk and the packet is transmitted. TODO forward ref to DTLS CRYPTO chunk processing
+   encrypted DTLS application data record is then encapsulated in the
+   CRYPTO chunk and the packet is transmitted. TODO forward ref to
+   DTLS CRYPTO chunk processing
 
-   In the receiving SCTP stack each incoming SCTP packet on any of
+   In the receiving SCTP endpoint each incoming SCTP packet on any of
    its interfaces and ports are matched to the SCTP association based
    on ports and VTAG in the common header. In that association context
-   for the CRYPTO chunk there will exist reference to one or more
-   DTLS connections used to protect the data. The DTLS connection actually
+   for the CRYPTO chunk there will exist reference to one or more DTLS
+   connections used to protect the data. The DTLS connection actually
    used to protect this packet is identified by two DCI bits in the
-   CRYPTO chunk's flags. Using the identified DTLS session the
-   content of the CRYPTO chunk is attempted to be processed,
-   including replay protection, decryption, and integrity checking. And if
-   decryption was successful the produced plain text of one or more
-   SCTP chunks are provided for normal SCTP processing in the
-   identified SCTP association along with associated meta data such as
-   path received on, original packet size, and ECN bits.
+   CRYPTO chunk's flags. Using the identified DTLS session the content
+   of the CRYPTO chunk is attempted to be processed, including replay
+   protection, decryption, and integrity checking. And if decryption
+   and integrity verification was successful the produced plain text
+   of one or more SCTP chunks are provided for normal SCTP processing
+   in the identified SCTP association along with associated meta data
+   such as path received on, original packet size, and ECN bits.
 
    When mutual re-authentication or rekeying with ephemeral key exchange is
    needed or desired by either endpoint a new DTLS connection handshake
    is performed between the SCTP endpoints. A different DTLS Connection
-   ID (DCI) than currently used among the CRYPTO chunk flags are used to
+   Index (DCI) than currently used among the CRYPTO chunk flags are used to
    indicate that this is a new handshake. When the handshake has
    completed the DTLS in SCTP implementation can simply switch to use
    this DTLS connection to protect the plain text payload. After a
@@ -175,7 +181,7 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
 
    The DTLS connection is free to send any alert, handshake message or
    other non-application data to its peer at any point in time. Thus,
-   enabling DTLS 1.3 Key Updates usage for example.
+   enabling DTLS 1.3 Key Updates for example.
 
 ~~~~~~~~~~~ aasvg
 +---------------------+
@@ -289,8 +295,8 @@ in regard to SCTP and upper layer protocol"}
      header or how packets are formed would interact with this
      mechanism, any extension that just defines new chunks or
      parameters for existing chunks is expected to just work and be
-     secured by the mechanism. DTLS/SCTP do interact with
-     anything that affects how user messages are handled.
+     secured by the mechanism. DTLS/SCTP instead interact with
+     extensions that affects how user messages are handled.
 
    * A known downside is that the defined DTLS in SCTP usage creates a
      limitation on the maximum SCTP packet size that can be used of
@@ -298,18 +304,19 @@ in regard to SCTP and upper layer protocol"}
      the maximum DTLS record size the maximum supported packet size
      might be even lower. However, this value needs to be compared to
      the supported MTU of IP, and are thus in reality often not an
-     actual limitation. Only for some special deployments or over loop
-     back may this limitation be visible.
+     actual limitation. Only for some special deployments or over
+     loopback may this limitation be visible.
 
    There are several significant differences in regard to
    implementation between the two realizations.
 
-   * DTLS in SCTP do requires the CRYPTO chunk to be implemented
-     in the SCTP stack implementation, and not as an adaptation layer
-     above it as DTLS/SCTP. This has some extra challenges for
-     operating system level implementations. However, as some updates
-     anyway will be required to support the corrected SCTP-AUTH the
-     implementation burden is likely similar in this regard.
+   * DTLS in SCTP do requires the CRYPTO chunk to be implemented in
+     the SCTP stack implementation, and not as an adaptation layer
+     above the SCTP stack which DTLS/SCTP instead requires. This has
+     some extra challenges for operating system level
+     implementations. However, as some updates anyway will be required
+     to support the corrected SCTP-AUTH the implementation burden is
+     likely similar in this regard.
 
    * DTLS in SCTP can use a DTLS implementation that does not rely on
      features from outside of the core protocol, where DTLS/SCTP
@@ -318,7 +325,7 @@ in regard to SCTP and upper layer protocol"}
         * DTLS Connection ID to identify which DTLS connection that
           should process the DTLS record.
 
-        * Support for DTLS records of maximum size of 16 KB.
+        * Support for DTLS records of the maximum size of 16 KB.
 
         * Optional to support negotiation of maximum DTLS record size
           unless not supporting 16 KB records when it is
@@ -366,7 +373,7 @@ in regard to SCTP and upper layer protocol"}
    : Authenticated Encryption with Associated Data
 
    DCI:
-   : DTLS Connection Identifier
+   : DTLS Connection Index
 
    DTLS:
    : Datagram Transport Layer Security
@@ -393,8 +400,9 @@ in regard to SCTP and upper layer protocol"}
 
 # DTLS Identification
 
-In this section the extension described in this document will
-be specified.
+This section identifies how the extension described in this document
+is identified in the Crypto Chunk and its negotiation
+{{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
 
 ## New protection Engines {protection-engines}
 
@@ -409,7 +417,7 @@ The following table applies.
 {: #dtls-protection-engines title="DTLS protection engines" cols="r l l"}
 
 The values specified above shall be used in the Protected Association parameter
-as protection engines as specified in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
+as protection engines as specified in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}} and are registered with IANA below {{iana-protectio-engines}}.
 
 # DTLS Usage of CRYPTO Chunk
 
@@ -754,5 +762,5 @@ PMTUD in DTLS will be disabled.
 
 # IANA Consideration
 
-## Registration of DTLS as Protection Engine
+## Registration of DTLS as Protection Engine {#iana-protectio-engines}
 
