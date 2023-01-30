@@ -38,6 +38,8 @@ informative:
 
 normative:
   RFC6347:
+  RFC8449:
+  RFC8899:
   RFC9147:
   RFC9260:
 
@@ -735,14 +737,13 @@ in {{add-dtls-connection}}, the peers will use the same DCI for
 identifying the new DTLS connection. Race condition will be solved
 by means of DTLS protocol.
 
-# PMTU Discovery Considerations
+# PMTU Considerations
 
-If PMTU Discovery is enabled in the SCTP Host,
-DTLS in SCTP will let SCTP dealing with PMTU Discovery whereas DTLS
-will not influence it.
-SCTP will use  2<sup>14</sup> as maximum PMTU when running PMTUD,
-whereas DTLS will be set for a PMTU equal to  2<sup>14</sup> and
-PMTUD in DTLS will be disabled.
+Due to DTLS, the maximum PMTU for SCTP is set to 2<sup>14</sup>.
+
+DTLS implementing Record Size Limits management by means of {{RFC8449}}
+will possibly further limit the DTLS record size, in such case
+DTLS SHALL inform SCTP Host about.
 
 # Security Considerations
 
