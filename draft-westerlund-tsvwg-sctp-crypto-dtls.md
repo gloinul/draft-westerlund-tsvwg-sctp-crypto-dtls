@@ -457,9 +457,9 @@ requirements and how they are met in the current specification.
 ## State Machine
 
 The Crypto Chunk state machine allows the protection engine to have inband
-or out-of-band configuration. DTLS in SCTP SHALL use inband configuration, thus
-the implementation SHALL provide proper certificates to DTLS
-and then let DTLS handshake the keys with the remote peer.
+or out-of-band key establishment . DTLS in SCTP SHALL use inband key establishment, thus
+the implementation SHALL provide certificates for DTLS
+and then let the DTLS handshake establish shared keys with the remote peer.
 As soon as the SCTP State Machine enters CRYPT PENDING state, DTLS
 is responsible for enabling the ENCRYPTED state. At the same time
 DCI shall be initialized to the value zero.
