@@ -417,7 +417,7 @@ The following table applies.
 {: #dtls-protection-engines title="DTLS protection engines" cols="r l l"}
 
 The values specified above shall be used in the Protected Association parameter
-as protection engines as specified in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}} and are registered with IANA below {{iana-protectio-engines}}.
+as protection engines as specified in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}} and are registered with IANA below in {{iana-protectio-engines}}.
 
 # DTLS Usage of CRYPTO Chunk
 
@@ -441,10 +441,12 @@ as protection engines as specified in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}
 {: #sctp-CRYPTO-chunk-structure title="CRYPTO Chunk Structure"}
 
    DCI: 2 bits (unsigned integer)
-   : DTLS Connection Identifier is the lower two bits of an DTLS
-   Connection Identifier counter. This is a counter implemented in
-   DTLS in SCTP that is used to identify which DTLS connection
-   instance that is capable of processing any received packet.
+   : DTLS Connection Identifier is the
+   lower two bits of an DTLS Connection Identifier counter. This is a
+   counter implemented in DTLS in SCTP that is used to identify which
+   DTLS connection instance that is capable of processing any received
+   packet. This counter is recommended to be 64-bit to guarantee no
+   lifetime issues for the SCTP Association.
 
    Flags: 6 bits
    : Chunk Flag bits not currently used by DTLS in SCTP. They
@@ -452,9 +454,11 @@ as protection engines as specified in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}
    be used in future updated specifications for DTLS in SCTP.
 
    Payload: variable length
-   : One or More DTLS record. In cases more than one DTLS
-   record is included all DTLS records except the last needs to
-   include a length field as specified in DTLS 1.3 {{RFC9147}}.
+   : One or more DTLS records. In cases more
+   than one DTLS record is included all DTLS records except the last
+   MUST include a length field. Note this matches what is specified in
+   DTLS 1.3 {{RFC9147}} and DTLS 1.2 will always include the length
+   field in each record.
 
 # Crypto Chunk Integration
 
