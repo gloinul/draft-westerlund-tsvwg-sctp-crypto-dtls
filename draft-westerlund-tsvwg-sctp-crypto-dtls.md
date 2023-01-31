@@ -755,8 +755,16 @@ PMTUD in DTLS will be disabled.
 
 # Security Considerations
 
+
 ## General
 
+The security considerations given in {{RFC9147}}, {{RFC6347}}, and {{RFC9260}}
+also apply to this document. The updates in Section 13 {{RFC9147}} SHALL be
+followed for DTLS 1.2.
+
+BCP 195 {{RFC9325}} {{RFC8996}} provides recommendations and requirements
+for improving the security of deployed services that use DTLS. DTLS 1.0 and
+DTLS 1.1 SHALL NOT be supported.
 
 ## DTLS 1.2
 
