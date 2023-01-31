@@ -774,5 +774,14 @@ DTLS 1.1 SHALL NOT be supported.
 
 # IANA Consideration
 
+This document adds two new entries into the "CRYPTO Chunk Protection
+Engine Identifiers" registry in the Stream Control Transmission
+Protocol (SCTP) Parameters grouping.
+
 ## Registration of DTLS as Protection Engine {#iana-protectio-engines}
+
+| VALUE | DTLS VERSION | REFERENCE |
+| 0 | DTLS 1.2 | RFC-To-Be |
+| 1 | DTLS 1.3 | RFC-To-Be |
+{: #iana-protection-engines title="New CRYPTO Chunk Protection Engine Identifiers" cols="r l l"}
 
