@@ -782,9 +782,6 @@ might be motivated by new attacks.
 
 Allowing new connections can enable denial-of-service attacks.  The
 endpoints MUST limit the number of simultaneous connections to two.
-The implementor shall take into account that an existing DTLS
-connection can only be closed after "Ready_To_Close"
-{{Ready_To_Close}} indication.   
 
 ## DTLS 1.3
 
