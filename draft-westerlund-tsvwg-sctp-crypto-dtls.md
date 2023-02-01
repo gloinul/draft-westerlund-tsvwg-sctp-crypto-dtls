@@ -755,6 +755,7 @@ PMTUD in DTLS will be disabled.
 
 # Security Considerations
 
+TODO: Should the draft forbid anything like PSK authentication, cipher suites without confidentiality, etc...
 
 ## General
 
