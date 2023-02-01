@@ -807,14 +807,20 @@ specification.
 ## Privacy Considerations
 
 Although DTLS in SCTP provides privacy for the actual user message as well
-as a most other information fields, some fields are not confidentiality protected.
-In addition to the DTLS header, the SCTP common header is not confidentiality
-protected. An attacker can correlate DTLS connections over the same SCTP association
-using the SCTP common header.
+as almost all chunks, some fields are not confidentiality protected.
+In addition to the DTLS record header, the SCTP common header and the CRYPTO chunk header
+are not confidentiality protected. An attacker can correlate DTLS connections over
+the same SCTP association using the SCTP common header.
 
 It is RECOMMENDED that DTLS/SCTP is used with certificate-based
 authentication in DTLS 1.3 {{RFC9147}} to provide identity
-protection.
+protection. DTLS 1.2 does not provide identity protection.
+
+By mandating ephemeral key exchange and cipher suites with confidentiality
+DTLS in SCTP effectively mitigate many forms of passive pervasive monitoring.
+By recommending implementations to frequently set up new DTLS connections with
+(EC)DHE force attackers to do dynamic key exfiltration and limits the amount
+of compromised data due to key compromise.
    
 # IANA Consideration
 
