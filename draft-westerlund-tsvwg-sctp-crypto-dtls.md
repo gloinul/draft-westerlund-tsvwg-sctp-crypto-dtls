@@ -442,8 +442,8 @@ as protection engines as specified in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}
 {: #sctp-CRYPTO-chunk-structure title="CRYPTO Chunk Structure"}
 
    DCI: 2 bits (unsigned integer)
-   : DTLS Connection Identifier is the
-   lower two bits of an DTLS Connection Identifier counter. This is a
+   : DTLS Connection Index is the
+   lower two bits of an DTLS Connection Index counter. This is a
    counter implemented in DTLS in SCTP that is used to identify which
    DTLS connection instance that is capable of processing any received
    packet. This counter is recommended to be 64-bit to guarantee no
