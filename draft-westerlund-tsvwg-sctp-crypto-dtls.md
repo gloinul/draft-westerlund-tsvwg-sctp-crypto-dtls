@@ -468,23 +468,23 @@ requirements and how they are met in the current specification.
 
 ## State Machine
 
-The Crypto Chunk state machine allows the protection engine to have inband
-or out-of-band key establishment . DTLS in SCTP SHALL use inband key establishment, thus
-the implementation SHALL provide certificates for DTLS
-and then let the DTLS handshake establish shared keys with the remote peer.
-As soon as the SCTP State Machine enters CRYPT PENDING state, DTLS
-is responsible for enabling the ENCRYPTED state. At the same time
-DCI shall be initialized to the value zero.
+The Crypto Chunk allows the protection engine to have inband or
+out-of-band key establishment. DTLS in SCTP use inband key
+establishment, thus the DTLS handshake establish shared keys with the
+remote peer. As soon as the SCTP State Machine enters CRYPT PENDING
+state, DTLS is responsible for progressing to the ENCRYPTED state when
+DTLS handshake has completed. The DCI counter is initialized to the
+value zero that is used for the initial DTLS handshake.
 
 ### CRYPT PENDING state
 
 When entering PROTECTION PENDING state, DTLS will start the handshake
 according to {{dtls-handshake}}.
 
-CRYPTO chunk Handler will use DCI = 0 for the initial
-DTLS Connection.
-CRYPTO chunk Handler in this state will put DTLS records in
-Crypto Chunks and deliver to the remote peer.
+CRYPTO chunk Handler will use DCI counter = 0, which implies a DCI
+field value of 0, for the initial DTLS Connection.  CRYPTO chunk
+handler in this state will put DTLS records in CRYPTO chunks and
+deliver to the remote peer.
 
 When a successful handshake has been completed, DTLS will inform
 CRYPTO chunk Handler that will move SCTP State Machine into
