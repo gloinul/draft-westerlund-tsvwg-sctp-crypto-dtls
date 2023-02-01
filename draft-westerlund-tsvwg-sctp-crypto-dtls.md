@@ -804,6 +804,18 @@ The AEAD limits in DTLS 1.3 are equally valid for DTLS 1.2 and SHOULD
 be followed for DTLS in SCTP, but are not mandated by the DTLS 1.2
 specification.
 
+## Privacy Considerations
+
+Although DTLS in SCTP provides privacy for the actual user message as well
+as a most other information fields, some fields are not confidentiality protected.
+In addition to the DTLS header, the SCTP common header is not confidentiality
+protected. An attacker can correlate DTLS connections over the same SCTP association
+using the SCTP common header.
+
+It is RECOMMENDED that DTLS/SCTP is used with certificate-based
+authentication in DTLS 1.3 {{RFC9147}} to provide identity
+protection.
+   
 # IANA Consideration
 
 This document adds the two new entries listed in
