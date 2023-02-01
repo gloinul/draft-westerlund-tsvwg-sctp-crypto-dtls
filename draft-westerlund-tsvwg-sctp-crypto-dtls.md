@@ -766,17 +766,10 @@ and requirements for improving the security of deployed services that use DTLS. 
 newer protocol that addresses known vulnerabilities and only defines strong algorithms
 without known major weaknesses at the time of publication.
 
-Parameters 
+Many of the TLS registries have a "Recommended" column. Parameters not marked as
+"Y" are NOT RECOMMENDED to support in DTLS in SCTP. 
 
 ## DTLS 1.3
-
-Many of the TLS registries have a "Recommended" column. Parameters not marked as
-"Y" are NOT RECOMMENDED to support. 
-
-DTLS 1.3 requires rekeying before algorithm specific AEAD limits
-   have been reached. The AEAD limits equations are equally valid for
-   DTLS 1.2 and SHOULD be followed for DTLS/SCTP, but are not mandated
-   by the DTLS 1.2 specification.
 
 
 ## DTLS 1.2
@@ -789,7 +782,6 @@ on the attacks that where publicly known in 2022.
 The AEAD limits in DTLS 1.3 are equally valid for DTLS 1.2 and SHOULD
 be followed for DTLS in SCTP, but are not mandated by the DTLS 1.2
 specification.
-
 
 # IANA Consideration
 
