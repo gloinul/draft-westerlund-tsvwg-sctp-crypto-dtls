@@ -35,6 +35,7 @@ informative:
    RFC8996:
    RFC9113:
    RFC9325:
+   I-D.ietf-tls-rfc8446bis:
    I-D.ietf-tsvwg-dtls-over-sctp-bis:
 
 normative:
@@ -763,18 +764,19 @@ TODO: Should the draft forbid anything like PSK authentication, cipher suites wi
 The security considerations given in {{RFC9147}}, {{RFC6347}}, and {{RFC9260}}
 also apply to this document. BCP 195 {{RFC9325}} {{RFC8996}} provides recommendations
 and requirements for improving the security of deployed services that use DTLS. DTLS
-1.0 and DTLS 1.1 SHALL NOT be supported. DTLS 1.3 is preferred over DTLS 1.2 being a
-newer protocol that addresses known vulnerabilities and only defines strong algorithms
-without known major weaknesses at the time of publication.
+1.0 and DTLS 1.1 SHALL NOT be supported.
 
 Many of the TLS registries have a "Recommended" column. Parameters not marked as
 "Y" are NOT RECOMMENDED to support in DTLS in SCTP.
 
 ## DTLS 1.3
 
+DTLS 1.3 is preferred over DTLS 1.2 being a
+newer protocol that addresses known vulnerabilities and only defines strong algorithms
+without known major weaknesses at the time of publication.
+
 DTLS 1.3 requires rekeying before algorithm specific AEAD limits have been reached.
 Implementations MAY setup a new DTLS instead of using key update. 
-   
 
 ## DTLS 1.2
 
