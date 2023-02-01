@@ -33,6 +33,7 @@ informative:
    RFC5061:
    RFC6083:
    RFC8996:
+   RFC9113:
    RFC9325:
    I-D.ietf-tsvwg-dtls-over-sctp-bis:
 
@@ -322,7 +323,7 @@ in regard to SCTP and upper layer protocol"}
      features from outside of the core protocol, where DTLS/SCTP
      required a number of features as listed below:
 
-        * DTLS Connection ID to identify which DTLS connection that
+        * DTLS Connection Index to identify which DTLS connection that
           should process the DTLS record.
 
         * Support for DTLS records of the maximum size of 16 KB.
@@ -417,7 +418,7 @@ The following table applies.
 {: #dtls-protection-engines title="DTLS protection engines" cols="r l l"}
 
 The values specified above shall be used in the Protected Association parameter
-as protection engines as specified in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}} and are registered with IANA below in {{iana-protectio-engines}}.
+as protection engines as specified in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}} and are registered with IANA below in {{iana-protection-engines}}.
 
 # DTLS Usage of CRYPTO Chunk
 
@@ -547,7 +548,7 @@ Any error in DTLS will be handled according to {{I-D.westerlund-tsvwg-sctp-crypt
 
 ### General
 
-   It is RECOMMENDED that the DTLS Connection ID is not included in
+   It is RECOMMENDED that the DTLS Connection Index is not included in
    the DTLS records as it is need, the CRYPTO chunk indicates which
    DTLS connection this is intended for using the DCI bits.
 
@@ -767,7 +768,7 @@ newer protocol that addresses known vulnerabilities and only defines strong algo
 without known major weaknesses at the time of publication.
 
 Many of the TLS registries have a "Recommended" column. Parameters not marked as
-"Y" are NOT RECOMMENDED to support in DTLS in SCTP. 
+"Y" are NOT RECOMMENDED to support in DTLS in SCTP.
 
 ## DTLS 1.3
 
@@ -789,3 +790,7 @@ This document adds the two new entries listed in
 {{dtls-protection-engines}} into the "CRYPTO Chunk Protection
 Engine Identifiers" registry in the Stream Control Transmission
 Protocol (SCTP) Parameters grouping.
+
+## Protection Engine Registration {#iana-protection-engines}
+
+IANA is request to register ...
