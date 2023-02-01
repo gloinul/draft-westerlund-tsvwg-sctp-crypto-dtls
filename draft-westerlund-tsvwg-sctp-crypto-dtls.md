@@ -773,8 +773,8 @@ Many of the TLS registries have a "Recommended" column. Parameters not marked as
 ## DTLS 1.3
 
 DTLS 1.3 requires rekeying before algorithm specific AEAD limits have been reached.
-Implementations MAY setup a new DTLS instead of using key update. 
-   
+Implementations MAY setup a new DTLS instead of using key update.
+
 
 ## DTLS 1.2
 
