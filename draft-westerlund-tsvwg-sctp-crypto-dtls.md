@@ -763,11 +763,28 @@ TODO: Should the draft forbid anything like PSK authentication, cipher suites wi
 
 The security considerations given in {{RFC9147}}, {{RFC6347}}, and {{RFC9260}}
 also apply to this document. BCP 195 {{RFC9325}} {{RFC8996}} provides recommendations
-and requirements for improving the security of deployed services that use DTLS. DTLS
-1.0 and DTLS 1.1 SHALL NOT be supported.
+and requirements for improving the security of deployed services that use DTLS. BCP 195
+MUST be followed which implies that DTLS 1.0 SHALL NOT be supported.
 
 Many of the TLS registries have a "Recommended" column. Parameters not marked as
-"Y" are NOT RECOMMENDED to support in DTLS in SCTP.
+"Y" are NOT RECOMMENDED to support in DTLS in SCTP. Non-AEAD cipher suites or cipher
+suites without confidentiality MUST NOT be supported. Cipher suites and parameters that
+do not provide ephemeral key exchange MUST NOT be supported.
+
+Implementations SHOULD set up new connections frequently to force attackers to
+dynamic key extraction. Implementations MUST set up new connections before any
+of the certificates expire. It is RECOMMENDED that all negotiated
+and exchanged parameters are the same except for the timestamps in
+the certificates. Clients and servers MUST NOT accept a change of
+identity during the setup of a new connections, but MAY accept
+negotiation of stronger algorithms and security parameters, which
+might be motivated by new attacks.
+
+Allowing new connections can enable denial-of-service attacks.  The
+endpoints MUST limit the number of simultaneous connections to two.
+The implementor shall take into account that an existing DTLS
+connection can only be closed after "Ready_To_Close"
+{{Ready_To_Close}} indication.   
 
 ## DTLS 1.3
 
