@@ -762,13 +762,21 @@ TODO: Should the draft forbid anything like PSK authentication, cipher suites wi
 The security considerations given in {{RFC9147}}, {{RFC6347}}, and {{RFC9260}}
 also apply to this document. BCP 195 {{RFC9325}} {{RFC8996}} provides recommendations
 and requirements for improving the security of deployed services that use DTLS. DTLS
-1.0 and DTLS 1.1 SHALL NOT be supported.
+1.0 and DTLS 1.1 SHALL NOT be supported. DTLS 1.3 is preferred over DTLS 1.2 being a
+newer protocol that addresses known vulnerabilities and only defines strong algorithms
+without known major weaknesses at the time of publication.
+
+## DTLS 1.3
+
+Many of the TLS registries have a "Recommended" column. Parameters not marked as
+"Y" are NOT RECOMMENDED to support. 
 
 ## DTLS 1.2
 
 The updates in Section 13 {{RFC9147}} SHALL be followed for DTLS 1.2.
-
-## DTLS 1.3
+DTLS 1.2 MUST be configured to disable options known to provide insufficient
+security. HTTP/2 {{RFC9113}} gives good minimum requirements based
+on the attacks that where publicly known in 2022.
 
 
 # IANA Consideration
