@@ -821,7 +821,7 @@ DTLS in SCTP effectively mitigate many forms of passive pervasive monitoring.
 By recommending implementations to frequently set up new DTLS connections with
 (EC)DHE force attackers to do dynamic key exfiltration and limits the amount
 of compromised data due to key compromise.
-   
+
 # IANA Consideration
 
 This document adds the two new entries listed in
