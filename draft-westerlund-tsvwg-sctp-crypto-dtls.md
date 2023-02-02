@@ -838,7 +838,7 @@ re-authenticate both client and server by setting up new connections.
 TLS Certificate lifetimes
 significantly shorter than a year are common which is shorter than
 many expected DTLS/SCTP associations.
-   
+
 ## DTLS 1.3
 
 DTLS 1.3 is preferred over DTLS 1.2 being a
