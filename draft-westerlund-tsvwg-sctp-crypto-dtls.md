@@ -792,7 +792,6 @@ without known major weaknesses at the time of publication.
 DTLS 1.3 requires rekeying before algorithm specific AEAD limits have been reached.
 Implementations MAY setup a new DTLS instead of using key update.
 
-
 ## DTLS 1.2
 
 The updates in Section 13 {{RFC9147}} SHALL be followed for DTLS 1.2.
@@ -821,7 +820,7 @@ By mandating ephemeral key exchange and cipher suites with confidentiality
 DTLS in SCTP effectively mitigate many forms of passive pervasive monitoring.
 By recommending implementations to frequently set up new DTLS connections with
 (EC)DHE force attackers to do dynamic key exfiltration and limits the amount
-of compromised data due to key compromise.
+of compromised data due to key compromise {{I-D.ietf-tls-rfc8446bis}}.
 
 # IANA Consideration
 
