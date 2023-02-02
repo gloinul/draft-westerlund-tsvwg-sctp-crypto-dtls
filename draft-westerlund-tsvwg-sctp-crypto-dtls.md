@@ -37,6 +37,7 @@ informative:
    RFC9325:
    I-D.ietf-tls-rfc8446bis:
    I-D.ietf-tsvwg-dtls-over-sctp-bis:
+   I-D.ietf-uta-rfc6125bis:
 
   ANSSI-DAT-NT-003:
     target: <https://www.ssi.gouv.fr/uploads/2015/09/NT_IPsec_EN.pdf>
@@ -767,8 +768,6 @@ PMTUD in DTLS will be disabled.
 
 # Security Considerations
 
-TODO: Should the draft forbid anything like PSK authentication, cipher suites without confidentiality, etc...
-
 ## General
 
 The security considerations given in {{RFC9147}}, {{RFC6347}}, and {{RFC9260}}
@@ -780,6 +779,36 @@ Many of the TLS registries have a "Recommended" column. Parameters not marked as
 "Y" are NOT RECOMMENDED to support in DTLS in SCTP. Non-AEAD cipher suites or cipher
 suites without confidentiality MUST NOT be supported. Cipher suites and parameters that
 do not provide ephemeral key exchange MUST NOT be supported.
+
+### Authentication and Policy Decisions
+
+DTLS in SCTP MUST be mutually authenticated. Authentication is the
+process of establishing the identity of a user or system and
+verifying that the identity is valid. DTLS only provides proof of
+possession of a key. DTLS in SCTP MUST perform identity
+authentication. It is RECOMMENDED that DTLS in SCTP is used with
+certificate-based authentication. When certificates are used the
+application using DTLS in SCTP is responsible for certificate
+policies, certificate chain validation, and identity authentication
+(HTTPS does for example match the hostname with a subjectAltName of
+type dNSName). The application using DTLS in SCTP define what the
+identity is and how it is encoded and the client and server MUST
+use the same identity format.  Guidance on server certificate
+validation can be found in {{I-D.ietf-uta-rfc6125bis}}.  DTLS in SCTP enables periodic
+transfer of mutual revocation information (OSCP stapling) every
+time a new parallel connection is set up.  All security decisions
+MUST be based on the peer's authenticated identity, not on its
+transport layer identity.
+
+It is possible to authenticate DTLS endpoints based on IP addresses
+in certificates. SCTP associations can use multiple IP addresses
+per SCTP endpoint. Therefore, it is possible that DTLS records will
+be sent from a different source IP address or to a different
+destination IP address than that originally authenticated. This is
+not a problem provided that no security decisions are made based on
+the source or destination IP addresses.
+
+### New Connections
 
 Implementations MUST set up new connections before any
 of the certificates expire. It is RECOMMENDED that all negotiated
@@ -805,7 +834,8 @@ compromise and key exfiltration in (D)TLS.
 For many DTLS/SCTP deployments the SCTP association is expected to
 have a very long lifetime of months or even years. For associations
 with such long lifetimes there is a need to frequently
-re-authenticate both client and server. TLS Certificate lifetimes
+re-authenticate both client and server by setting up new connections.
+TLS Certificate lifetimes
 significantly shorter than a year are common which is shorter than
 many expected DTLS/SCTP associations.
    
