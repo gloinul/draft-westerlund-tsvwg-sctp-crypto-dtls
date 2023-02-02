@@ -818,6 +818,15 @@ without known major weaknesses at the time of publication.
 DTLS 1.3 requires rekeying before algorithm specific AEAD limits have been reached.
 Implementations MAY setup a new DTLS instead of using key update.
 
+In DTLS 1.3 any number of tickets can be issued in a connection and
+the tickets can be used for resumption as long as they are valid,
+which is up to seven days. The nodes in a resumed connection have
+the same roles (client or server) as in the connection where the
+ticket was issued. Resumption can have significant latency benefits
+for quickly restarting a broken DTLS/SCTP association. If tickets
+and resumption are used it is enough to issue a single ticket per
+connection.
+
 ## DTLS 1.2
 
 The updates in Section 13 {{RFC9147}} SHALL be followed for DTLS 1.2.
