@@ -28,16 +28,16 @@ author:
    email: claudio.porfiri@ericsson.com
 
 informative:
-   RFC3758:
-   RFC4895:
-   RFC5061:
-   RFC6083:
-   RFC8996:
-   RFC9113:
-   RFC9325:
-   I-D.ietf-tls-rfc8446bis:
-   I-D.ietf-tsvwg-dtls-over-sctp-bis:
-   I-D.ietf-uta-rfc6125bis:
+  RFC3758:
+  RFC4895:
+  RFC5061:
+  RFC6083:
+  RFC8996:
+  RFC9113:
+  RFC9325:
+  I-D.ietf-tls-rfc8446bis:
+  I-D.ietf-tsvwg-dtls-over-sctp-bis:
+  I-D.ietf-uta-rfc6125bis:
 
   ANSSI-DAT-NT-003:
     target: <https://www.ssi.gouv.fr/uploads/2015/09/NT_IPsec_EN.pdf>
