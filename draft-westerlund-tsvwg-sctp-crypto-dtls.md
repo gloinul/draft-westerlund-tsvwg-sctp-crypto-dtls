@@ -816,7 +816,7 @@ newer protocol that addresses known vulnerabilities and only defines strong algo
 without known major weaknesses at the time of publication.
 
 DTLS 1.3 requires rekeying before algorithm specific AEAD limits have been reached.
-Implementations MAY setup a new DTLS instead of using key update.
+Implementations MAY setup a new DTLS connection instead of using key update.
 
 In DTLS 1.3 any number of tickets can be issued in a connection and
 the tickets can be used for resumption as long as they are valid,
@@ -826,6 +826,9 @@ ticket was issued. Resumption can have significant latency benefits
 for quickly restarting a broken DTLS/SCTP association. If tickets
 and resumption are used it is enough to issue a single ticket per
 connection.
+
+Use of the PSK key exchange mode psk_ke is NOT RECOMMENDED as is does
+not provide ephemeral key exchange.
 
 ## DTLS 1.2
 
@@ -837,6 +840,11 @@ on the attacks that where publicly known in 2022.
 The AEAD limits in DTLS 1.3 are equally valid for DTLS 1.2 and SHOULD
 be followed for DTLS in SCTP, but are not mandated by the DTLS 1.2
 specification.
+
+Use of renegotiation is not RECOMMNEDED as it is disables in many
+implementations and does not provide any benefits in DTLS in SCTP
+compared to setting up a new connection. Resumption MAY be used but does
+not provide ephemeral key exchange as in DTLS 1.3
 
 ## Privacy Considerations
 
