@@ -781,8 +781,7 @@ Many of the TLS registries have a "Recommended" column. Parameters not marked as
 suites without confidentiality MUST NOT be supported. Cipher suites and parameters that
 do not provide ephemeral key exchange MUST NOT be supported.
 
-Implementations SHOULD set up new connections frequently to force attackers to
-dynamic key extraction. Implementations MUST set up new connections before any
+Implementations MUST set up new connections before any
 of the certificates expire. It is RECOMMENDED that all negotiated
 and exchanged parameters are the same except for the timestamps in
 the certificates. Clients and servers MUST NOT accept a change of
@@ -796,15 +795,20 @@ endpoints MUST limit the number of simultaneous connections to two.
 To force attackers to do dynamic key exfiltration and limits the amount
 of compromised data due to key compromise implementations MUST have
 policies for how often to set up new connections with ephemeral key
-exchange such as ECDHE. E.g., at least every hour and every 100 GB of
+exchange such as ECDHE. Implementations SHOULD set up new connections
+frequently to force attackers to dynamic key extraction. E.g.,
+at least every hour and every 100 GB of
 data which is a common policy for IPsec {{ANSSI-DAT-NT-003}}. See
 {{I-D.ietf-tls-rfc8446bis}} for a more detailed discussion on key
 compromise and key exfiltration in (D)TLS.
 
-By recommending implementations to frequently set up new DTLS connections with
-(EC)DHE force attackers to do dynamic key exfiltration and limits the amount
-of compromised data due to key compromise {{I-D.ietf-tls-rfc8446bis}}.
-
+For many DTLS/SCTP deployments the SCTP association is expected to
+have a very long lifetime of months or even years. For associations
+with such long lifetimes there is a need to frequently
+re-authenticate both client and server. TLS Certificate lifetimes
+significantly shorter than a year are common which is shorter than
+many expected DTLS/SCTP associations.
+   
 ## DTLS 1.3
 
 DTLS 1.3 is preferred over DTLS 1.2 being a
