@@ -812,9 +812,10 @@ In addition to the DTLS record header, the SCTP common header and the CRYPTO chu
 are not confidentiality protected. An attacker can correlate DTLS connections over
 the same SCTP association using the SCTP common header.
 
-It is RECOMMENDED that DTLS/SCTP is used with certificate-based
-authentication in DTLS 1.3 {{RFC9147}} to provide identity
-protection. DTLS 1.2 does not provide identity protection.
+To provide identity protection it is RECOMMENDED that DTLS/SCTP is used with
+certificate-based authentication in DTLS 1.3 {{RFC9147}} and to not reuse tickets.
+DTLS 1.2 and DTLS 1.3 with external PSK authentication does not provide
+identity protection.
 
 By mandating ephemeral key exchange and cipher suites with confidentiality
 DTLS in SCTP effectively mitigate many forms of passive pervasive monitoring.
