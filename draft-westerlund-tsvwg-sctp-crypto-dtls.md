@@ -38,6 +38,16 @@ informative:
    I-D.ietf-tls-rfc8446bis:
    I-D.ietf-tsvwg-dtls-over-sctp-bis:
 
+  ANSSI-DAT-NT-003:
+    target: <https://www.ssi.gouv.fr/uploads/2015/09/NT_IPsec_EN.pdf>
+    title: Recommendations for securing networks with IPsec
+    seriesinfo:
+      ANSSI Technical Report DAT-NT-003
+    author:
+      -
+        ins: Agence nationale de la sécurité des systèmes d'information
+    date: August 2015
+
 normative:
   RFC6347:
   RFC9147:
@@ -783,6 +793,18 @@ might be motivated by new attacks.
 Allowing new connections can enable denial-of-service attacks.  The
 endpoints MUST limit the number of simultaneous connections to two.
 
+To force attackers to do dynamic key exfiltration and limits the amount
+of compromised data due to key compromise implementations MUST have
+policies for how often to set up new connections with ephemeral key
+exchange such as ECDHE. E.g., at least every hour and every 100 GB of
+data which is a common policy for IPsec {{ANSSI-DAT-NT-003}}. See
+{{I-D.ietf-tls-rfc8446bis}} for a more detailed discussion on key
+compromise and key exfiltration in (D)TLS.
+
+By recommending implementations to frequently set up new DTLS connections with
+(EC)DHE force attackers to do dynamic key exfiltration and limits the amount
+of compromised data due to key compromise {{I-D.ietf-tls-rfc8446bis}}.
+
 ## DTLS 1.3
 
 DTLS 1.3 is preferred over DTLS 1.2 being a
@@ -820,7 +842,7 @@ By mandating ephemeral key exchange and cipher suites with confidentiality
 DTLS in SCTP effectively mitigate many forms of passive pervasive monitoring.
 By recommending implementations to frequently set up new DTLS connections with
 (EC)DHE force attackers to do dynamic key exfiltration and limits the amount
-of compromised data due to key compromise {{I-D.ietf-tls-rfc8446bis}}.
+of compromised data due to key compromise.
 
 # IANA Consideration
 
