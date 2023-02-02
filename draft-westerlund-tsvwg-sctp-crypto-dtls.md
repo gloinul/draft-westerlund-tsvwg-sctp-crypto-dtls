@@ -481,21 +481,22 @@ requirements and how they are met in the current specification.
 
 ## State Machine
 
-The Crypto Chunk allows the protection engine to have inband or
+The CRYPTO Chunk allows the protection engine to have inband or
 out-of-band key establishment. DTLS in SCTP use inband key
 establishment, thus the DTLS handshake establish shared keys with the
-remote peer. As soon as the SCTP State Machine enters CRYPT PENDING
-state, DTLS is responsible for progressing to the ENCRYPTED state when
-DTLS handshake has completed. The DCI counter is initialized to the
-value zero that is used for the initial DTLS handshake.
+remote peer. As soon as the SCTP State Machine enters PROTECTION
+PENDING state, DTLS is responsible for progressing to the PROTECTED
+state when DTLS handshake has completed. The DCI counter is
+initialized to the value zero that is used for the initial DTLS
+handshake.
 
-### CRYPT PENDING state
+### PROTECTION PENDING state
 
 When entering PROTECTION PENDING state, DTLS will start the handshake
 according to {{dtls-handshake}}.
 
-CRYPTO chunk Handler will use DCI counter = 0, which implies a DCI
-field value of 0, for the initial DTLS Connection.  CRYPTO chunk
+CRYPTO chunk Handler will set the DCI counter = 0, which implies a DCI
+field value of 0, for the initial DTLS connection.  CRYPTO chunk
 handler in this state will put DTLS records in CRYPTO chunks and
 deliver to the remote peer.
 
@@ -505,40 +506,115 @@ PROTECTED state.
 
 ### PROTECTED state
 
-Compliant to {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
+In the PROTECTED state the currently active DTLS connection is used
+for protection operation of the payload of SCTP chunks in each packet
+per below specification.  When necessary to meet requirements on
+periodic re-authentication of the peer and establishment of new
+forward secrecy keys a new parallel DTSL connection is established as
+further specified in {{parallel-dtls}}.
+
+### SHUTDOWN states
+
+When the SCTP association leaves the ESTABLISHED state per {{RFC9260}}
+to be shutdown the DTLS connection is kept and continues to protect
+the SCTP packet payloads through the shutdown process. If necessary
+even new DTLS connections can be established if necessary to maintain
+the protection of the SCTP packet. Although it is recommended to avoid
+establishing new DTLS connection if not necessary to be able to
+conclude the shutdown process.
+
+When the assocation reaches the CLOSED state as part of the SCTP
+association closing process all DTLS connections that existed are
+terminated without furhter transmissions, i.e. DTLS Close_Notify is
+not transmitted.
+
 
 ## DTLS Connection Handling {#dtls-connection-handling}
 
-It's up to CRYPTO chunk Handler to manage SCTP Connection and
-the related DCI.
+It's up to CRYPTO chunk handler to manage the DTLS connections and
+their related DCI.
 
 ### Add a New DTLS Connection {#add-dtls-connection}
 
-Either peers can add a new DTLS connection to the current
-SCTP Association at any time, but no more
-than 2 DTLS connection can exist at the same time.
-The new DCI value shall be the last active DCI increased by one modulo 4,
-this makes the attempt to create a new DTLS connection to use
-the same, known, value of DCI from both peers so that DTLS
-can solve race conditions on DCI.
+Either peer can add a new DTLS connection to the SCTP association at
+any time, but no more than 2 DTLS connections can exist at the same
+time.  The new DCI value shall be the last active DCI increased by one
+modulo 4, this makes the attempt to create a new DTLS connection to
+use the same, known, value of DCI from both peers.  A new handshake
+will be initiated by DTLS using the new DCI.  Details of the handshake
+are described in {{dtls-handshake}}.
 
-A new handshake will be initiated by DTLS using the new DCI.
-Details of the handshake are described in {{dtls-handshake}}.
-When the handshake has been completed successfully, the new DTLS Connection
-will be possible to use for traffic, if the handshake is not
-completed successfully, the new DCI value will not be considered
+As either endpoint can initiate a DTLS handshake at the same time,
+either endpoint may receive a DTLS ClientHello message when it has
+sent its own ClientHello. In this case the ClientHello from the
+endpoint that had the DTLS Client role in the establishment of the
+previous DTLS connection shall be continued to be processed and the
+other dropped.
+
+When the handshake has been completed successfully, the new DTLS
+connection will be possible to use for traffic, if the handshake is
+not completed successfully, the new DCI value will not be considered
 and a next attempt will reuse that DCI.
 
 ### Remove an existing DTLS Connection {#remove-dtls-connection}
 
-Either peers can remove a DTLS connection from the current SCTP Association.
+Either peers can initialize the remove a DTLS connection from the
+current SCTP association when it no longer the active one, i.e. when a
+newer DTLS connection is in use. It is RECOMMENDED to not initiate
+removal until at least one SCTP packet protected by the new DTLS
+connection has been received, and any transmitted packets protected
+using the new DTLS connection has been acknowledge, alternatively one
+Maxium Segment Lifetime (120 seconds) has passed since the last SCTP
+packet protected by the old DTLS connection was transmitted.
+
+The closing of the DTLS connection when the SCTP association is in
+PROTECTED state is done by having the DTLS connection send a DTLS
+Close_Alert. Note the difference in process for DTLS 1.2 and DTLS 1.3.
 
 When DTLS closure for a DTLS connection is completed, the related DCI is
 released.
 
 ## Error Cases
 
-Any error in DTLS will be handled according to {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
+As DTLS has its own error reporting mechanism by exchanging DTLS alert
+messages no new DTLS related cause codes are defined to use the error
+handling defined in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
+
+When DTLS encounters an error it may report that issue using DTLS
+alert message to its peer by putting the created DTLS record in a
+CRYPTO chunk and issuing an SCTP packet. This is independent of what
+to do in realtion to the SCTP association.  Depending on the severance
+of the error different paths can be the result:
+
+   A: Non-critical
+   : the DTLS connection can continue to protect
+   the SCTP association. In this case the issue may be worth reporting
+   to the peer using a DTLS alert message, or a way forward is to
+   perform a rekeying.
+
+   B: Critical, but recoverable by creating a new DTLS connection.
+   : In
+   cases the DTLS connection fails fatally one can attempt to
+   establish a new DTLS connection.
+
+   C: Critical, non-recoverable but not immediately fatal.
+   : If the
+   error requires termination of the SCTP association but allows for
+   sending some additional packets. Then this critical issue MUST be
+   reported to the SCTP association so that it can send an ERROR chunk
+   with the Error in Protection cause code without any extra cause
+   code, combined with an ABORT chunk. This will terminate the SCTP
+   association immediately and speeding up any re-establishments.
+
+   D: Critical, non-recoverable and immediately fatal.
+   : If the DTLS
+   connection fails so that no furhter data can be proteced
+   (i.e. either sent or recevied) with maintained security and
+   establishing a new DTLS connection will not address the failure
+   then the protection engine will have to indicate this to the Crypto
+   Chunk handler so it can perform a one sides SCTP association
+   termination. This will lead to an eventual SCTP association timeout
+   in the peer.
 
 # DTLS Considerations
 
@@ -689,7 +765,7 @@ SCTP Chunk handler will threat the array as the payload of an SCTP
 packet, thus it will extract all the chunks and handle them according
 to {{RFC9260}}
 
-# Parallel DTLS Rekeying
+# Parallel DTLS Rekeying {#parallel-dtls}
 
 Rekeying in this specification is implemented by replacing the DTLS connection
 getting old with a new one. This feature exploits the capability of parallel
