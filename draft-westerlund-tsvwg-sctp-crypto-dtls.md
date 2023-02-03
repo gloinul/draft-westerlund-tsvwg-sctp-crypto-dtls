@@ -495,14 +495,14 @@ handshake.
 When entering PROTECTION PENDING state, DTLS will start the handshake
 according to {{dtls-handshake}}.
 
-CRYPTO chunk Handler will set the DCI counter = 0, which implies a DCI
-field value of 0, for the initial DTLS connection.  CRYPTO chunk
-handler in this state will put DTLS records in CRYPTO chunks and
-deliver to the remote peer.
+DTLS protection engine being initialized for a new SCTP association
+will set the DCI counter = 0, which implies a DCI field value of 0,
+for the initial DTLS connection.  CRYPTO chunk handler in this state
+will put DTLS records in CRYPTO chunks and deliver to the remote peer.
 
-When a successful handshake has been completed, DTLS will inform
-CRYPTO chunk Handler that will move SCTP State Machine into
-PROTECTED state.
+When a successful handshake has been completed, DTLS protection engine
+will inform CRYPTO chunk Handler that will move SCTP State Machine
+into PROTECTED state.
 
 ### PROTECTED state
 
@@ -531,7 +531,7 @@ not transmitted.
 
 ## DTLS Connection Handling {#dtls-connection-handling}
 
-It's up to CRYPTO chunk handler to manage the DTLS connections and
+It's up to DTLS protection engine to manage the DTLS connections and
 their related DCI.
 
 ### Add a New DTLS Connection {#add-dtls-connection}
@@ -569,10 +569,13 @@ packet protected by the old DTLS connection was transmitted.
 
 The closing of the DTLS connection when the SCTP association is in
 PROTECTED state is done by having the DTLS connection send a DTLS
-Close_Alert. Note the difference in process for DTLS 1.2 and DTLS 1.3.
+Close_Alert. Note the difference in process for DTLS 1.2 and DTLS
+1.3. Where sending the DTLS 1.2 Close_Alert will trigger an immediate
+close also in the peer. Which is why it is recommended to ensure that
+one have received packets from the peer using the new DTLS connection.
 
 When DTLS closure for a DTLS connection is completed, the related DCI is
-released.
+released in the DTLS protection engine.
 
 ## Error Cases
 
@@ -639,9 +642,11 @@ of the error different paths can be the result:
 
 ### General
 
-   It is RECOMMENDED that the DTLS Connection ID is not included in
-   the DTLS records as it is not need, the CRYPTO chunk indicates which
-   DTLS connection the DTLS records are intended for using the DCI bits.
+   The DTLS Connection ID SHALL NOT be included in the DTLS records as
+   it is not need, the CRYPTO chunk indicates which DTLS connection
+   the DTLS records are intended for using the DCI bits. Avoiding
+   overhead and addition implementation requirements on DTLS
+   implementation.
 
    The DTLS record length field is normally not needed as the CRYPTO
    Chunk provides a length field unless multiple records are put in
@@ -756,25 +761,35 @@ discovery packet.
 
 ## Receiving
 
-When receiving an SCTP packet containing an Encrypted Chunk it may
+When receiving an SCTP packet containing an CRYPTO Chunk it may
 be part of the DTLS signaling or SCTP signaling. Since there's at most
-one Crypto Chunk per SCTP packet, the payload of that chunk will
-be transferred to the proper DTLS instance according to CID for
-decryption.
+one CRYPTO Chunk per SCTP packet, the payload of that chunk will
+be transferred to the proper DTLS instance according to DCI for
+decryption and processing.
+
+As discussed in CRYPTO Chunk specification when receiving packets
+certain meta data will be needed to associate with the protected
+CRYPTO chunk payload for SCTP to correctly process it. This includes
+packet size, source IP and arrival interface, i.e. path information,
+ECN bits.
 
 ### DTLS Signaling
 
-The payload contains a dtls record that is addressed to DTLS,
-i.e. handshaking, DTLS will handle it and behave according.
+The payload contains a DTLS record that is addressed to DTLS,
+e.g. handshaking, DTLS will handle it and behave according. If there
+are no DTLS connection state for this DCI the DTLS will have to treat
+this as incoming to a DTLS server accepting new connection.
 
 ### SCTP Signaling
 
-When DTLS detects a dtls record addressed to SCTP, it will decode
-the data as an array of bytes and transfer it to SCTP Chunk Handler.
+When DTLS processes a DTLS record with decryption and integrity
+verification and that contains application data, it will output the
+data as an array of bytes and transfer it back to the CRYPTO Handler
+that delivers it for SCTP chunk handling.
 
 SCTP Chunk handler will threat the array as the payload of an SCTP
 packet, thus it will extract all the chunks and handle them according
-to {{RFC9260}}
+to {{RFC9260}}.
 
 # Parallel DTLS Rekeying {#parallel-dtls}
 
@@ -785,8 +800,22 @@ during the lifetime of the SCTP Association.
 
 ## Criteria for Rekeying
 
-It shall be specified rule for deciding that a DTLS connection is too old,
-based on age and data consumption.
+The criteria for rekeying may vary depending on the ULP requirement on
+security properties, chosen cipher suits etc. Therefore it is assumed
+that the implementation will be configurable by the ULP to meet its demand.
+
+Likely criteria to impact the need for rekeying through the usage of
+new DTLS connection are:
+
+   * Maximum time since last authentication of the peer
+
+   * Amount of data transferred since last forward secrecy preserving
+     rekeying
+
+   * The cipher suit's maximum key usage being reached. Altough for
+     DTLS 1.3 usage of the Key Update mechanism can generate new keys
+     without forward secrecy propertis.
+
 
 ## Procedure for Rekeying
 
@@ -815,8 +844,15 @@ The following state machine applies.
 |      SWITCH   |
 |               V
 |          +---------+
+|          |  DRAIN  |  The aged DTLS connection
+|          +----+----+  is drained before being ready
+|               |       to be closed
+|               |
+|       DRAINED | DTLS Close_Alert
+|               V
+|          +---------+
 |          |  DEAD   |  In DEAD state the aged
-|          +----+----+  connection is removed
+|          +----+----+  connection is closed
 |               |
 |      REMOVED  |
 +---------------+
@@ -832,26 +868,41 @@ shall be added according to {{add-dtls-connection}} with a new DCI.
 
 As soon as the new DTLS connection completes handshaking, the traffic is moved
 from the old one, then the procedure for closing the old DTLS connection is
-initiated.
+initiated, see {{remove-dtls-connection}}.
 
 ## Race Condition in Rekeying
 
 A race condition may happen when both peer experience local AGING event at
 the same time and start creation of a new DTLS connection.
 
-Since the criteria for calculating a new DCI is known and specified
-in {{add-dtls-connection}}, the peers will use the same DCI for
-identifying the new DTLS connection. Race condition will be solved
-by means of DTLS protocol.
+Since the criteria for calculating a new DCI is known and specified in
+{{add-dtls-connection}}, the peers will use the same DCI for
+identifying the new DTLS connection. And the race condition is solved
+as specified in {{add-dtls-connection}}.
+
 
 # PMTU Discovery Considerations
 
-If PMTU Discovery is enabled in the SCTP Host,
-DTLS in SCTP will let SCTP dealing with PMTU Discovery whereas DTLS
-will not influence it.
-SCTP will use  2<sup>14</sup> as maximum PMTU when running PMTUD,
-whereas DTLS will be set for a PMTU equal to  2<sup>14</sup> and
-PMTUD in DTLS will be disabled.
+Due to the DTLS record limitation for application data SCTP MUST use
+2<sup>14</sup> as absolut maximum MTU when running PMTUD and using
+DTLS in SCTP as protection engine.
+
+The DTLS protection engine MUST provide its maximum overhead for DTLS
+records and authentication tags when protecting the SCTP payload. This
+so that SCTP PMTUD can take this into consideration and ensure that
+produced packets that are not PMTUD probes does not become oversized.
+This may require updating during the SCTP associations lifetime due to
+future handshakes affecting cipher suits, or changes to record layer
+configurations.
+
+DTLS protection engine is RECOMMENED to be provided with known path
+MTU from SCTP so that it can operate its signalling message safely.
+As the used MTU for the DTLS signalling will be DTLS responsibility.
+
+Note that this implies that DTLS protection engine is expected to
+accept application data payloads of potentially larger sizes than what
+it configured to use for messages the DTLS implementation generates
+itself for signalling.
 
 # Security Considerations
 
