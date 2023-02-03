@@ -586,13 +586,13 @@ CRYPTO chunk and issuing an SCTP packet. This is independent of what
 to do in realtion to the SCTP association.  Depending on the severance
 of the error different paths can be the result:
 
-   A: Non-critical
+   Non-critical:
    : the DTLS connection can continue to protect
    the SCTP association. In this case the issue may be worth reporting
    to the peer using a DTLS alert message, but otherwise contine
    without further action.
 
-   B: Critical, but recoverable.
+   Critical, but recoverable:
    : In cases the DTLS connection fails fatally but it is not ensured
    that the issue will persist the protection engine SHOULD attempt to
    establish a new DTLS connection. If the DTLS handshake fails in the
@@ -600,7 +600,7 @@ of the error different paths can be the result:
    during this period is unable to pass any packets acknowledging a
    working path.
 
-   C: Critical, non-recoverable but not immediately fatal.
+   Critical, non-recoverable but not immediately fatal:
    : If the
    error requires termination of the SCTP association but allows for
    sending some additional SCTP packets. Then this critical issue MUST be
@@ -610,7 +610,7 @@ of the error different paths can be the result:
    association immediately, provide ULP with notification of the failure
    and speeding up any higher layer management of the failure.
 
-   D: Critical, non-recoverable and immediately fatal.
+   Critical, non-recoverable and immediately fatal:
    : If the DTLS connection fails so that no furhter data can be
    proteced (i.e. either sent or recevied) with maintained security
    and establishing a new DTLS connection will not address the failure
