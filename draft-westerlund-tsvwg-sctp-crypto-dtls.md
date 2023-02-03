@@ -589,30 +589,33 @@ of the error different paths can be the result:
    A: Non-critical
    : the DTLS connection can continue to protect
    the SCTP association. In this case the issue may be worth reporting
-   to the peer using a DTLS alert message, or a way forward is to
-   perform a rekeying.
+   to the peer using a DTLS alert message, but otherwise contine
+   without further action.
 
-   B: Critical, but recoverable by creating a new DTLS connection.
-   : In
-   cases the DTLS connection fails fatally one can attempt to
-   establish a new DTLS connection.
+   B: Critical, but recoverable.
+   : In cases the DTLS connection fails fatally but it is not ensured
+   that the issue will persist the protection engine SHOULD attempt to
+   establish a new DTLS connection. If the DTLS handshake fails in the
+   end the SCTP association will time out as the SCTP higher layer
+   during this period is unable to pass any packets acknowledging a
+   working path.
 
    C: Critical, non-recoverable but not immediately fatal.
    : If the
    error requires termination of the SCTP association but allows for
-   sending some additional packets. Then this critical issue MUST be
+   sending some additional SCTP packets. Then this critical issue MUST be
    reported to the SCTP association so that it can send an ERROR chunk
    with the Error in Protection cause code without any extra cause
    code, combined with an ABORT chunk. This will terminate the SCTP
-   association immediately and speeding up any re-establishments.
+   association immediately, provide ULP with notification of the failure
+   and speeding up any higher layer management of the failure.
 
    D: Critical, non-recoverable and immediately fatal.
-   : If the DTLS
-   connection fails so that no furhter data can be proteced
-   (i.e. either sent or recevied) with maintained security and
-   establishing a new DTLS connection will not address the failure
-   then the protection engine will have to indicate this to the Crypto
-   Chunk handler so it can perform a one sides SCTP association
+   : If the DTLS connection fails so that no furhter data can be
+   proteced (i.e. either sent or recevied) with maintained security
+   and establishing a new DTLS connection will not address the failure
+   then the protection engine will have to indicate this to the SCTP
+   implementation so it can perform a one sides SCTP association
    termination. This will lead to an eventual SCTP association timeout
    in the peer.
 
