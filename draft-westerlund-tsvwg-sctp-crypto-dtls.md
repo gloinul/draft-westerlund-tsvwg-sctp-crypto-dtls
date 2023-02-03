@@ -517,8 +517,8 @@ further specified in {{parallel-dtls}}.
 
 When the SCTP association leaves the ESTABLISHED state per {{RFC9260}}
 to be shutdown the DTLS connection is kept and continues to protect
-the SCTP packet payloads through the shutdown process. If necessary
-even new DTLS connections can be established if necessary to maintain
+the SCTP packet payloads through the shutdown process.
+Even new DTLS connections can be established if necessary to maintain
 the protection of the SCTP packet. Although it is recommended to avoid
 establishing new DTLS connection if not necessary to be able to
 conclude the shutdown process.
@@ -559,12 +559,12 @@ and a next attempt will reuse that DCI.
 ### Remove an existing DTLS Connection {#remove-dtls-connection}
 
 Either peers can initialize the remove a DTLS connection from the
-current SCTP association when it no longer the active one, i.e. when a
+current SCTP association when it is no longer the active one, i.e. when a
 newer DTLS connection is in use. It is RECOMMENDED to not initiate
 removal until at least one SCTP packet protected by the new DTLS
 connection has been received, and any transmitted packets protected
 using the new DTLS connection has been acknowledge, alternatively one
-Maxium Segment Lifetime (120 seconds) has passed since the last SCTP
+Maximum Segment Lifetime (120 seconds) has passed since the last SCTP
 packet protected by the old DTLS connection was transmitted.
 
 The closing of the DTLS connection when the SCTP association is in
@@ -750,7 +750,7 @@ transferred to DTLS as a single array of bytes.
 
 Once DTLS has created the related dtls record (or dtls records), it
 will transfer the encrypted data as an array of bytes to CRYPTO chunk
-handler for encapsulation into a CRYPTO chunk and being forwards to
+handler for encapsulation into a CRYPTO chunk and being forwarded to
 the SCTP header handler for transmission.
 
 The interface between SCTP and DTLS related to SCTP Payload will need
