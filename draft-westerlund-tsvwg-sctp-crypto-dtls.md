@@ -361,7 +361,7 @@ in regard to SCTP and upper layer protocol"}
    DTLS 1.2 implementation. It is not known if any DTLS stack exist
    that fully support the requirements in DTLS/SCTP. It is
    expected that a DTLS/SCTP implementation will have to also
-   extended some DTLS implementation.
+   extend some DTLS implementation.
 
 
 
@@ -484,8 +484,8 @@ requirements and how they are met in the current specification.
 ## State Machine
 
 The CRYPTO Chunk allows the protection engine to have inband or
-out-of-band key establishment. DTLS in SCTP use inband key
-establishment, thus the DTLS handshake establish shared keys with the
+out-of-band key establishment. DTLS in SCTP uses inband key
+establishment, thus the DTLS handshake establishes shared keys with the
 remote peer. As soon as the SCTP State Machine enters PROTECTION
 PENDING state, DTLS is responsible for progressing to the PROTECTED
 state when DTLS handshake has completed. The DCI counter is
@@ -560,7 +560,7 @@ and a next attempt will reuse that DCI.
 
 ### Remove an existing DTLS Connection {#remove-dtls-connection}
 
-Either peers can initialize the remove a DTLS connection from the
+Either peers can initialize the removal of a DTLS connection from the
 current SCTP association when it is no longer the active one, i.e. when a
 newer DTLS connection is in use. It is RECOMMENDED to not initiate
 removal until at least one SCTP packet protected by the new DTLS
@@ -570,7 +570,7 @@ Maximum Segment Lifetime (120 seconds) has passed since the last SCTP
 packet protected by the old DTLS connection was transmitted.
 
 The closing of the DTLS connection when the SCTP association is in
-PROTECTED state is done by having the DTLS connection send a DTLS
+PROTECTED state is done by having the DTLS connection sent a DTLS
 Close_Alert. Note the difference in process for DTLS 1.2 and DTLS
 1.3. Where sending the DTLS 1.2 Close_Alert will trigger an immediate
 close also in the peer. Which is why it is recommended to ensure that
@@ -645,7 +645,7 @@ of the error different paths can be the result:
 ### General
 
    The DTLS Connection ID SHALL NOT be included in the DTLS records as
-   it is not need, the CRYPTO chunk indicates which DTLS connection
+   it is not needed, the CRYPTO chunk indicates which DTLS connection
    the DTLS records are intended for using the DCI bits. Avoiding
    overhead and addition implementation requirements on DTLS
    implementation.
@@ -675,14 +675,14 @@ authentication. When certificates are used the application using DTLS
 in SCTP is responsible for certificate policies, certificate chain
 validation, and identity authentication (HTTPS does for example match
 the hostname with a subjectAltName of type dNSName). The application
-using DTLS in SCTP define what the identity is and how it is encoded
+using DTLS in SCTP defines what the identity is and how it is encoded
 and the client and server MUST use the same identity format. Guidance
 on server certificate validation can be found in
 [I-D.ietf-uta-rfc6125bis]. DTLS in SCTP enables periodic transfer of
 mutual revocation information (OSCP stapling) every time a new
 parallel connection is set up. All security decisions MUST be based on
 the peer's authenticated identity, not on its transport layer
-identity.¶
+identity.
 
 It is possible to authenticate DTLS endpoints based on IP addresses in
 certificates. SCTP associations can use multiple IP addresses per SCTP
@@ -700,7 +700,7 @@ exchanged parameters are the same except for the timestamps in the
 certificates. Clients and servers MUST NOT accept a change of identity
 during the setup of a new connections, but MAY accept negotiation of
 stronger algorithms and security parameters, which might be motivated
-by new attacks.¶
+by new attacks.
 
 Allowing new connections can enable denial-of-service attacks. The
 endpoints MUST limit the number of simultaneous connections to two.
@@ -713,7 +713,7 @@ connections frequently to force attackers to dynamic key
 extraction. E.g., at least every hour and every 100 GB of data which
 is a common policy for IPsec [ANSSI-DAT-NT-003]. See
 [I-D.ietf-tls-rfc8446bis] for a more detailed discussion on key
-compromise and key exfiltration in (D)TLS.¶
+compromise and key exfiltration in (D)TLS.
 
 For many DTLS in SCTP deployments the SCTP association is expected to
 have a very long lifetime of months or even years. For associations
@@ -728,11 +728,11 @@ SCTP.
 The updates in Section 13 [RFC9147] SHALL be followed for DTLS
 1.2. DTLS 1.2 MUST be configured to disable options known to provide
 insufficient security. HTTP/2 [RFC9113] gives good minimum
-requirements based on the attacks that where publicly known in 2022.¶
+requirements based on the attacks that where publicly known in 2022.
 
 The AEAD limits in DTLS 1.3 are equally valid for DTLS 1.2 and SHOULD
 be followed for DTLS in SCTP, but are not mandated by the DTLS 1.2
-specification.¶
+specification.
 
 Use of renegotiation is NOT RECOMMNEDED as it is disables in many
 implementations and does not provide any benefits in DTLS in SCTP
@@ -743,11 +743,11 @@ does not provide ephemeral key exchange as in DTLS 1.3
 
 DTLS 1.3 is preferred over DTLS 1.2 being a newer protocol that
 addresses known vulnerabilities and only defines strong algorithms
-without known major weaknesses at the time of publication.¶
+without known major weaknesses at the time of publication.
 
 DTLS 1.3 requires rekeying before algorithm specific AEAD limits have
 been reached. Implementations MAY setup a new DTLS connection instead
-of using key update.¶
+of using key update.
 
 In DTLS 1.3 any number of tickets can be issued in a connection and
 the tickets can be used for resumption as long as they are valid,
@@ -756,10 +756,10 @@ same roles (client or server) as in the connection where the ticket
 was issued. Resumption can have significant latency benefits for
 quickly restarting a broken DTLS/SCTP association. If tickets and
 resumption are used it is enough to issue a single ticket per
-connection.¶
+connection.
 
 The PSK key exchange mode psk_ke MUST NOT be used as it does not
-provide ephemeral key exchange.¶
+provide ephemeral key exchange.
 
 # Establishing DTLS in SCTP
 
@@ -773,7 +773,7 @@ provide ephemeral key exchange.¶
    As soon the SCTP Association has entered the SCTP state PROTECTION
    PENDING as defined by {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}
    the DTLS handshake procedure is initiated by the endpoint that
-   initiated the SCTP association.
+   has initiated the SCTP association.
 
    The DTLS endpoint needs if necessary fragment the handshake into
    multiple records each meeting the known MTU limit of the path
