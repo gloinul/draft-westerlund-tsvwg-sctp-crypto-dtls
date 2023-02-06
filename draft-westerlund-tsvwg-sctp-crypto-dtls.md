@@ -429,8 +429,10 @@ The following table applies.
 | 1 | DTLS 1.3 | RFC-To-Be |
 {: #dtls-protection-engines title="DTLS protection engines" cols="r l l"}
 
-The values specified above shall be used in the Protected Association parameter
-as protection engines as specified in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}} and are registered with IANA below in {{iana-protection-engines}}.
+The values specified above shall be used in the Protected Association
+parameter as protection engines as specified in
+{{I-D.westerlund-tsvwg-sctp-crypto-chunk}} and are registered with
+IANA below in {{iana-protection-engines}}.
 
 # DTLS Usage of CRYPTO Chunk
 
@@ -884,15 +886,15 @@ as specified in {{add-dtls-connection}}.
 # PMTU Discovery Considerations
 
 Due to the DTLS record limitation for application data SCTP MUST use
-2<sup>14</sup> as absolut maximum MTU when running PMTUD and using
-DTLS in SCTP as protection engine.
+2<sup>14</sup> as input to determine absolut maximum MTU when running
+PMTUD and using DTLS in SCTP as protection engine.
 
 The DTLS protection engine MUST provide its maximum overhead for DTLS
 records and authentication tags when protecting the SCTP payload. This
 so that SCTP PMTUD can take this into consideration and ensure that
 produced packets that are not PMTUD probes does not become oversized.
 This may require updating during the SCTP associations lifetime due to
-future handshakes affecting cipher suits, or changes to record layer
+future handshakes affecting cipher suit in use, or changes to record layer
 configurations.
 
 DTLS protection engine is RECOMMENED to be provided with known path
@@ -948,7 +950,7 @@ the source or destination IP addresses.
 
 ### New Connections
 
-Implementations MUST set up new connections before any
+Implementations MUST set up new DTLS connections before any
 of the certificates expire. It is RECOMMENDED that all negotiated
 and exchanged parameters are the same except for the timestamps in
 the certificates. Clients and servers MUST NOT accept a change of
@@ -969,13 +971,13 @@ data which is a common policy for IPsec {{ANSSI-DAT-NT-003}}. See
 {{I-D.ietf-tls-rfc8446bis}} for a more detailed discussion on key
 compromise and key exfiltration in (D)TLS.
 
-For many DTLS/SCTP deployments the SCTP association is expected to
+For many DTLS in SCTP deployments the SCTP association is expected to
 have a very long lifetime of months or even years. For associations
-with such long lifetimes there is a need to frequently
-re-authenticate both client and server by setting up new connections.
-TLS Certificate lifetimes
-significantly shorter than a year are common which is shorter than
-many expected DTLS/SCTP associations.
+with such long lifetimes there is a need to frequently re-authenticate
+both client and server by setting up new connections.  TLS Certificate
+lifetimes significantly shorter than a year are common which is
+shorter than many expected SCTP associations protected by DTLS in
+SCTP.
 
 ## DTLS 1.3
 
@@ -995,7 +997,7 @@ for quickly restarting a broken DTLS/SCTP association. If tickets
 and resumption are used it is enough to issue a single ticket per
 connection.
 
-Use of the PSK key exchange mode psk_ke is NOT RECOMMENDED as is does
+The PSK key exchange mode psk_ke MUST NOT be used  as it does
 not provide ephemeral key exchange.
 
 ## DTLS 1.2
@@ -1009,7 +1011,7 @@ The AEAD limits in DTLS 1.3 are equally valid for DTLS 1.2 and SHOULD
 be followed for DTLS in SCTP, but are not mandated by the DTLS 1.2
 specification.
 
-Use of renegotiation is not RECOMMNEDED as it is disables in many
+Use of renegotiation is NOT RECOMMNEDED as it is disables in many
 implementations and does not provide any benefits in DTLS in SCTP
 compared to setting up a new connection. Resumption MAY be used but does
 not provide ephemeral key exchange as in DTLS 1.3
@@ -1022,10 +1024,10 @@ In addition to the DTLS record header, the SCTP common header and the CRYPTO chu
 are not confidentiality protected. An attacker can correlate DTLS connections over
 the same SCTP association using the SCTP common header.
 
-To provide identity protection it is RECOMMENDED that DTLS/SCTP is used with
-certificate-based authentication in DTLS 1.3 {{RFC9147}} and to not reuse tickets.
-DTLS 1.2 and DTLS 1.3 with external PSK authentication does not provide
-identity protection.
+To provide identity protection it is RECOMMENDED that DTLS in SCTP is
+used with certificate-based authentication in DTLS 1.3 {{RFC9147}} and
+to not reuse tickets.  DTLS 1.2 and DTLS 1.3 with external PSK
+authentication does not provide identity protection.
 
 By mandating ephemeral key exchange and cipher suites with confidentiality
 DTLS in SCTP effectively mitigate many forms of passive pervasive monitoring.
@@ -1042,4 +1044,12 @@ Protocol (SCTP) Parameters grouping.
 
 ## Protection Engine Registration {#iana-protection-engines}
 
-IANA is request to register ...
+IANA is request to register two Protection Engine Identifiers in the
+"CRYPTO Chunk Protection Engine Identifiers" registry defined by
+{{I-D.westerlund-tsvwg-sctp-crypto-chunk}}. The entries to be
+registered are provided in {{iana-protection-engines-table}}.
+
+| ID VALUE | Name | Reference | Contact |
+| 0 | DTLS 1.2 | RFC-To-Be | Authors |
+| 1 | DTLS 1.3 | RFC-To-Be | Authors |
+{: #iana-protection-engines-table title="CRYPTO Chunk protection engines" cols="r l l l"}
