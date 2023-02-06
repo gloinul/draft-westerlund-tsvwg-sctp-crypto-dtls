@@ -841,7 +841,7 @@ SCTP Chunk Handler to implement all the SCTP rules for bundling and
 retransmission mechanism.  Once ready, the payload will be
 transferred to DTLS as a single array of bytes.
 
-Once DTLS has created the related dtls record (or dtls records), it
+Once DTLS has created the related DTLS record (or DTLS records), it
 will transfer the encrypted data as an array of bytes to CRYPTO chunk
 handler for encapsulation into a CRYPTO chunk and being forwarded to
 the SCTP header handler for transmission.
