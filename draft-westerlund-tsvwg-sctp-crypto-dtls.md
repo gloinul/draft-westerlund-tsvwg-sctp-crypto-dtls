@@ -658,17 +658,108 @@ of the error different paths can be the result:
 
    Sequence number size can be adapted based on how quickly it wraps.
 
+   Many of the TLS registries have a "Recommended" column. Parameters
+   not marked as "Y" are NOT RECOMMENDED to support in DTLS in
+   SCTP. Non-AEAD cipher suites or cipher suites without
+   confidentiality MUST NOT be supported. Cipher suites and parameters
+   that do not provide ephemeral key exchange MUST NOT be supported.
+
+### Authentication and Policy Decisions
+
+DTLS in SCTP MUST be mutually authenticated. Authentication is the
+process of establishing the identity of a user or system and verifying
+that the identity is valid. DTLS only provides proof of possession of
+a key. DTLS in SCTP MUST perform identity authentication. It is
+RECOMMENDED that DTLS in SCTP is used with certificate-based
+authentication. When certificates are used the application using DTLS
+in SCTP is responsible for certificate policies, certificate chain
+validation, and identity authentication (HTTPS does for example match
+the hostname with a subjectAltName of type dNSName). The application
+using DTLS in SCTP define what the identity is and how it is encoded
+and the client and server MUST use the same identity format. Guidance
+on server certificate validation can be found in
+[I-D.ietf-uta-rfc6125bis]. DTLS in SCTP enables periodic transfer of
+mutual revocation information (OSCP stapling) every time a new
+parallel connection is set up. All security decisions MUST be based on
+the peer's authenticated identity, not on its transport layer
+identity.¶
+
+It is possible to authenticate DTLS endpoints based on IP addresses in
+certificates. SCTP associations can use multiple IP addresses per SCTP
+endpoint. Therefore, it is possible that DTLS records will be sent
+from a different source IP address or to a different destination IP
+address than that originally authenticated. This is not a problem
+provided that no security decisions are made based on the source or
+destination IP addresses.
+
+### New Connections
+
+Implementations MUST set up new DTLS connections before any of the
+certificates expire. It is RECOMMENDED that all negotiated and
+exchanged parameters are the same except for the timestamps in the
+certificates. Clients and servers MUST NOT accept a change of identity
+during the setup of a new connections, but MAY accept negotiation of
+stronger algorithms and security parameters, which might be motivated
+by new attacks.¶
+
+Allowing new connections can enable denial-of-service attacks. The
+endpoints MUST limit the number of simultaneous connections to two.
+
+To force attackers to do dynamic key exfiltration and limits the
+amount of compromised data due to key compromise implementations MUST
+have policies for how often to set up new connections with ephemeral
+key exchange such as ECDHE. Implementations SHOULD set up new
+connections frequently to force attackers to dynamic key
+extraction. E.g., at least every hour and every 100 GB of data which
+is a common policy for IPsec [ANSSI-DAT-NT-003]. See
+[I-D.ietf-tls-rfc8446bis] for a more detailed discussion on key
+compromise and key exfiltration in (D)TLS.¶
+
+For many DTLS in SCTP deployments the SCTP association is expected to
+have a very long lifetime of months or even years. For associations
+with such long lifetimes there is a need to frequently re-authenticate
+both client and server by setting up new connections. TLS Certificate
+lifetimes significantly shorter than a year are common which is
+shorter than many expected SCTP associations protected by DTLS in
+SCTP.
+
 ### DTLS 1.2
 
-DTLS 1.2 {{RFC6347}} Renogitiation MUST NOT be used. It provides no
-benefit over establishing a new DTLS connecition and increases the
-implenentation requirements.
+The updates in Section 13 [RFC9147] SHALL be followed for DTLS
+1.2. DTLS 1.2 MUST be configured to disable options known to provide
+insufficient security. HTTP/2 [RFC9113] gives good minimum
+requirements based on the attacks that where publicly known in 2022.¶
+
+The AEAD limits in DTLS 1.3 are equally valid for DTLS 1.2 and SHOULD
+be followed for DTLS in SCTP, but are not mandated by the DTLS 1.2
+specification.¶
+
+Use of renegotiation is NOT RECOMMNEDED as it is disables in many
+implementations and does not provide any benefits in DTLS in SCTP
+compared to setting up a new connection. Resumption MAY be used but
+does not provide ephemeral key exchange as in DTLS 1.3
 
 ### DTLS 1.3
 
-DTLS 1.3 {{RFC9147}} Key-Update mechanism MAY be used. Usable to avoid
-packets limits related to key usage where other requirements does not
-yet require mutual re-authentication or forward secrecy.
+DTLS 1.3 is preferred over DTLS 1.2 being a newer protocol that
+addresses known vulnerabilities and only defines strong algorithms
+without known major weaknesses at the time of publication.¶
+
+DTLS 1.3 requires rekeying before algorithm specific AEAD limits have
+been reached. Implementations MAY setup a new DTLS connection instead
+of using key update.¶
+
+In DTLS 1.3 any number of tickets can be issued in a connection and
+the tickets can be used for resumption as long as they are valid,
+which is up to seven days. The nodes in a resumed connection have the
+same roles (client or server) as in the connection where the ticket
+was issued. Resumption can have significant latency benefits for
+quickly restarting a broken DTLS/SCTP association. If tickets and
+resumption are used it is enough to issue a single ticket per
+connection.¶
+
+The PSK key exchange mode psk_ke MUST NOT be used as it does not
+provide ephemeral key exchange.¶
 
 # Establishing DTLS in SCTP
 
@@ -910,130 +1001,33 @@ itself for signalling.
 
 ## General
 
-The security considerations given in {{RFC9147}}, {{RFC6347}}, and {{RFC9260}}
-also apply to this document. BCP 195 {{RFC9325}} {{RFC8996}} provides recommendations
-and requirements for improving the security of deployed services that use DTLS. BCP 195
-MUST be followed which implies that DTLS 1.0 SHALL NOT be supported.
-
-Many of the TLS registries have a "Recommended" column. Parameters not marked as
-"Y" are NOT RECOMMENDED to support in DTLS in SCTP. Non-AEAD cipher suites or cipher
-suites without confidentiality MUST NOT be supported. Cipher suites and parameters that
-do not provide ephemeral key exchange MUST NOT be supported.
-
-### Authentication and Policy Decisions
-
-DTLS in SCTP MUST be mutually authenticated. Authentication is the
-process of establishing the identity of a user or system and
-verifying that the identity is valid. DTLS only provides proof of
-possession of a key. DTLS in SCTP MUST perform identity
-authentication. It is RECOMMENDED that DTLS in SCTP is used with
-certificate-based authentication. When certificates are used the
-application using DTLS in SCTP is responsible for certificate
-policies, certificate chain validation, and identity authentication
-(HTTPS does for example match the hostname with a subjectAltName of
-type dNSName). The application using DTLS in SCTP define what the
-identity is and how it is encoded and the client and server MUST
-use the same identity format.  Guidance on server certificate
-validation can be found in {{I-D.ietf-uta-rfc6125bis}}.  DTLS in SCTP enables periodic
-transfer of mutual revocation information (OSCP stapling) every
-time a new parallel connection is set up.  All security decisions
-MUST be based on the peer's authenticated identity, not on its
-transport layer identity.
-
-It is possible to authenticate DTLS endpoints based on IP addresses
-in certificates. SCTP associations can use multiple IP addresses
-per SCTP endpoint. Therefore, it is possible that DTLS records will
-be sent from a different source IP address or to a different
-destination IP address than that originally authenticated. This is
-not a problem provided that no security decisions are made based on
-the source or destination IP addresses.
-
-### New Connections
-
-Implementations MUST set up new DTLS connections before any
-of the certificates expire. It is RECOMMENDED that all negotiated
-and exchanged parameters are the same except for the timestamps in
-the certificates. Clients and servers MUST NOT accept a change of
-identity during the setup of a new connections, but MAY accept
-negotiation of stronger algorithms and security parameters, which
-might be motivated by new attacks.
-
-Allowing new connections can enable denial-of-service attacks.  The
-endpoints MUST limit the number of simultaneous connections to two.
-
-To force attackers to do dynamic key exfiltration and limits the amount
-of compromised data due to key compromise implementations MUST have
-policies for how often to set up new connections with ephemeral key
-exchange such as ECDHE. Implementations SHOULD set up new connections
-frequently to force attackers to dynamic key extraction. E.g.,
-at least every hour and every 100 GB of
-data which is a common policy for IPsec {{ANSSI-DAT-NT-003}}. See
-{{I-D.ietf-tls-rfc8446bis}} for a more detailed discussion on key
-compromise and key exfiltration in (D)TLS.
-
-For many DTLS in SCTP deployments the SCTP association is expected to
-have a very long lifetime of months or even years. For associations
-with such long lifetimes there is a need to frequently re-authenticate
-both client and server by setting up new connections.  TLS Certificate
-lifetimes significantly shorter than a year are common which is
-shorter than many expected SCTP associations protected by DTLS in
-SCTP.
-
-## DTLS 1.3
-
-DTLS 1.3 is preferred over DTLS 1.2 being a
-newer protocol that addresses known vulnerabilities and only defines strong algorithms
-without known major weaknesses at the time of publication.
-
-DTLS 1.3 requires rekeying before algorithm specific AEAD limits have been reached.
-Implementations MAY setup a new DTLS connection instead of using key update.
-
-In DTLS 1.3 any number of tickets can be issued in a connection and
-the tickets can be used for resumption as long as they are valid,
-which is up to seven days. The nodes in a resumed connection have
-the same roles (client or server) as in the connection where the
-ticket was issued. Resumption can have significant latency benefits
-for quickly restarting a broken DTLS/SCTP association. If tickets
-and resumption are used it is enough to issue a single ticket per
-connection.
-
-The PSK key exchange mode psk_ke MUST NOT be used  as it does
-not provide ephemeral key exchange.
-
-## DTLS 1.2
-
-The updates in Section 13 {{RFC9147}} SHALL be followed for DTLS 1.2.
-DTLS 1.2 MUST be configured to disable options known to provide insufficient
-security. HTTP/2 {{RFC9113}} gives good minimum requirements based
-on the attacks that where publicly known in 2022.
-
-The AEAD limits in DTLS 1.3 are equally valid for DTLS 1.2 and SHOULD
-be followed for DTLS in SCTP, but are not mandated by the DTLS 1.2
-specification.
-
-Use of renegotiation is NOT RECOMMNEDED as it is disables in many
-implementations and does not provide any benefits in DTLS in SCTP
-compared to setting up a new connection. Resumption MAY be used but does
-not provide ephemeral key exchange as in DTLS 1.3
+The security considerations given in {{RFC9147}}, {{RFC6347}}, and
+{{RFC9260}} also apply to this document. BCP 195 {{RFC9325}}
+{{RFC8996}} provides recommendations and requirements for improving
+the security of deployed services that use DTLS. BCP 195 MUST be
+followed which implies that DTLS 1.0 SHALL NOT be supported and are
+therefore not defined.
 
 ## Privacy Considerations
 
-Although DTLS in SCTP provides privacy for the actual user message as well
-as almost all chunks, some fields are not confidentiality protected.
-In addition to the DTLS record header, the SCTP common header and the CRYPTO chunk header
-are not confidentiality protected. An attacker can correlate DTLS connections over
-the same SCTP association using the SCTP common header.
+Although DTLS in SCTP provides privacy for the actual user message as
+well as almost all chunks, some fields are not confidentiality
+protected.  In addition to the DTLS record header, the SCTP common
+header and the CRYPTO chunk header are not confidentiality
+protected. An attacker can correlate DTLS connections over the same
+SCTP association using the SCTP common header.
 
 To provide identity protection it is RECOMMENDED that DTLS in SCTP is
 used with certificate-based authentication in DTLS 1.3 {{RFC9147}} and
 to not reuse tickets.  DTLS 1.2 and DTLS 1.3 with external PSK
 authentication does not provide identity protection.
 
-By mandating ephemeral key exchange and cipher suites with confidentiality
-DTLS in SCTP effectively mitigate many forms of passive pervasive monitoring.
-By recommending implementations to frequently set up new DTLS connections with
-(EC)DHE force attackers to do dynamic key exfiltration and limits the amount
-of compromised data due to key compromise.
+By mandating ephemeral key exchange and cipher suites with
+confidentiality DTLS in SCTP effectively mitigate many forms of
+passive pervasive monitoring.  By recommending implementations to
+frequently set up new DTLS connections with (EC)DHE force attackers to
+do dynamic key exfiltration and limits the amount of compromised data
+due to key compromise.
 
 # IANA Consideration
 
