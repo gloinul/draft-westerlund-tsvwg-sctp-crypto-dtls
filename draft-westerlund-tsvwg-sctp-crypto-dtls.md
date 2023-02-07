@@ -471,7 +471,7 @@ IANA below in {{iana-protection-engines}}.
    Payload: variable length
    : One or more DTLS records. In cases more
    than one DTLS record is included all DTLS records except the last
-   MUST include a length field. Note this matches what is specified in
+   MUST include a length field. Note that this matches what is specified in
    DTLS 1.3 {{RFC9147}} and DTLS 1.2 will always include the length
    field in each record.
 
@@ -525,9 +525,9 @@ the protection of the SCTP packet. Although it is recommended to avoid
 establishing new DTLS connection if not necessary to be able to
 conclude the shutdown process.
 
-When the assocation reaches the CLOSED state as part of the SCTP
+When the association reaches the CLOSED state as part of the SCTP
 association closing process all DTLS connections that existed are
-terminated without furhter transmissions, i.e. DTLS close_notify is
+terminated without further transmissions, i.e. DTLS close_notify is
 not transmitted.
 
 
@@ -589,13 +589,13 @@ handling defined in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
 When DTLS encounters an error it may report that issue using DTLS
 alert message to its peer by putting the created DTLS record in a
 CRYPTO chunk and issuing an SCTP packet. This is independent of what
-to do in realtion to the SCTP association.  Depending on the severance
+to do in relation to the SCTP association.  Depending on the severance
 of the error different paths can be the result:
 
    Non-critical:
    : the DTLS connection can continue to protect
    the SCTP association. In this case the issue may be worth reporting
-   to the peer using a DTLS alert message, but otherwise contine
+   to the peer using a DTLS alert message, but otherwise continue
    without further action.
 
    Critical, but recoverable:
@@ -617,8 +617,8 @@ of the error different paths can be the result:
    and speeding up any higher layer management of the failure.
 
    Critical, non-recoverable and immediately fatal:
-   : If the DTLS connection fails so that no furhter data can be
-   proteced (i.e. either sent or recevied) with maintained security
+   : If the DTLS connection fails so that no further data can be
+   protected (i.e. either sent or received) with maintained security
    and establishing a new DTLS connection will not address the failure
    then the protection engine will have to indicate this to the SCTP
    implementation so it can perform a one sides SCTP association
@@ -655,7 +655,7 @@ of the error different paths can be the result:
    Chunk provides a length field unless multiple records are put in
    same chunk payload. If multiple DTLS records are included in one
    CRYPTO chunk payload the DTLS record length field MUST be present
-   in all but hte last.
+   in all but the last.
 
    Sequence number size can be adapted based on how quickly it wraps.
 
@@ -803,7 +803,7 @@ provide ephemeral key exchange.
 
    When the SCTP association has entered the PROTECTED state after the
    DTLS handshake has completed, the protection against downgrade in
-   the negotation of protection engine is performed per
+   the negotiation of protection engine is performed per
    {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}. The PVALID chunk will
    sent inside a CRYPTO chunk protecting the plain text chunk as
    defined in {{chunk-processing}}.
@@ -819,7 +819,7 @@ provide ephemeral key exchange.
 
 CRYPTO chunk sending happens either when DTLS needs to send its own
 data directly to the DTLS peer i.e. due to handshaking or when SCTP
-requires transfering control or DATA chunk to the remote SCTP Endpoint.
+requires transferring control or DATA chunk to the remote SCTP Endpoint.
 For a proper handling, DCI shall be set to an established instance
 of DTLS connection.
 
@@ -855,7 +855,7 @@ discovery packet.
 
 ## Receiving
 
-When receiving an SCTP packet containing an CRYPTO Chunk it may
+When receiving an SCTP packet containing a CRYPTO Chunk it may
 be part of the DTLS signaling or SCTP signaling. Since there's at most
 one CRYPTO Chunk per SCTP packet, the payload of that chunk will
 be transferred to the proper DTLS instance according to DCI for
@@ -906,9 +906,9 @@ new DTLS connection are:
    * Amount of data transferred since last forward secrecy preserving
      rekeying
 
-   * The cipher suit's maximum key usage being reached. Altough for
+   * The cipher suit's maximum key usage being reached. Although for
      DTLS 1.3 usage of the Key Update mechanism can generate new keys
-     without forward secrecy propertis.
+     without forward secrecy properties.
 
 
 ## Procedure for Rekeying
@@ -978,7 +978,7 @@ as specified in {{add-dtls-connection}}.
 # PMTU Discovery Considerations
 
 Due to the DTLS record limitation for application data SCTP MUST use
-2<sup>14</sup> as input to determine absolut maximum MTU when running
+2<sup>14</sup> as input to determine absolute maximum MTU when running
 PMTUD and using DTLS in SCTP as protection engine.
 
 The DTLS protection engine MUST provide its maximum overhead for DTLS
@@ -990,13 +990,13 @@ future handshakes affecting cipher suit in use, or changes to record layer
 configurations.
 
 DTLS protection engine is RECOMMENED to be provided with known path
-MTU from SCTP so that it can operate its signalling message safely.
-As the used MTU for the DTLS signalling will be DTLS responsibility.
+MTU from SCTP so that it can operate its signaling message safely.
+As the used MTU for the DTLS signaling will be DTLS responsibility.
 
 Note that this implies that DTLS protection engine is expected to
 accept application data payloads of potentially larger sizes than what
 it configured to use for messages the DTLS implementation generates
-itself for signalling.
+itself for signaling.
 
 # Security Considerations
 
@@ -1039,7 +1039,7 @@ Protocol (SCTP) Parameters grouping.
 
 ## Protection Engine Registration {#iana-protection-engines}
 
-IANA is request to register two Protection Engine Identifiers in the
+IANA is requested to register two Protection Engine Identifiers in the
 "CRYPTO Chunk Protection Engine Identifiers" registry defined by
 {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}. The entries to be
 registered are provided in {{iana-protection-engines-table}}.
