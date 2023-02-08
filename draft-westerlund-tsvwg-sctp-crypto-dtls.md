@@ -454,6 +454,7 @@ IANA below in {{iana-protection-engines}}.
 ~~~~~~~~~~~
 {: #sctp-CRYPTO-chunk-structure title="CRYPTO Chunk Structure"}
 
+   {: vspace="0"}
    DCI: 2 bits (unsigned integer)
    : DTLS Connection Index is the
    lower two bits of an DTLS Connection Index counter. This is a
