@@ -223,7 +223,7 @@ in regard to SCTP and upper layer protocol"}
 
    DTLS in SCTP has a number of properties that are attractive.
 
-   * Provides confidentiality, integrity protection and source
+   * Provides confidentiality, integrity protection, and source
      authentication for each packet.
 
    * Provides replay protection on SCTP packet level preventing
