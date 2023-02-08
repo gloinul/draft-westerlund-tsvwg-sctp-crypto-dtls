@@ -50,6 +50,7 @@ informative:
     date: August 2015
 
 normative:
+  RFC4820:
   RFC6347:
   RFC9147:
   RFC9260:
@@ -723,6 +724,26 @@ both client and server by setting up new connections. TLS Certificate
 lifetimes significantly shorter than a year are common which is
 shorter than many expected SCTP associations protected by DTLS in
 SCTP.
+
+### Padding of DTLS Records
+
+Both SCTP and DTLS contains mechanisms to padd SCTP payloads, and DTLS
+records respectively. If padding of SCTP packets are desired to hide
+actual message sizes it RECOMMEDED to use the SCTP Padding Chunck
+{{RFC4820}} to generate a consisted SCTP payload size. Support of this
+chunk is only required on the sender side. However, if the PAD chunk
+is not supported DTLS padding MAY be used.
+
+It needs to be noted that independent if SCTP padding or DTLS padding
+is used the padding is not taken into account by the SCTP congestion
+control. Extensive use of padding has potential for worsen congestion
+situations as the SCTP association will consume more bandwidth than
+its derived share by the congestion control.
+
+The use of SCTP PAD chunk is recommened as it at least can enable
+future extension or SCTP implementation that account also for the
+padding. Use of DTLS padding hides this packet expansion from SCTP.
+
 
 ### DTLS 1.2
 
