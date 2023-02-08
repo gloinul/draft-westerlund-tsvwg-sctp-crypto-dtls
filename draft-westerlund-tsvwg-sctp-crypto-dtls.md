@@ -809,9 +809,8 @@ provide ephemeral key exchange.
    defined in {{chunk-processing}}.
 
    If the validation completes successful the SCTP association will
-   enter ESTABLISHED state and all future SCTP packet exchanges will
-   be protected. If the validation fails the SCTP association
-   will be aborted.
+   enter ESTABLISHED state. ULP data exchanges can now happen and
+   will be protected together will all other SCTP packets.
 
 # Processing a CRYPTO Chunk {#chunk-processing}
 
