@@ -572,7 +572,7 @@ packet protected by the old DTLS connection was transmitted.
 
 The closing of the DTLS connection when the SCTP association is in
 PROTECTED and ESTABLISHED state is done by having the DTLS connection
-sent a DTLS close_notify. Note the difference in process for DTLS 1.2
+send a DTLS close_notify. Note the difference in process for DTLS 1.2
 and DTLS 1.3. Where sending the DTLS 1.2 close_notify will trigger an
 immediate close also in the peer. Which is why it is recommended to
 ensure that one have received packets from the peer using the new DTLS
@@ -830,9 +830,8 @@ provide ephemeral key exchange.
    defined in {{chunk-processing}}.
 
    If the validation completes successful the SCTP association will
-   enter ESTABLISHED state and all future SCTP packet exchanges will
-   be protected. If the validation fails the SCTP association
-   will be aborted.
+   enter ESTABLISHED state. ULP data exchanges can now happen and
+   will be protected together will all other SCTP packets.
 
 # Processing a CRYPTO Chunk {#chunk-processing}
 
