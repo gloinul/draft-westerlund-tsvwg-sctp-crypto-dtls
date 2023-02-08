@@ -164,8 +164,7 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
    CRYPTO chunks. The SCTP chunks to be included in an SCTP packet
    are input as plaint text application data input to DTLS. The
    encrypted DTLS application data record is then encapsulated in the
-   CRYPTO chunk and the packet is transmitted. TODO forward ref to
-   DTLS CRYPTO chunk processing
+   CRYPTO chunk and the packet is transmitted, see {{chunk-processing}}.
 
    In the receiving SCTP endpoint each incoming SCTP packet on any of
    its interfaces and ports are matched to the SCTP association based
