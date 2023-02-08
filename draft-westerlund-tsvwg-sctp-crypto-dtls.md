@@ -657,6 +657,8 @@ of the error different paths can be the result:
    same chunk payload. If multiple DTLS records are included in one
    CRYPTO chunk payload the DTLS record length field MUST be present
    in all but the last.
+   
+   DTLS record replay detection MUST be used.
 
    Sequence number size can be adapted based on how quickly it wraps.
 
