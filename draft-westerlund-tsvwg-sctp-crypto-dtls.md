@@ -191,7 +191,7 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
    packets to drain from the network path between the endpoints the
    old DTLS connection can be terminated.
 
-   The DTLS connection is free to send any alert, handshake message or
+   The DTLS connection is free to send any alert, handshake message, or
    other non-application data to its peer at any point in time. Thus,
    enabling DTLS 1.3 Key Updates for example.
 
