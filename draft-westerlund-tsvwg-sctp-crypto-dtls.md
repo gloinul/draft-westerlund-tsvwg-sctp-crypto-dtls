@@ -155,8 +155,10 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
 
    In a SCTP association initiation where DTLS in SCTP is chosen as
    the protection engine for the CRYPTO chunk the DTLS handshake
-   is exchanged encapsulated in the CRYPTO chunk until an initial
-   DTLS connection has been established. If the DTLS handshake fails, the
+   is exchanged encapsulated in plain DATA chunks with Protection
+   Engine PPID (see section 10.6 of {{I-D.westerlund-tsvwg-sctp-crypto-chunk}})
+   until an initial DTLS connection has been established.
+   If the DTLS handshake fails, the
    SCTP association is aborted. When the DTLS connection has been
    established PVALID chunks are exchanged to verify that no
    downgrade attack between different protection engines has
@@ -200,26 +202,31 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
    The DTLS connection is free to send any alert, handshake message, or
    other non-application data to its peer at any point in time. Thus,
    enabling DTLS 1.3 Key Updates for example.
+   All non-application data SHOULD be sent by means of SCTP DATA chunks
+   with Protection Engine PPID as specified in
+   {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
 
 ~~~~~~~~~~~ aasvg
-+---------------------+
-|                     |
-|        ULP          |
-|                     |
-+---------------------+ <-- User Level Messages
-|                     |
-| SCTP Chunks Handler | +-- SCTP Unprotected Payload
-|                     |/
-+---------------------+    +--------------+
-|        CRYPTO       +--->|              |
-|        Chunk        |    + DTLS in SCTP +
-|       Handler       |<---+              |
-+---------------------+    +--------------+
++---------------+ +--------------------+
+|               | | Protection Engine  |  Keys
+|      ULP      | |                    +-------------.
+|               | |   Key Management   |              |
++---------------+-+---+----------------+              |
+|                     |                 \    User     |
+|                     |                  +-- Level    |
+| SCTP Chunks Handler |                      Messages |
+|                     |                               |
+|                     | +-- SCTP Unprotected Payload  |
+|                     |/                              |
++---------------------+    +---------------------+    |
+|        CRYPTO       |    | Protection Engine   |    |
+|        Chunk        |<-->|                     |<--'
+|       Handler       |    | Protection Operator |
++---------------------+    +---------------------+
 |                     |\
-| SCTP Header Handler | +-- SCTP Protected Payload
+| SCTP Header Handler | +-- DTLS Encrypted SCTP Payload
 |                     |
 +---------------------+
-
 ~~~~~~~~~~~
 {: #overview-layering title="DTLS in SCTP layer
 in regard to SCTP and upper layer protocol"}
