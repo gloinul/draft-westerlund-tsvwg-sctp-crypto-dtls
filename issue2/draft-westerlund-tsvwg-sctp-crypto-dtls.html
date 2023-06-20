@@ -2340,28 +2340,44 @@ provide ephemeral key exchange.<a href="#section-5.2.6-4" class="pilcrow">¶</a>
         <h3 id="name-dtls-handshake">
 <a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-dtls-handshake" class="section-name selfRef">DTLS Handshake</a>
         </h3>
-<p id="section-6.1-1">As soon the SCTP Association has entered the SCTP state PROTECTION
+<p id="section-6.1-1">### Handshake of initial DTLS connection<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1-2">As soon the SCTP Association has entered the SCTP state PROTECTION
    PENDING as defined by <span>[<a href="#I-D.westerlund-tsvwg-sctp-crypto-chunk" class="cite xref">I-D.westerlund-tsvwg-sctp-crypto-chunk</a>]</span>
    the DTLS handshake procedure is initiated by the endpoint that
-   has initiated the SCTP association.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
-<p id="section-6.1-2">The DTLS endpoint needs if necessary fragment the handshake into
+   has initiated the SCTP association.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
+<p id="section-6.1-3">The DTLS endpoint needs if necessary fragment the handshake into
    multiple records each meeting the known MTU limit of the path
    between SCTP endpoints. Each DTLS handshake message fragment is
-   encapsulated in a CRYPTO chunk. The DTLS instance SHALL use
-   DTLS retransmission to repair any packet losses of handshake
-   message fragment.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
-<p id="section-6.1-3">Both SCTP endpoints SHALL perform authentication of the peer
+   encapsulated in a DATA chunk with Protection Engine PPID.
+   The DTLS instance SHALL NOT use DTLS retransmission to repair
+   any packet losses of handshake message fragment.<a href="#section-6.1-3" class="pilcrow">¶</a></p>
+<p id="section-6.1-4">Both SCTP endpoints SHALL perform authentication of the peer
    endpoint. This may require exchange or input from the ULP
-   application for what peer identity that is accepted.<a href="#section-6.1-3" class="pilcrow">¶</a></p>
-<p id="section-6.1-4">If the DTLS handshake is successful in establishing a security
+   application for what peer identity that is accepted.<a href="#section-6.1-4" class="pilcrow">¶</a></p>
+<p id="section-6.1-5">If the DTLS handshake is successful in establishing a security
    context to protect further communication and the peer identity is
    accepted then the SCTP association is informed that it can
-   move to the PROTECTED state.<a href="#section-6.1-4" class="pilcrow">¶</a></p>
-<p id="section-6.1-5">If the DTLS handshake failed the SCTP association SHALL be aborted
+   move to the PROTECTED state.<a href="#section-6.1-5" class="pilcrow">¶</a></p>
+<p id="section-6.1-6">If the DTLS handshake failed the SCTP association SHALL be aborted
    and an ERROR chunk with the Error in Protection error cause, with
    the appropriate extra error causes is generated, the right
    selection of "Error During Protection Handshake" or "Timeout During
-   Protection Handshake or Validation".<a href="#section-6.1-5" class="pilcrow">¶</a></p>
+   Protection Handshake or Validation".<a href="#section-6.1-6" class="pilcrow">¶</a></p>
+<p id="section-6.1-7">### Handshake of further DTLS connections<a href="#section-6.1-7" class="pilcrow">¶</a></p>
+<p id="section-6.1-8">When the SCTP Association has entered the ESTABLISHED state,
+   each of the endpoint can initiate an handshake.<a href="#section-6.1-8" class="pilcrow">¶</a></p>
+<p id="section-6.1-9">The DTLS endpoint needs if necessary fragment the handshake into
+   multiple records each meeting the known MTU limit of the path
+   between SCTP endpoints. Each DTLS handshake message fragment is
+   encapsulated in a DATA chunk with Protection Engine PPID.
+   The DTLS instance SHALL NOT use DTLS retransmission to repair
+   any packet losses of handshake message fragment.<a href="#section-6.1-9" class="pilcrow">¶</a></p>
+<p id="section-6.1-10">Both SCTP endpoints SHALL perform authentication of the peer
+   endpoint. This may require exchange or input from the ULP
+   application for what peer identity that is accepted.<a href="#section-6.1-10" class="pilcrow">¶</a></p>
+<p id="section-6.1-11">If the DTLS handshake failed the SCTP association SHALL generate
+   an ERROR chunk with the Error in Protection error cause, with
+   extra error causes "Error During Protection Handshake".<a href="#section-6.1-11" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="validation-against-downgrade-attacks">
