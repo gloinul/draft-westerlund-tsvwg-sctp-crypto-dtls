@@ -120,7 +120,8 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
    message forgery.
 
    Applications using DTLS in SCTP can use all currently existing
-   transport features provided by SCTP and its extensions. DTLS in
+   transport features provided by SCTP and its extensions as specified
+   in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}. DTLS in
    SCTP supports:
 
    * preservation of message boundaries.
