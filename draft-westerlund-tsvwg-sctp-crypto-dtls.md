@@ -601,9 +601,9 @@ handling defined in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
 
 When DTLS encounters an error it may report that issue using DTLS
 alert message to its peer by putting the created DTLS record in a
-CRYPTO chunk and issuing an SCTP packet. This is independent of what
-to do in relation to the SCTP association.  Depending on the severance
-of the error different paths can be the result:
+DATA chunk with Protection Engine PPID and sending it in an SCTP packet.
+This is independent of what to do in relation to the SCTP association.
+Depending on the severance of the error different paths can be the result:
 
    Non-critical:
    : the DTLS connection can continue to protect
@@ -770,7 +770,7 @@ The AEAD limits in DTLS 1.3 are equally valid for DTLS 1.2 and SHOULD
 be followed for DTLS in SCTP, but are not mandated by the DTLS 1.2
 specification.
 
-Use of renegotiation is NOT RECOMMNEDED as it is disables in many
+Use of renegotiation is NOT RECOMMENDED as it is disables in many
 implementations and does not provide any benefits in DTLS in SCTP
 compared to setting up a new connection. Resumption MAY be used but
 does not provide ephemeral key exchange as in DTLS 1.3
@@ -1045,7 +1045,7 @@ This may require updating during the SCTP associations lifetime due to
 future handshakes affecting cipher suit in use, or changes to record layer
 configurations.
 
-DTLS protection engine is RECOMMENED to be provided with known path
+DTLS protection engine is RECOMMENDED to be provided with known path
 MTU from SCTP so that it can operate its signaling message safely.
 As the used MTU for the DTLS signaling will be DTLS responsibility.
 
