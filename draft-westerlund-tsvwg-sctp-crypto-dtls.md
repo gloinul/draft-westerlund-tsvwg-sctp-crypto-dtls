@@ -806,6 +806,8 @@ provide ephemeral key exchange.
 
 ## DTLS Handshake {#dtls-handshake}
 
+   ### Handshake of initial DTLS connection
+
    As soon the SCTP Association has entered the SCTP state PROTECTION
    PENDING as defined by {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}
    the DTLS handshake procedure is initiated by the endpoint that
@@ -814,9 +816,9 @@ provide ephemeral key exchange.
    The DTLS endpoint needs if necessary fragment the handshake into
    multiple records each meeting the known MTU limit of the path
    between SCTP endpoints. Each DTLS handshake message fragment is
-   encapsulated in a CRYPTO chunk. The DTLS instance SHALL use
-   DTLS retransmission to repair any packet losses of handshake
-   message fragment.
+   encapsulated in a DATA chunk with Protection Engine PPID.
+   The DTLS instance SHALL NOT use DTLS retransmission to repair
+   any packet losses of handshake message fragment.
 
    Both SCTP endpoints SHALL perform authentication of the peer
    endpoint. This may require exchange or input from the ULP
@@ -832,6 +834,26 @@ provide ephemeral key exchange.
    the appropriate extra error causes is generated, the right
    selection of "Error During Protection Handshake" or "Timeout During
    Protection Handshake or Validation".
+
+  ### Handshake of further DTLS connections
+
+   When the SCTP Association has entered the ESTABLISHED state,
+   each of the endpoint can initiate an handshake.
+
+   The DTLS endpoint needs if necessary fragment the handshake into
+   multiple records each meeting the known MTU limit of the path
+   between SCTP endpoints. Each DTLS handshake message fragment is
+   encapsulated in a DATA chunk with Protection Engine PPID.
+   The DTLS instance SHALL NOT use DTLS retransmission to repair
+   any packet losses of handshake message fragment.
+
+   Both SCTP endpoints SHALL perform authentication of the peer
+   endpoint. This may require exchange or input from the ULP
+   application for what peer identity that is accepted.
+
+   If the DTLS handshake failed the SCTP association SHALL generate
+   an ERROR chunk with the Error in Protection error cause, with
+   extra error causes "Error During Protection Handshake".
 
 
 ## Validation Against Downgrade Attacks
