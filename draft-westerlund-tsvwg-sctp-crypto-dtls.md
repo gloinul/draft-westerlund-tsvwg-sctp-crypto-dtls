@@ -120,9 +120,9 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
    message forgery.
 
    Applications using DTLS in SCTP can use all currently existing
-   transport features provided by SCTP and its extensions as specified
-   in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}. DTLS in
-   SCTP supports:
+   transport features provided by SCTP and its extensions, in some
+   cases with some limitations, as specified in
+   {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}. DTLS in SCTP supports:
 
    * preservation of message boundaries.
 
@@ -170,7 +170,7 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
    start sending data over the SCTP association. From this point all
    chunks will be protected by encapsulating them in DTLS protected
    CRYPTO chunks. The SCTP chunks to be included in an SCTP packet
-   are input as plaint text application data input to DTLS. The
+   are the plain text application data input to DTLS. The
    encrypted DTLS application data record is then encapsulated in the
    CRYPTO chunk and the packet is transmitted, see {{chunk-processing}}.
 
@@ -478,7 +478,7 @@ IANA below in {{iana-protection-engines}}.
 
    Flags: 6 bits
    : Chunk Flag bits not currently used by DTLS in SCTP. They
-   MUST be set to zero (0) and MUST be ignored on reception. They may
+   MUST be set to zero (0) and MUST be ignored on reception. They MAY
    be used in future updated specifications for DTLS in SCTP.
 
    Payload: variable length
@@ -512,8 +512,10 @@ according to {{dtls-handshake}}.
 
 DTLS protection engine being initialized for a new SCTP association
 will set the DCI counter = 0, which implies a DCI field value of 0,
-for the initial DTLS connection.  CRYPTO chunk handler in this state
-will put DTLS records in CRYPTO chunks and deliver to the remote peer.
+for the initial DTLS connection. The DTLS handshake messages are
+transmitted from this endpoint to the peer using DATA chunks with the
+PPID value set to Protection Engine Protocol Identifier
+{{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
 
 When a successful handshake has been completed, DTLS protection engine
 will inform CRYPTO chunk Handler that will move SCTP State Machine
