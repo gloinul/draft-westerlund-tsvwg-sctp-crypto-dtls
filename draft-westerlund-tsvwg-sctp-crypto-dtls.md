@@ -56,7 +56,7 @@ normative:
   RFC9260:
 
   I-D.westerlund-tsvwg-sctp-crypto-chunk:
-    target: "https://datatracker.ietf.org"
+    target: "https://datatracker.ietf.orghttps://datatracker.ietf.org/doc/draft-westerlund-tsvwg-sctp-crypto-chunk/"
     title: "Stream Control Transmission Protocol (SCTP) CRYPTO chunk"
     author:
       -
@@ -74,7 +74,7 @@ normative:
        name: Claudio Porfiri
        org: Ericsson
        email: claudio.porfiri@ericsson.com
-    date: December 2022
+    date: June 2023
 
 
 --- abstract
