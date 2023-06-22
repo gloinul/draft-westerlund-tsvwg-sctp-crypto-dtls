@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-06-20T01:41:40.143845+00:00",
+  "timestamp": "2023-06-22T01:47:53.321527+00:00",
   "repo": "gloinul/draft-westerlund-tsvwg-sctp-crypto-dtls",
   "labels": [
     {
@@ -49,7 +49,24 @@
       "color": "ffffff"
     }
   ],
-  "issues": [],
+  "issues": [
+    {
+      "number": 2,
+      "id": "I_kwDOIc8ll85pMEX9",
+      "title": "Alignment with Crypto Chunk",
+      "url": "https://github.com/gloinul/draft-westerlund-tsvwg-sctp-crypto-dtls/issues/2",
+      "state": "OPEN",
+      "author": "teiclap",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The DTLS Crypto needs to be realigned with CRYPTO CHUNK",
+      "createdAt": "2023-06-20T06:59:29Z",
+      "updatedAt": "2023-06-20T06:59:29Z",
+      "closedAt": null,
+      "comments": []
+    }
+  ],
   "pulls": [
     {
       "number": 1,
@@ -76,6 +93,32 @@
       "mergeCommit": {
         "oid": "9db0c4c1da086a1c74dc6a6f4ae53170c4db5afa"
       },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 3,
+      "id": "PR_kwDOIc8ll85Tacxj",
+      "title": "Issue2",
+      "url": "https://github.com/gloinul/draft-westerlund-tsvwg-sctp-crypto-dtls/pull/3",
+      "state": "OPEN",
+      "author": "teiclap",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Aligned with Crypto Chunk",
+      "createdAt": "2023-06-20T08:33:41Z",
+      "updatedAt": "2023-06-21T14:17:44Z",
+      "baseRepository": "gloinul/draft-westerlund-tsvwg-sctp-crypto-dtls",
+      "baseRefName": "main",
+      "baseRefOid": "183ac628ba7d445c887faa89f2592bbbe044fc6a",
+      "headRepository": "gloinul/draft-westerlund-tsvwg-sctp-crypto-dtls",
+      "headRefName": "issue2",
+      "headRefOid": "8b6b32314c7f4b9bd3c00d0f083f460d5179a8b1",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
       "comments": [],
       "reviews": []
     }
