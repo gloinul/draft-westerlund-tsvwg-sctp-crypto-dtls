@@ -535,10 +535,6 @@ further specified in {{parallel-dtls}}.
 When the SCTP association leaves the ESTABLISHED state per {{RFC9260}}
 to be shutdown the DTLS connection is kept and continues to protect
 the SCTP packet payloads through the shutdown process.
-Even new DTLS connections can be established if necessary to maintain
-the protection of the SCTP packet. Although it is recommended to avoid
-establishing new DTLS connection if not necessary to be able to
-conclude the shutdown process.
 
 When the association reaches the CLOSED state as part of the SCTP
 association closing process all DTLS connections that existed are
@@ -571,7 +567,7 @@ other dropped.
 When the handshake has been completed successfully, the new DTLS
 connection will be possible to use for traffic, if the handshake is
 not completed successfully, the new DCI value will not be considered
-and a next attempt will reuse that DCI.
+used and a next attempt will reuse that DCI.
 
 ### Remove an existing DTLS Connection {#remove-dtls-connection}
 
@@ -613,32 +609,26 @@ Depending on the severance of the error different paths can be the result:
    to the peer using a DTLS alert message, but otherwise continue
    without further action.
 
-   Critical, but recoverable:
-   : In cases the DTLS connection fails fatally but it is not ensured
-   that the issue will persist the protection engine SHOULD attempt to
-   establish a new DTLS connection. If the DTLS handshake fails in the
-   end the SCTP association will time out as the SCTP higher layer
-   during this period is unable to pass any packets acknowledging a
-   working path.
+   Critical, but not immediately fatal:
+   : If the DTLS connection has a
+   critical issue, but can still protect packets then a the endpoint
+   SHOULD attempt to establish a new DTLS connection. If that succeeds
+   then the SCTP association switches over to the new DTLS connection
+   and can terminate the old one including reporting the error. In
+   case the establishment fails, then this critical issue MUST be reported
+   to the SCTP association so that it can send an ABORT chunk with the
+   Error in Protection cause code. This will terminate the SCTP
+   association immediately, provide ULP with notification of the
+   failure and speeding up any higher layer management of the failure.
 
-   Critical, non-recoverable but not immediately fatal:
-   : If the
-   error requires termination of the SCTP association but allows for
-   sending some additional SCTP packets. Then this critical issue MUST be
-   reported to the SCTP association so that it can send an ERROR chunk
-   with the Error in Protection cause code without any extra cause
-   code, combined with an ABORT chunk. This will terminate the SCTP
-   association immediately, provide ULP with notification of the failure
-   and speeding up any higher layer management of the failure.
-
-   Critical, non-recoverable and immediately fatal:
-   : If the DTLS connection fails so that no further data can be
-   protected (i.e. either sent or received) with maintained security
-   and establishing a new DTLS connection will not address the failure
-   then the protection engine will have to indicate this to the SCTP
-   implementation so it can perform a one sides SCTP association
-   termination. This will lead to an eventual SCTP association timeout
-   in the peer.
+   Critical, and immediately fatal:
+   : If the DTLS connection fails so
+   that no further data can be protected (i.e. either sent or
+   received) with maintained security then it is not possible to
+   establish a new DTLS connection and the protection engine will
+   have to indicate this to the SCTP implementation so it can perform
+   a one sides SCTP association termination. This will lead to an
+   eventual SCTP association timeout in the peer.
 
 # DTLS Considerations
 
