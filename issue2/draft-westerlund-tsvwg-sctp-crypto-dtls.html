@@ -1301,25 +1301,9 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
                 <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-sending" class="internal xref">Sending</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1.2.1">
-                    <p id="section-toc.1-1.7.2.1.2.1.1"><a href="#section-7.1.1" class="auto internal xref">7.1.1</a>.  <a href="#name-dtls-signaling" class="internal xref">DTLS Signaling</a></p>
-</li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1.2.2">
-                    <p id="section-toc.1-1.7.2.1.2.2.1"><a href="#section-7.1.2" class="auto internal xref">7.1.2</a>.  <a href="#name-sctp-payload" class="internal xref">SCTP Payload</a></p>
-</li>
-                </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2">
                 <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-receiving" class="internal xref">Receiving</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2.2.1">
-                    <p id="section-toc.1-1.7.2.2.2.1.1"><a href="#section-7.2.1" class="auto internal xref">7.2.1</a>.  <a href="#name-dtls-signaling-2" class="internal xref">DTLS Signaling</a></p>
-</li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2.2.2">
-                    <p id="section-toc.1-1.7.2.2.2.2.1"><a href="#section-7.2.2" class="auto internal xref">7.2.2</a>.  <a href="#name-sctp-signaling" class="internal xref">SCTP Signaling</a></p>
-</li>
-                </ul>
 </li>
             </ul>
 </li>
@@ -2420,47 +2404,25 @@ provide ephemeral key exchange.<a href="#section-5.2.6-4" class="pilcrow">¶</a>
         <h3 id="name-sending">
 <a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-sending" class="section-name selfRef">Sending</a>
         </h3>
-<p id="section-7.1-1">CRYPTO chunk sending happens either when DTLS needs to send its own
-data directly to the DTLS peer i.e. due to handshaking or when SCTP
-requires transferring control or DATA chunk to the remote SCTP Endpoint.
-For a proper handling, DCI shall be set to an established instance
-of DTLS connection.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
-<div id="dtls-signaling">
-<section id="section-7.1.1">
-          <h4 id="name-dtls-signaling">
-<a href="#section-7.1.1" class="section-number selfRef">7.1.1. </a><a href="#name-dtls-signaling" class="section-name selfRef">DTLS Signaling</a>
-          </h4>
-<p id="section-7.1.1-1">DTLS shall transfer DTLS records to SCTP Header Handler as array of
-bytes. Each array has maximum size equal to the maximum size of SCTP
-payload as computed by SCTP minus the size of the CRYPTO chunk header.
-Each array shall contain one or more DTLS records, this is up to DTLS.
-From SCTP perspective each array is opaque data and will be used as
-payload of one CRYPTO chunk.<a href="#section-7.1.1-1" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="sctp-payload">
-<section id="section-7.1.2">
-          <h4 id="name-sctp-payload">
-<a href="#section-7.1.2" class="section-number selfRef">7.1.2. </a><a href="#name-sctp-payload" class="section-name selfRef">SCTP Payload</a>
-          </h4>
-<p id="section-7.1.2-1">SCTP Chunk handler will create the payload of a legacy SCTP packet
-according to <span>[<a href="#RFC9260" class="cite xref">RFC9260</a>]</span>. Such payload will assume a PMTU that is
-equal to the value computed by SCTP minus the size of the CRYPTO Chunk
-header and DTLS record and authentication tag overhead. It's up to
-SCTP Chunk Handler to implement all the SCTP rules for bundling and
-retransmission mechanism.  Once ready, the payload will be
-transferred to DTLS as a single array of bytes.<a href="#section-7.1.2-1" class="pilcrow">¶</a></p>
-<p id="section-7.1.2-2">Once DTLS has created the related DTLS record (or DTLS records), it
+<p id="section-7.1-1">CRYPTO chunk sending happens when SCTP requires transferring control
+or DATA chunk(s) to the remote SCTP Endpoint.  For a proper handling, DCI
+shall be set to an established instance of DTLS connection.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
+<p id="section-7.1-2">SCTP Chunk handler will create the payload of a legacy SCTP packet
+according to <span>[<a href="#RFC9260" class="cite xref">RFC9260</a>]</span> and any used SCTP extensions. Such payload
+will assume a PMTU that is equal to the value computed by SCTP minus
+the size of the CRYPTO Chunk header and DTLS record and authentication
+tag overhead. It's up to SCTP Chunk Handler to implement all the SCTP
+rules for bundling and retransmission mechanism.  Once ready, the
+payload will be transferred to DTLS as a single array of bytes.<a href="#section-7.1-2" class="pilcrow">¶</a></p>
+<p id="section-7.1-3">Once DTLS has created the related DTLS record (or DTLS records), it
 will transfer the encrypted data as an array of bytes to CRYPTO chunk
 handler for encapsulation into a CRYPTO chunk and being forwarded to
-the SCTP header handler for transmission.<a href="#section-7.1.2-2" class="pilcrow">¶</a></p>
-<p id="section-7.1.2-3">The interface between SCTP and DTLS related to SCTP Payload will need
+the SCTP header handler for transmission.<a href="#section-7.1-3" class="pilcrow">¶</a></p>
+<p id="section-7.1-4">The interface between SCTP and DTLS related to SCTP Payload will need
 to carefully evaluate the PMTU as seen by SCTP and DTLS so that each
 payload generated by SCTP Chunk Handler will not cause the finished
 SCTP packet to exceed the known path MTU unless it is a Path MTUD
-discovery packet.<a href="#section-7.1.2-3" class="pilcrow">¶</a></p>
-</section>
-</div>
+discovery packet.<a href="#section-7.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="receiving">
@@ -2468,41 +2430,23 @@ discovery packet.<a href="#section-7.1.2-3" class="pilcrow">¶</a></p>
         <h3 id="name-receiving">
 <a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-receiving" class="section-name selfRef">Receiving</a>
         </h3>
-<p id="section-7.2-1">When receiving an SCTP packet containing a CRYPTO Chunk it may
-be part of the DTLS signaling or SCTP signaling. Since there's at most
-one CRYPTO Chunk per SCTP packet, the payload of that chunk will
-be transferred to the proper DTLS instance according to DCI for
-decryption and processing.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
+<p id="section-7.2-1">When receiving an SCTP packet containing a CRYPTO Chunk it will
+contain an payload of protected SCTP control or data chunks. Since
+there's at most one CRYPTO Chunk per SCTP packet, the payload of that
+chunk will be transferred to the proper DTLS instance according to DCI
+for decryption and processing.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
 <p id="section-7.2-2">As discussed in CRYPTO Chunk specification when receiving packets
 certain meta data will be needed to associate with the protected
 CRYPTO chunk payload for SCTP to correctly process it. This includes
 packet size, source IP and arrival interface, i.e. path information,
-ECN bits.<a href="#section-7.2-2" class="pilcrow">¶</a></p>
-<div id="dtls-signaling-1">
-<section id="section-7.2.1">
-          <h4 id="name-dtls-signaling-2">
-<a href="#section-7.2.1" class="section-number selfRef">7.2.1. </a><a href="#name-dtls-signaling-2" class="section-name selfRef">DTLS Signaling</a>
-          </h4>
-<p id="section-7.2.1-1">The payload contains a DTLS record that is addressed to DTLS,
-e.g. handshaking, DTLS will handle it and behave according. If there
-are no DTLS connection state for this DCI the DTLS will have to treat
-this as incoming to a DTLS server accepting new connection.<a href="#section-7.2.1-1" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="sctp-signaling">
-<section id="section-7.2.2">
-          <h4 id="name-sctp-signaling">
-<a href="#section-7.2.2" class="section-number selfRef">7.2.2. </a><a href="#name-sctp-signaling" class="section-name selfRef">SCTP Signaling</a>
-          </h4>
-<p id="section-7.2.2-1">When DTLS processes a DTLS record with decryption and integrity
+and ECN bits.<a href="#section-7.2-2" class="pilcrow">¶</a></p>
+<p id="section-7.2-3">When DTLS processes a DTLS record with decryption and integrity
 verification and that contains application data, it will output the
 data as an array of bytes and transfer it back to the CRYPTO Handler
-that delivers it for SCTP chunk handling.<a href="#section-7.2.2-1" class="pilcrow">¶</a></p>
-<p id="section-7.2.2-2">SCTP Chunk handler will threat the array as the payload of an SCTP
+that delivers it for SCTP chunk handling.<a href="#section-7.2-3" class="pilcrow">¶</a></p>
+<p id="section-7.2-4">SCTP Chunk handler will threat the array as the payload of an SCTP
 packet, thus it will extract all the chunks and handle them according
-to <span>[<a href="#RFC9260" class="cite xref">RFC9260</a>]</span>.<a href="#section-7.2.2-2" class="pilcrow">¶</a></p>
-</section>
-</div>
+to <span>[<a href="#RFC9260" class="cite xref">RFC9260</a>]</span> and any supported extension.<a href="#section-7.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
