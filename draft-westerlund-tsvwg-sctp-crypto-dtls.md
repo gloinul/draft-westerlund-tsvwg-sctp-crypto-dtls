@@ -753,7 +753,7 @@ padding. Use of DTLS padding hides this packet expansion from SCTP.
 
 ### DTLS 1.2
 
-The updates in Section 13 [RFC9147] SHALL be followed for DTLS
+The updates in Section 13 of [RFC9147] SHALL be followed for DTLS
 1.2. DTLS 1.2 MUST be configured to disable options known to provide
 insufficient security. HTTP/2 [RFC9113] gives good minimum
 requirements based on the attacks that where publicly known in 2022.
@@ -798,23 +798,23 @@ provide ephemeral key exchange.
 
 ## DTLS Handshake {#dtls-handshake}
 
-   ### Handshake of initial DTLS connection
+### Handshake of initial DTLS connection
 
    As soon the SCTP Association has entered the SCTP state PROTECTION
    PENDING as defined by {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}
    the DTLS handshake procedure is initiated by the endpoint that
    has initiated the SCTP association.
 
-   The DTLS endpoint needs if necessary fragment the handshake into
-   multiple records each meeting the known MTU limit of the path
-   between SCTP endpoints. Each DTLS handshake message fragment is
-   encapsulated in a DATA chunk with Protection Engine PPID.
-   The DTLS instance SHALL NOT use DTLS retransmission to repair
-   any packet losses of handshake message fragment.
-
-   Both SCTP endpoints SHALL perform authentication of the peer
-   endpoint. This may require exchange or input from the ULP
-   application for what peer identity that is accepted.
+   The DTLS endpoint will if necessary fragment the handshake into
+   multiple records each meeting the known or set MTU limit of the
+   path between SCTP endpoints. Each DTLS handshake message fragment
+   is sent as a SCTP message on the same stream where each message is
+   configured for reliable and in-order delivery with the Protection
+   Engine PPID.  The DTLS instance SHOULD NOT use DTLS retransmission
+   to repair any packet losses of handshake message fragment. Note: If
+   the DTLS implementation support configuring a MTU larger than the
+   actual IP MTU it could be used as SCTP provides reliability and
+   fragmentation.
 
    If the DTLS handshake is successful in establishing a security
    context to protect further communication and the peer identity is
@@ -827,21 +827,21 @@ provide ephemeral key exchange.
    selection of "Error During Protection Handshake" or "Timeout During
    Protection Handshake or Validation".
 
-  ### Handshake of further DTLS connections
+### Handshake of further DTLS connections
 
    When the SCTP Association has entered the ESTABLISHED state,
-   each of the endpoint can initiate an handshake.
+   each of the endpoint can initiate an DTLS handshake.
 
-   The DTLS endpoint needs if necessary fragment the handshake into
-   multiple records each meeting the known MTU limit of the path
-   between SCTP endpoints. Each DTLS handshake message fragment is
-   encapsulated in a DATA chunk with Protection Engine PPID.
-   The DTLS instance SHALL NOT use DTLS retransmission to repair
-   any packet losses of handshake message fragment.
-
-   Both SCTP endpoints SHALL perform authentication of the peer
-   endpoint. This may require exchange or input from the ULP
-   application for what peer identity that is accepted.
+   The DTLS endpoint will if necessary fragment the handshake into
+   multiple records each meeting the known or set MTU limit of the
+   path between SCTP endpoints. Each DTLS handshake message fragment
+   is sent as a SCTP message on the same stream where each message is
+   configured for reliable and in-order delivery with the Protection
+   Engine PPID.  The DTLS instance SHOULD NOT use DTLS retransmission
+   to repair any packet losses of handshake message fragment. Note: If
+   the DTLS implementation support configuring a MTU larger than the
+   actual IP MTU it could be used as SCTP provides reliability and
+   fragmentation.
 
    If the DTLS handshake failed the SCTP association SHALL generate
    an ERROR chunk with the Error in Protection error cause, with
@@ -854,8 +854,8 @@ provide ephemeral key exchange.
    DTLS handshake has completed, the protection against downgrade in
    the negotiation of protection engine is performed per
    {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}. The PVALID chunk will
-   sent inside a CRYPTO chunk protecting the plain text chunk as
-   defined in {{chunk-processing}}.
+   sent as a DTLS protected CRYPTO chunk payload per
+   {{chunk-processing}}, thus protecting the plain text chunk.
 
    If the validation completes successful the SCTP association will
    enter ESTABLISHED state. ULP data exchanges can now happen and
