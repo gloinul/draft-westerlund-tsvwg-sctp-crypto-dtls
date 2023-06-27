@@ -36,9 +36,6 @@ informative:
   RFC4895:
   RFC5061:
   RFC6083:
-  RFC8996:
-  RFC9113:
-  RFC9325:
   I-D.ietf-tls-rfc8446bis:
   I-D.ietf-tsvwg-dtls-over-sctp-bis:
   I-D.ietf-uta-rfc6125bis:
@@ -56,7 +53,11 @@ informative:
 normative:
   RFC4820:
   RFC6347:
+  RFC8996:
+  RFC9113:
   RFC9147:
+  RFC9325:
+
   RFC9260:
 
   I-D.westerlund-tsvwg-sctp-crypto-chunk:
@@ -1014,10 +1015,6 @@ produced packets that are not PMTUD probes does not become oversized.
 This may require updating during the SCTP associations lifetime due to
 future handshakes affecting cipher suit in use, or changes to record layer
 configurations.
-
-DTLS protection engine is RECOMMENDED to be provided with known path
-MTU from SCTP so that it can operate its signaling message safely.
-As the used MTU for the DTLS signaling will be DTLS responsibility.
 
 Note that this implies that DTLS protection engine is expected to
 accept application data payloads of potentially larger sizes than what
