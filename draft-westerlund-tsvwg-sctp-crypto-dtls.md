@@ -808,13 +808,13 @@ provide ephemeral key exchange.
    The DTLS endpoint will if necessary fragment the handshake into
    multiple records each meeting the known or set MTU limit of the
    path between SCTP endpoints. Each DTLS handshake message fragment
-   is sent as a SCTP message on the same stream where each message is
-   configured for reliable and in-order delivery with the Protection
-   Engine PPID.  The DTLS instance SHOULD NOT use DTLS retransmission
-   to repair any packet losses of handshake message fragment. Note: If
-   the DTLS implementation support configuring a MTU larger than the
-   actual IP MTU it could be used as SCTP provides reliability and
-   fragmentation.
+   is sent as a SCTP user message on the same stream where each
+   message is configured for reliable and in-order delivery with the
+   Protection Engine PPID.  The DTLS instance SHOULD NOT use DTLS
+   retransmission to repair any packet losses of handshake message
+   fragment. Note: If the DTLS implementation support configuring a
+   MTU larger than the actual IP MTU it could be used as SCTP provides
+   reliability and fragmentation.
 
    If the DTLS handshake is successful in establishing a security
    context to protect further communication and the peer identity is
@@ -835,13 +835,13 @@ provide ephemeral key exchange.
    The DTLS endpoint will if necessary fragment the handshake into
    multiple records each meeting the known or set MTU limit of the
    path between SCTP endpoints. Each DTLS handshake message fragment
-   is sent as a SCTP message on the same stream where each message is
-   configured for reliable and in-order delivery with the Protection
-   Engine PPID.  The DTLS instance SHOULD NOT use DTLS retransmission
-   to repair any packet losses of handshake message fragment. Note: If
-   the DTLS implementation support configuring a MTU larger than the
-   actual IP MTU it could be used as SCTP provides reliability and
-   fragmentation.
+   is sent as a SCTP user message on the same stream where each
+   message is configured for reliable and in-order delivery with the
+   Protection Engine PPID.  The DTLS instance SHOULD NOT use DTLS
+   retransmission to repair any packet losses of handshake message
+   fragment. Note: If the DTLS implementation support configuring a
+   MTU larger than the actual IP MTU it could be used as SCTP provides
+   reliability and fragmentation.
 
    If the DTLS handshake failed the SCTP association SHALL generate
    an ERROR chunk with the Error in Protection error cause, with
