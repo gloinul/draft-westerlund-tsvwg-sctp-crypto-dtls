@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-06-22T01:47:53.321527+00:00",
+  "timestamp": "2023-06-27T02:00:15.850560+00:00",
   "repo": "gloinul/draft-westerlund-tsvwg-sctp-crypto-dtls",
   "labels": [
     {
@@ -108,13 +108,13 @@
       "labels": [],
       "body": "Aligned with Crypto Chunk",
       "createdAt": "2023-06-20T08:33:41Z",
-      "updatedAt": "2023-06-21T14:17:44Z",
+      "updatedAt": "2023-06-26T10:40:36Z",
       "baseRepository": "gloinul/draft-westerlund-tsvwg-sctp-crypto-dtls",
       "baseRefName": "main",
       "baseRefOid": "183ac628ba7d445c887faa89f2592bbbe044fc6a",
       "headRepository": "gloinul/draft-westerlund-tsvwg-sctp-crypto-dtls",
       "headRefName": "issue2",
-      "headRefOid": "8b6b32314c7f4b9bd3c00d0f083f460d5179a8b1",
+      "headRefOid": "a63dac6e78c03398497f7186da363d46a69f0c23",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
