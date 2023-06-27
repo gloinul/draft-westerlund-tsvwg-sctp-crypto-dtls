@@ -865,30 +865,17 @@ provide ephemeral key exchange.
 
 ## Sending
 
-CRYPTO chunk sending happens either when DTLS needs to send its own
-data directly to the DTLS peer i.e. due to handshaking or when SCTP
-requires transferring control or DATA chunk to the remote SCTP Endpoint.
-For a proper handling, DCI shall be set to an established instance
-of DTLS connection.
-
-### DTLS Signaling
-
-DTLS shall transfer DTLS records to SCTP Header Handler as array of
-bytes. Each array has maximum size equal to the maximum size of SCTP
-payload as computed by SCTP minus the size of the CRYPTO chunk header.
-Each array shall contain one or more DTLS records, this is up to DTLS.
-From SCTP perspective each array is opaque data and will be used as
-payload of one CRYPTO chunk.
-
-### SCTP Payload
+CRYPTO chunk sending happens when SCTP requires transferring control
+or DATA chunk(s) to the remote SCTP Endpoint.  For a proper handling, DCI
+shall be set to an established instance of DTLS connection.
 
 SCTP Chunk handler will create the payload of a legacy SCTP packet
-according to {{RFC9260}}. Such payload will assume a PMTU that is
-equal to the value computed by SCTP minus the size of the CRYPTO Chunk
-header and DTLS record and authentication tag overhead. It's up to
-SCTP Chunk Handler to implement all the SCTP rules for bundling and
-retransmission mechanism.  Once ready, the payload will be
-transferred to DTLS as a single array of bytes.
+according to {{RFC9260}} and any used SCTP extensions. Such payload
+will assume a PMTU that is equal to the value computed by SCTP minus
+the size of the CRYPTO Chunk header and DTLS record and authentication
+tag overhead. It's up to SCTP Chunk Handler to implement all the SCTP
+rules for bundling and retransmission mechanism.  Once ready, the
+payload will be transferred to DTLS as a single array of bytes.
 
 Once DTLS has created the related DTLS record (or DTLS records), it
 will transfer the encrypted data as an array of bytes to CRYPTO chunk
@@ -903,26 +890,17 @@ discovery packet.
 
 ## Receiving
 
-When receiving an SCTP packet containing a CRYPTO Chunk it may
-be part of the DTLS signaling or SCTP signaling. Since there's at most
-one CRYPTO Chunk per SCTP packet, the payload of that chunk will
-be transferred to the proper DTLS instance according to DCI for
-decryption and processing.
+When receiving an SCTP packet containing a CRYPTO Chunk it will
+contain an payload of protected SCTP control or data chunks. Since
+there's at most one CRYPTO Chunk per SCTP packet, the payload of that
+chunk will be transferred to the proper DTLS instance according to DCI
+for decryption and processing.
 
 As discussed in CRYPTO Chunk specification when receiving packets
 certain meta data will be needed to associate with the protected
 CRYPTO chunk payload for SCTP to correctly process it. This includes
 packet size, source IP and arrival interface, i.e. path information,
-ECN bits.
-
-### DTLS Signaling
-
-The payload contains a DTLS record that is addressed to DTLS,
-e.g. handshaking, DTLS will handle it and behave according. If there
-are no DTLS connection state for this DCI the DTLS will have to treat
-this as incoming to a DTLS server accepting new connection.
-
-### SCTP Signaling
+and ECN bits.
 
 When DTLS processes a DTLS record with decryption and integrity
 verification and that contains application data, it will output the
@@ -931,7 +909,7 @@ that delivers it for SCTP chunk handling.
 
 SCTP Chunk handler will threat the array as the payload of an SCTP
 packet, thus it will extract all the chunks and handle them according
-to {{RFC9260}}.
+to {{RFC9260}} and any supported extension.
 
 # Parallel DTLS Rekeying {#parallel-dtls}
 
