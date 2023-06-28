@@ -1122,7 +1122,9 @@ Table of Contents
    [I-D.westerlund-tsvwg-sctp-crypto-chunk]
               Westerlund, M., Preuß Mattsson, J., and C. Porfiri,
               "Stream Control Transmission Protocol (SCTP) CRYPTO
-              chunk", December 2022, <https://datatracker.ietf.org>.
+              chunk", June 2023,
+              <https://datatracker.ietf.orghttps://datatracker.ietf.org/
+              doc/draft-westerlund-tsvwg-sctp-crypto-chunk/>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
