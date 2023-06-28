@@ -36,9 +36,6 @@ informative:
   RFC4895:
   RFC5061:
   RFC6083:
-  RFC8996:
-  RFC9113:
-  RFC9325:
   I-D.ietf-tls-rfc8446bis:
   I-D.ietf-tsvwg-dtls-over-sctp-bis:
   I-D.ietf-uta-rfc6125bis:
@@ -56,7 +53,11 @@ informative:
 normative:
   RFC4820:
   RFC6347:
+  RFC8996:
+  RFC9113:
   RFC9147:
+  RFC9325:
+
   RFC9260:
 
   I-D.westerlund-tsvwg-sctp-crypto-chunk:
@@ -120,8 +121,9 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
    message forgery.
 
    Applications using DTLS in SCTP can use all currently existing
-   transport features provided by SCTP and its extensions. DTLS in
-   SCTP supports:
+   transport features provided by SCTP and its extensions, in some
+   cases with some limitations, as specified in
+   {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}. DTLS in SCTP supports:
 
    * preservation of message boundaries.
 
@@ -154,8 +156,10 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
 
    In a SCTP association initiation where DTLS in SCTP is chosen as
    the protection engine for the CRYPTO chunk the DTLS handshake
-   is exchanged encapsulated in the CRYPTO chunk until an initial
-   DTLS connection has been established. If the DTLS handshake fails, the
+   is exchanged encapsulated in plain DATA chunks with Protection
+   Engine PPID (see section 10.6 of {{I-D.westerlund-tsvwg-sctp-crypto-chunk}})
+   until an initial DTLS connection has been established.
+   If the DTLS handshake fails, the
    SCTP association is aborted. When the DTLS connection has been
    established PVALID chunks are exchanged to verify that no
    downgrade attack between different protection engines has
@@ -167,7 +171,7 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
    start sending data over the SCTP association. From this point all
    chunks will be protected by encapsulating them in DTLS protected
    CRYPTO chunks. The SCTP chunks to be included in an SCTP packet
-   are input as plaint text application data input to DTLS. The
+   are the plain text application data input to DTLS. The
    encrypted DTLS application data record is then encapsulated in the
    CRYPTO chunk and the packet is transmitted, see {{chunk-processing}}.
 
@@ -199,26 +203,31 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
    The DTLS connection is free to send any alert, handshake message, or
    other non-application data to its peer at any point in time. Thus,
    enabling DTLS 1.3 Key Updates for example.
+   All non-application data SHOULD be sent by means of SCTP DATA chunks
+   with Protection Engine PPID as specified in
+   {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
 
 ~~~~~~~~~~~ aasvg
-+---------------------+
-|                     |
-|        ULP          |
-|                     |
-+---------------------+ <-- User Level Messages
-|                     |
-| SCTP Chunks Handler | +-- SCTP Unprotected Payload
-|                     |/
-+---------------------+    +--------------+
-|        CRYPTO       +--->|              |
-|        Chunk        |    + DTLS in SCTP +
-|       Handler       |<---+              |
-+---------------------+    +--------------+
++---------------+ +--------------------+
+|               | | Protection Engine  |  Keys
+|      ULP      | |                    +-------------.
+|               | |   Key Management   |              |
++---------------+-+---+----------------+              |
+|                     |                 \    User     |
+|                     |                  +-- Level    |
+| SCTP Chunks Handler |                      Messages |
+|                     |                               |
+|                     | +-- SCTP Unprotected Payload  |
+|                     |/                              |
++---------------------+    +---------------------+    |
+|        CRYPTO       |    | Protection Engine   |    |
+|        Chunk        |<-->|                     |<--'
+|       Handler       |    | Protection Operator |
++---------------------+    +---------------------+
 |                     |\
-| SCTP Header Handler | +-- SCTP Protected Payload
+| SCTP Header Handler | +-- DTLS Encrypted SCTP Payload
 |                     |
 +---------------------+
-
 ~~~~~~~~~~~
 {: #overview-layering title="DTLS in SCTP layer
 in regard to SCTP and upper layer protocol"}
@@ -470,7 +479,7 @@ IANA below in {{iana-protection-engines}}.
 
    Flags: 6 bits
    : Chunk Flag bits not currently used by DTLS in SCTP. They
-   MUST be set to zero (0) and MUST be ignored on reception. They may
+   MUST be set to zero (0) and MUST be ignored on reception. They MAY
    be used in future updated specifications for DTLS in SCTP.
 
    Payload: variable length
@@ -504,8 +513,10 @@ according to {{dtls-handshake}}.
 
 DTLS protection engine being initialized for a new SCTP association
 will set the DCI counter = 0, which implies a DCI field value of 0,
-for the initial DTLS connection.  CRYPTO chunk handler in this state
-will put DTLS records in CRYPTO chunks and deliver to the remote peer.
+for the initial DTLS connection. The DTLS handshake messages are
+transmitted from this endpoint to the peer using DATA chunks with the
+PPID value set to Protection Engine Protocol Identifier
+{{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
 
 When a successful handshake has been completed, DTLS protection engine
 will inform CRYPTO chunk Handler that will move SCTP State Machine
@@ -525,10 +536,6 @@ further specified in {{parallel-dtls}}.
 When the SCTP association leaves the ESTABLISHED state per {{RFC9260}}
 to be shutdown the DTLS connection is kept and continues to protect
 the SCTP packet payloads through the shutdown process.
-Even new DTLS connections can be established if necessary to maintain
-the protection of the SCTP packet. Although it is recommended to avoid
-establishing new DTLS connection if not necessary to be able to
-conclude the shutdown process.
 
 When the association reaches the CLOSED state as part of the SCTP
 association closing process all DTLS connections that existed are
@@ -561,7 +568,7 @@ other dropped.
 When the handshake has been completed successfully, the new DTLS
 connection will be possible to use for traffic, if the handshake is
 not completed successfully, the new DCI value will not be considered
-and a next attempt will reuse that DCI.
+used and a next attempt will reuse that DCI.
 
 ### Remove an existing DTLS Connection {#remove-dtls-connection}
 
@@ -593,9 +600,9 @@ handling defined in {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}.
 
 When DTLS encounters an error it may report that issue using DTLS
 alert message to its peer by putting the created DTLS record in a
-CRYPTO chunk and issuing an SCTP packet. This is independent of what
-to do in relation to the SCTP association.  Depending on the severance
-of the error different paths can be the result:
+DATA chunk with Protection Engine PPID and sending it in an SCTP packet.
+This is independent of what to do in relation to the SCTP association.
+Depending on the severance of the error different paths can be the result:
 
    Non-critical:
    : the DTLS connection can continue to protect
@@ -603,32 +610,26 @@ of the error different paths can be the result:
    to the peer using a DTLS alert message, but otherwise continue
    without further action.
 
-   Critical, but recoverable:
-   : In cases the DTLS connection fails fatally but it is not ensured
-   that the issue will persist the protection engine SHOULD attempt to
-   establish a new DTLS connection. If the DTLS handshake fails in the
-   end the SCTP association will time out as the SCTP higher layer
-   during this period is unable to pass any packets acknowledging a
-   working path.
+   Critical, but not immediately fatal:
+   : If the DTLS connection has a
+   critical issue, but can still protect packets then a the endpoint
+   SHOULD attempt to establish a new DTLS connection. If that succeeds
+   then the SCTP association switches over to the new DTLS connection
+   and can terminate the old one including reporting the error. In
+   case the establishment fails, then this critical issue MUST be reported
+   to the SCTP association so that it can send an ABORT chunk with the
+   Error in Protection cause code. This will terminate the SCTP
+   association immediately, provide ULP with notification of the
+   failure and speeding up any higher layer management of the failure.
 
-   Critical, non-recoverable but not immediately fatal:
-   : If the
-   error requires termination of the SCTP association but allows for
-   sending some additional SCTP packets. Then this critical issue MUST be
-   reported to the SCTP association so that it can send an ERROR chunk
-   with the Error in Protection cause code without any extra cause
-   code, combined with an ABORT chunk. This will terminate the SCTP
-   association immediately, provide ULP with notification of the failure
-   and speeding up any higher layer management of the failure.
-
-   Critical, non-recoverable and immediately fatal:
-   : If the DTLS connection fails so that no further data can be
-   protected (i.e. either sent or received) with maintained security
-   and establishing a new DTLS connection will not address the failure
-   then the protection engine will have to indicate this to the SCTP
-   implementation so it can perform a one sides SCTP association
-   termination. This will lead to an eventual SCTP association timeout
-   in the peer.
+   Critical, and immediately fatal:
+   : If the DTLS connection fails so
+   that no further data can be protected (i.e. either sent or
+   received) with maintained security then it is not possible to
+   establish a new DTLS connection and the protection engine will
+   have to indicate this to the SCTP implementation so it can perform
+   a one sides SCTP association termination. This will lead to an
+   eventual SCTP association timeout in the peer.
 
 # DTLS Considerations
 
@@ -753,7 +754,7 @@ padding. Use of DTLS padding hides this packet expansion from SCTP.
 
 ### DTLS 1.2
 
-The updates in Section 13 [RFC9147] SHALL be followed for DTLS
+The updates in Section 13 of [RFC9147] SHALL be followed for DTLS
 1.2. DTLS 1.2 MUST be configured to disable options known to provide
 insufficient security. HTTP/2 [RFC9113] gives good minimum
 requirements based on the attacks that where publicly known in 2022.
@@ -762,7 +763,7 @@ The AEAD limits in DTLS 1.3 are equally valid for DTLS 1.2 and SHOULD
 be followed for DTLS in SCTP, but are not mandated by the DTLS 1.2
 specification.
 
-Use of renegotiation is NOT RECOMMNEDED as it is disables in many
+Use of renegotiation is NOT RECOMMENDED as it is disables in many
 implementations and does not provide any benefits in DTLS in SCTP
 compared to setting up a new connection. Resumption MAY be used but
 does not provide ephemeral key exchange as in DTLS 1.3
@@ -798,21 +799,23 @@ provide ephemeral key exchange.
 
 ## DTLS Handshake {#dtls-handshake}
 
+### Handshake of initial DTLS connection
+
    As soon the SCTP Association has entered the SCTP state PROTECTION
    PENDING as defined by {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}
    the DTLS handshake procedure is initiated by the endpoint that
    has initiated the SCTP association.
 
-   The DTLS endpoint needs if necessary fragment the handshake into
-   multiple records each meeting the known MTU limit of the path
-   between SCTP endpoints. Each DTLS handshake message fragment is
-   encapsulated in a CRYPTO chunk. The DTLS instance SHALL use
-   DTLS retransmission to repair any packet losses of handshake
-   message fragment.
-
-   Both SCTP endpoints SHALL perform authentication of the peer
-   endpoint. This may require exchange or input from the ULP
-   application for what peer identity that is accepted.
+   The DTLS endpoint will if necessary fragment the handshake into
+   multiple records each meeting the known or set MTU limit of the
+   path between SCTP endpoints. Each DTLS handshake message fragment
+   is sent as a SCTP user message on the same stream where each
+   message is configured for reliable and in-order delivery with the
+   Protection Engine PPID.  The DTLS instance SHOULD NOT use DTLS
+   retransmission to repair any packet losses of handshake message
+   fragment. Note: If the DTLS implementation support configuring a
+   MTU larger than the actual IP MTU it could be used as SCTP provides
+   reliability and fragmentation.
 
    If the DTLS handshake is successful in establishing a security
    context to protect further communication and the peer identity is
@@ -825,6 +828,26 @@ provide ephemeral key exchange.
    selection of "Error During Protection Handshake" or "Timeout During
    Protection Handshake or Validation".
 
+### Handshake of further DTLS connections
+
+   When the SCTP Association has entered the ESTABLISHED state,
+   each of the endpoint can initiate an DTLS handshake.
+
+   The DTLS endpoint will if necessary fragment the handshake into
+   multiple records each meeting the known or set MTU limit of the
+   path between SCTP endpoints. Each DTLS handshake message fragment
+   is sent as a SCTP user message on the same stream where each
+   message is configured for reliable and in-order delivery with the
+   Protection Engine PPID.  The DTLS instance SHOULD NOT use DTLS
+   retransmission to repair any packet losses of handshake message
+   fragment. Note: If the DTLS implementation support configuring a
+   MTU larger than the actual IP MTU it could be used as SCTP provides
+   reliability and fragmentation.
+
+   If the DTLS handshake failed the SCTP association SHALL generate
+   an ERROR chunk with the Error in Protection error cause, with
+   extra error causes "Error During Protection Handshake".
+
 
 ## Validation Against Downgrade Attacks
 
@@ -832,8 +855,8 @@ provide ephemeral key exchange.
    DTLS handshake has completed, the protection against downgrade in
    the negotiation of protection engine is performed per
    {{I-D.westerlund-tsvwg-sctp-crypto-chunk}}. The PVALID chunk will
-   sent inside a CRYPTO chunk protecting the plain text chunk as
-   defined in {{chunk-processing}}.
+   sent as a DTLS protected CRYPTO chunk payload per
+   {{chunk-processing}}, thus protecting the plain text chunk.
 
    If the validation completes successful the SCTP association will
    enter ESTABLISHED state. ULP data exchanges can now happen and
@@ -843,30 +866,17 @@ provide ephemeral key exchange.
 
 ## Sending
 
-CRYPTO chunk sending happens either when DTLS needs to send its own
-data directly to the DTLS peer i.e. due to handshaking or when SCTP
-requires transferring control or DATA chunk to the remote SCTP Endpoint.
-For a proper handling, DCI shall be set to an established instance
-of DTLS connection.
-
-### DTLS Signaling
-
-DTLS shall transfer DTLS records to SCTP Header Handler as array of
-bytes. Each array has maximum size equal to the maximum size of SCTP
-payload as computed by SCTP minus the size of the CRYPTO chunk header.
-Each array shall contain one or more DTLS records, this is up to DTLS.
-From SCTP perspective each array is opaque data and will be used as
-payload of one CRYPTO chunk.
-
-### SCTP Payload
+CRYPTO chunk sending happens when SCTP requires transferring control
+or DATA chunk(s) to the remote SCTP Endpoint.  For a proper handling, DCI
+shall be set to an established instance of DTLS connection.
 
 SCTP Chunk handler will create the payload of a legacy SCTP packet
-according to {{RFC9260}}. Such payload will assume a PMTU that is
-equal to the value computed by SCTP minus the size of the CRYPTO Chunk
-header and DTLS record and authentication tag overhead. It's up to
-SCTP Chunk Handler to implement all the SCTP rules for bundling and
-retransmission mechanism.  Once ready, the payload will be
-transferred to DTLS as a single array of bytes.
+according to {{RFC9260}} and any used SCTP extensions. Such payload
+will assume a PMTU that is equal to the value computed by SCTP minus
+the size of the CRYPTO Chunk header and DTLS record and authentication
+tag overhead. It's up to SCTP Chunk Handler to implement all the SCTP
+rules for bundling and retransmission mechanism.  Once ready, the
+payload will be transferred to DTLS as a single array of bytes.
 
 Once DTLS has created the related DTLS record (or DTLS records), it
 will transfer the encrypted data as an array of bytes to CRYPTO chunk
@@ -881,26 +891,17 @@ discovery packet.
 
 ## Receiving
 
-When receiving an SCTP packet containing a CRYPTO Chunk it may
-be part of the DTLS signaling or SCTP signaling. Since there's at most
-one CRYPTO Chunk per SCTP packet, the payload of that chunk will
-be transferred to the proper DTLS instance according to DCI for
-decryption and processing.
+When receiving an SCTP packet containing a CRYPTO Chunk it will
+contain an payload of protected SCTP control or data chunks. Since
+there's at most one CRYPTO Chunk per SCTP packet, the payload of that
+chunk will be transferred to the proper DTLS instance according to DCI
+for decryption and processing.
 
 As discussed in CRYPTO Chunk specification when receiving packets
 certain meta data will be needed to associate with the protected
 CRYPTO chunk payload for SCTP to correctly process it. This includes
 packet size, source IP and arrival interface, i.e. path information,
-ECN bits.
-
-### DTLS Signaling
-
-The payload contains a DTLS record that is addressed to DTLS,
-e.g. handshaking, DTLS will handle it and behave according. If there
-are no DTLS connection state for this DCI the DTLS will have to treat
-this as incoming to a DTLS server accepting new connection.
-
-### SCTP Signaling
+and ECN bits.
 
 When DTLS processes a DTLS record with decryption and integrity
 verification and that contains application data, it will output the
@@ -909,7 +910,7 @@ that delivers it for SCTP chunk handling.
 
 SCTP Chunk handler will threat the array as the payload of an SCTP
 packet, thus it will extract all the chunks and handle them according
-to {{RFC9260}}.
+to {{RFC9260}} and any supported extension.
 
 # Parallel DTLS Rekeying {#parallel-dtls}
 
@@ -1014,10 +1015,6 @@ produced packets that are not PMTUD probes does not become oversized.
 This may require updating during the SCTP associations lifetime due to
 future handshakes affecting cipher suit in use, or changes to record layer
 configurations.
-
-DTLS protection engine is RECOMMENED to be provided with known path
-MTU from SCTP so that it can operate its signaling message safely.
-As the used MTU for the DTLS signaling will be DTLS responsibility.
 
 Note that this implies that DTLS protection engine is expected to
 accept application data payloads of potentially larger sizes than what
