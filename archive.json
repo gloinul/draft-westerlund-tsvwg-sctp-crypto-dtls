@@ -1,0 +1,150 @@
+{
+  "magic": "E!vIA5L86J2I",
+  "timestamp": "2023-06-29T01:55:03.348441+00:00",
+  "repo": "gloinul/draft-westerlund-tsvwg-sctp-crypto-dtls",
+  "labels": [
+    {
+      "name": "bug",
+      "description": "Something isn't working",
+      "color": "d73a4a"
+    },
+    {
+      "name": "documentation",
+      "description": "Improvements or additions to documentation",
+      "color": "0075ca"
+    },
+    {
+      "name": "duplicate",
+      "description": "This issue or pull request already exists",
+      "color": "cfd3d7"
+    },
+    {
+      "name": "enhancement",
+      "description": "New feature or request",
+      "color": "a2eeef"
+    },
+    {
+      "name": "good first issue",
+      "description": "Good for newcomers",
+      "color": "7057ff"
+    },
+    {
+      "name": "help wanted",
+      "description": "Extra attention is needed",
+      "color": "008672"
+    },
+    {
+      "name": "invalid",
+      "description": "This doesn't seem right",
+      "color": "e4e669"
+    },
+    {
+      "name": "question",
+      "description": "Further information is requested",
+      "color": "d876e3"
+    },
+    {
+      "name": "wontfix",
+      "description": "This will not be worked on",
+      "color": "ffffff"
+    }
+  ],
+  "issues": [
+    {
+      "number": 2,
+      "id": "I_kwDOIc8ll85pMEX9",
+      "title": "Alignment with Crypto Chunk",
+      "url": "https://github.com/gloinul/draft-westerlund-tsvwg-sctp-crypto-dtls/issues/2",
+      "state": "CLOSED",
+      "author": "teiclap",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The DTLS Crypto needs to be realigned with CRYPTO CHUNK",
+      "createdAt": "2023-06-20T06:59:29Z",
+      "updatedAt": "2023-06-28T12:20:47Z",
+      "closedAt": "2023-06-28T12:20:46Z",
+      "comments": [
+        {
+          "author": "gloinul",
+          "authorAssociation": "OWNER",
+          "body": "PR #3 has been merged that resolve issue. ",
+          "createdAt": "2023-06-28T12:20:46Z",
+          "updatedAt": "2023-06-28T12:20:46Z"
+        }
+      ]
+    }
+  ],
+  "pulls": [
+    {
+      "number": 1,
+      "id": "PR_kwDOIc8ll85ImsXm",
+      "title": "Aligned terminology and naming",
+      "url": "https://github.com/gloinul/draft-westerlund-tsvwg-sctp-crypto-dtls/pull/1",
+      "state": "MERGED",
+      "author": "emanjon",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-01-26T16:13:04Z",
+      "updatedAt": "2023-01-26T16:14:34Z",
+      "baseRepository": "gloinul/draft-westerlund-tsvwg-sctp-crypto-dtls",
+      "baseRefName": "main",
+      "baseRefOid": "85664ae777d7362301548ae58aa790146991a72b",
+      "headRepository": "gloinul/draft-westerlund-tsvwg-sctp-crypto-dtls",
+      "headRefName": "terms",
+      "headRefOid": "abfccbecfdbed653b1e116d2044e3a89ac53f653",
+      "closedAt": "2023-01-26T16:14:33Z",
+      "mergedAt": "2023-01-26T16:14:33Z",
+      "mergedBy": "emanjon",
+      "mergeCommit": {
+        "oid": "9db0c4c1da086a1c74dc6a6f4ae53170c4db5afa"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 3,
+      "id": "PR_kwDOIc8ll85Tacxj",
+      "title": "Issue2",
+      "url": "https://github.com/gloinul/draft-westerlund-tsvwg-sctp-crypto-dtls/pull/3",
+      "state": "MERGED",
+      "author": "teiclap",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Aligned with Crypto Chunk",
+      "createdAt": "2023-06-20T08:33:41Z",
+      "updatedAt": "2023-06-28T12:18:54Z",
+      "baseRepository": "gloinul/draft-westerlund-tsvwg-sctp-crypto-dtls",
+      "baseRefName": "main",
+      "baseRefOid": "183ac628ba7d445c887faa89f2592bbbe044fc6a",
+      "headRepository": "gloinul/draft-westerlund-tsvwg-sctp-crypto-dtls",
+      "headRefName": "issue2",
+      "headRefOid": "0f6e5bc8fae82732fbaf9cdfcac1b16603c52f22",
+      "closedAt": "2023-06-28T12:18:53Z",
+      "mergedAt": "2023-06-28T12:18:53Z",
+      "mergedBy": "gloinul",
+      "mergeCommit": {
+        "oid": "9aa01ab55ae58f627b4dd3d8a7e317d00f8a498e"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOIc8ll85ZlT5V",
+          "commit": {
+            "abbreviatedOid": "0f6e5bc"
+          },
+          "author": "gloinul",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-06-28T12:18:44Z",
+          "updatedAt": "2023-06-28T12:18:44Z",
+          "comments": []
+        }
+      ]
+    }
+  ]
+}
