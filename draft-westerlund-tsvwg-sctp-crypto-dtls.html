@@ -20,23 +20,22 @@ months and supports mutual re-authentication and rekeying with ephemeral
 key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
 6083) and SCTP-AUTH (RFC 4895). 
     " name="description">
-<meta content="xml2rfc 3.17.3" name="generator">
+<meta content="xml2rfc 3.23.0" name="generator">
 <meta content="draft-westerlund-tsvwg-sctp-crypto-dtls-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.17.3
-    Python 3.11.4
-    appdirs 1.4.4
-    ConfigArgParse 1.5.3
+  xml2rfc 3.23.0
+    Python 3.12.3
+    ConfigArgParse 1.7
     google-i18n-address 3.1.0
     intervaltree 3.1.0
-    Jinja2 3.1.2
-    lxml 4.9.2
+    Jinja2 3.1.4
+    lxml 4.9.4
+    platformdirs 4.2.2
     pycountry 22.3.5
-    PyYAML 6.0
-    requests 2.31.0
-    setuptools 67.7.2
-    six 1.16.0
-    wcwidth 0.2.6
+    PyYAML 6.0.1
+    requests 2.32.3
+    setuptools 70.3.0
+    wcwidth 0.2.13
 -->
 <link href="draft-westerlund-tsvwg-sctp-crypto-dtls.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -659,7 +658,7 @@ sub, sup {
 }
 #toc nav li {
   line-height: 1.3em;
-  margin: 0.75em 0;
+  margin: 2px 0;
   padding-left: 1.2em;
   text-indent: -1.2em;
 }
@@ -752,7 +751,7 @@ hr.addr {
     z-index: 2;
     top: 0;
     right: 0;
-    padding: 0;
+    padding: 1px 0 0 0;
     margin: 0;
     border-bottom: 1px solid #ccc;
     opacity: 0.6;
@@ -876,16 +875,13 @@ hr.addr {
     border-top: none;
     padding-top: 0;
   }
-  figure, pre {
+  figure, pre, .vcard {
     page-break-inside: avoid;
-  }
-  figure {
-    overflow: scroll;
   }
   h1, h2, h3, h4, h5, h6 {
     page-break-after: avoid;
   }
-  h2+*, h3+*, h4+*, h5+*, h6+* {
+  :is(h2, h3, h4, h5, h6)+*, dd {
     page-break-before: avoid;
   }
   pre {
@@ -898,6 +894,9 @@ hr.addr {
   }
   td {
     border-top: 1px solid #ddd;
+  }
+  .toplink {
+    display: none;
   }
 }
 
@@ -999,28 +998,6 @@ address div.right {
   text-align: right;
 }
 
-/* Give the table caption label the same styling as the figcaption */
-
-@media print {
-  .toplink {
-    display: none;
-  }
-
-  /* avoid overwriting the top border line with the ToC header */
-  #toc {
-    padding-top: 1px;
-  }
-
-  /* Avoid page breaks inside dl and author address entries */
-  dd {
-    page-break-before: avoid;
-  }
-  .vcard {
-    page-break-inside: avoid;
-  }
-
-}
-
 /* Dark mode. */
 @media (prefers-color-scheme: dark) {
 :root {
@@ -1057,11 +1034,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">DTLS in SCTP</td>
-<td class="right">June 2023</td>
+<td class="right">September 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Westerlund, et al.</td>
-<td class="center">Expires 30 December 2023</td>
+<td class="center">Expires 20 March 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1074,12 +1051,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-westerlund-tsvwg-sctp-crypto-dtls-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2023-06-28" class="published">28 June 2023</time>
+<time datetime="2024-09-16" class="published">16 September 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2023-12-30">30 December 2023</time></dd>
+<dd class="expires"><time datetime="2025-03-20">20 March 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1145,7 +1122,7 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 30 December 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 20 March 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1154,7 +1131,7 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
 <a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
         </h2>
 <p id="section-boilerplate.2-1">
-            Copyright (c) 2023 IETF Trust and the persons identified as the
+            Copyright (c) 2024 IETF Trust and the persons identified as the
             document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.2-2">
             This document is subject to BCP 78 and the IETF Trust's Legal
@@ -1391,23 +1368,31 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
    cases with some limitations, as specified in
    <span>[<a href="#I-D.westerlund-tsvwg-sctp-crypto-chunk" class="cite xref">I-D.westerlund-tsvwg-sctp-crypto-chunk</a>]</span>. DTLS in SCTP supports:<a href="#section-1.1-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1.1-4.1">preservation of message boundaries.<a href="#section-1.1-4.1" class="pilcrow">¶</a>
+<li class="normal" id="section-1.1-4.1">
+            <p id="section-1.1-4.1.1">preservation of message boundaries.<a href="#section-1.1-4.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.1-4.2">no limitation on number of unidirectional and bidirectional streams.<a href="#section-1.1-4.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-4.2">
+            <p id="section-1.1-4.2.1">no limitation on number of unidirectional and bidirectional streams.<a href="#section-1.1-4.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.1-4.3">ordered and unordered delivery of SCTP user messages.<a href="#section-1.1-4.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-4.3">
+            <p id="section-1.1-4.3.1">ordered and unordered delivery of SCTP user messages.<a href="#section-1.1-4.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.1-4.4">the partial reliability extension as defined in <span>[<a href="#RFC3758" class="cite xref">RFC3758</a>]</span>.<a href="#section-1.1-4.4" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-4.4">
+            <p id="section-1.1-4.4.1">the partial reliability extension as defined in <span>[<a href="#RFC3758" class="cite xref">RFC3758</a>]</span>.<a href="#section-1.1-4.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.1-4.5">multi-homing of the SCTP association per <span>[<a href="#RFC9260" class="cite xref">RFC9260</a>]</span>.<a href="#section-1.1-4.5" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-4.5">
+            <p id="section-1.1-4.5.1">multi-homing of the SCTP association per <span>[<a href="#RFC9260" class="cite xref">RFC9260</a>]</span>.<a href="#section-1.1-4.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.1-4.6">the dynamic address reconfiguration extension as defined in
- <span>[<a href="#RFC5061" class="cite xref">RFC5061</a>]</span>.<a href="#section-1.1-4.6" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-4.6">
+            <p id="section-1.1-4.6.1">the dynamic address reconfiguration extension as defined in
+ <span>[<a href="#RFC5061" class="cite xref">RFC5061</a>]</span>.<a href="#section-1.1-4.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.1-4.7">User messages of any size.<a href="#section-1.1-4.7" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-4.7">
+            <p id="section-1.1-4.7.1">User messages of any size.<a href="#section-1.1-4.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.1-4.8">SCTP Packets with a protected set of chunks up to a size of
-2<sup>14</sup> bytes.<a href="#section-1.1-4.8" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-4.8">
+            <p id="section-1.1-4.8.1">SCTP Packets with a protected set of chunks up to a size of
+2<sup>14</sup> bytes.<a href="#section-1.1-4.8.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -1475,7 +1460,7 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
 <figure id="figure-1">
           <div id="section-1.2-7.1">
             <div class="alignLeft art-svg artwork" id="section-1.2-7.1.1">
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="352" width="448" viewBox="0 0 448 352" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="352" width="448" viewBox="0 0 448 352" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
                 <path d="M 8,32 L 8,336" fill="none" stroke="black"></path>
                 <path d="M 136,32 L 136,96" fill="none" stroke="black"></path>
                 <path d="M 152,32 L 152,96" fill="none" stroke="black"></path>
@@ -1553,38 +1538,47 @@ key exchange. This is intended as an alternative to using DTLS/SCTP (RFC
         </h3>
 <p id="section-1.3-1">DTLS in SCTP has a number of properties that are attractive.<a href="#section-1.3-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1.3-2.1">Provides confidentiality, integrity protection, and source
-authentication for each packet.<a href="#section-1.3-2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-1.3-2.1">
+            <p id="section-1.3-2.1.1">Provides confidentiality, integrity protection, and source
+authentication for each packet.<a href="#section-1.3-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.3-2.2">Provides replay protection on SCTP packet level preventing
+          <li class="normal" id="section-1.3-2.2">
+            <p id="section-1.3-2.2.1">Provides replay protection on SCTP packet level preventing
 malicious replay attacks on SCTP, both protecting the data as well
-as the SCTP functions themselves.<a href="#section-1.3-2.2" class="pilcrow">¶</a>
+as the SCTP functions themselves.<a href="#section-1.3-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.3-2.3">Provides mutual authentication of the endpoints based on any
-authentication mechanism supported by DTLS.<a href="#section-1.3-2.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.3-2.3">
+            <p id="section-1.3-2.3.1">Provides mutual authentication of the endpoints based on any
+authentication mechanism supported by DTLS.<a href="#section-1.3-2.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.3-2.4">Uses parallel DTLS connections to enable mutual re-authentication
+          <li class="normal" id="section-1.3-2.4">
+            <p id="section-1.3-2.4.1">Uses parallel DTLS connections to enable mutual re-authentication
 and rekeying with ephemeral key exchange. Thus, enabling SCTP association
-lifetimes without known limitations.<a href="#section-1.3-2.4" class="pilcrow">¶</a>
+lifetimes without known limitations.<a href="#section-1.3-2.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.3-2.5">Uses core of DTLS as it is and updates and fixes to DTLS security
+          <li class="normal" id="section-1.3-2.5">
+            <p id="section-1.3-2.5.1">Uses core of DTLS as it is and updates and fixes to DTLS security
 properties can be implemented without further changes to this
-specification.<a href="#section-1.3-2.5" class="pilcrow">¶</a>
+specification.<a href="#section-1.3-2.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.3-2.6">Secures all SCTP packets exchanged after SCTP association has
+          <li class="normal" id="section-1.3-2.6">
+            <p id="section-1.3-2.6.1">Secures all SCTP packets exchanged after SCTP association has
 reached the established state. Making targeted attacks against
-the SCTP protocol and implementation much harder.<a href="#section-1.3-2.6" class="pilcrow">¶</a>
+the SCTP protocol and implementation much harder.<a href="#section-1.3-2.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.3-2.7">DTLS in SCTP results in no limitations on user message
+          <li class="normal" id="section-1.3-2.7">
+            <p id="section-1.3-2.7.1">DTLS in SCTP results in no limitations on user message
 transmission, those properties are the same as for an unprotected
-SCTP association.<a href="#section-1.3-2.7" class="pilcrow">¶</a>
+SCTP association.<a href="#section-1.3-2.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.3-2.8">Limited overhead on a per packet basis, with 4 bytes for the
+          <li class="normal" id="section-1.3-2.8">
+            <p id="section-1.3-2.8.1">Limited overhead on a per packet basis, with 4 bytes for the
 CRYPTO chunk plus the DTLS record overhead. The DTLS
-overhead is dependent on the DTLS version.<a href="#section-1.3-2.8" class="pilcrow">¶</a>
+overhead is dependent on the DTLS version.<a href="#section-1.3-2.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.3-2.9">Support of SCTP packet plain text payload sizes up to
-2<sup>14</sup> bytes.<a href="#section-1.3-2.9" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.3-2.9">
+            <p id="section-1.3-2.9.1">Support of SCTP packet plain text payload sizes up to
+2<sup>14</sup> bytes.<a href="#section-1.3-2.9.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <div id="benefits-compared-to-dtlssctp">
@@ -1596,7 +1590,8 @@ overhead is dependent on the DTLS version.<a href="#section-1.3-2.8" class="pilc
    has several important differences most to the benefit of DTLS in
    SCTP. This section reviews these differences.<a href="#section-1.3.1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1.3.1-2.1">Replay Protection in DTLS/SCTP has some limitations due to
+<li class="normal" id="section-1.3.1-2.1">
+              <p id="section-1.3.1-2.1.1">Replay Protection in DTLS/SCTP has some limitations due to
 SCTP-AUTH <span>[<a href="#RFC4895" class="cite xref">RFC4895</a>]</span> and its interaction with the SCTP implementation and
 dependencies on the actual SCTP-AUTH rekeying frequency. DTLS
 in SCTP relies on DTLS mechanism for replay protection that can
@@ -1604,17 +1599,19 @@ prevent both duplicates from being delivered as well as
 preventing packets from outside the current window to be
 delivered. Thus, a stronger protection especially for non-DATA
 chunk are provided and protects the SCTP stack from replayed or
-duplicated packets.<a href="#section-1.3.1-2.1" class="pilcrow">¶</a>
+duplicated packets.<a href="#section-1.3.1-2.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-1.3.1-2.2">Encryption in DTLS/SCTP is only applied to ULP data. For
+            <li class="normal" id="section-1.3.1-2.2">
+              <p id="section-1.3.1-2.2.1">Encryption in DTLS/SCTP is only applied to ULP data. For
 DTLS in SCTP all chunk type after the association has reached
 established state will be encrypted. This, makes protocol attacks
 harder as a third-party attacker will have less insight into SCTP
 protocol state. Also, protocol header information likes PPIDs will
 also be encrypted, which makes targeted attacks harder but also
-make management and debugging harder.<a href="#section-1.3.1-2.2" class="pilcrow">¶</a>
+make management and debugging harder.<a href="#section-1.3.1-2.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-1.3.1-2.3">DTLS/SCTP Rekeying is complicated and require advanced API or
+            <li class="normal" id="section-1.3.1-2.3">
+              <p id="section-1.3.1-2.3.1">DTLS/SCTP Rekeying is complicated and require advanced API or
 user message tracking to determine when a key is no longer needed
 so that it can be discarded. A DTLS/SCTP key that is prematurely
 discarded can result in loss of parts of a user message and
@@ -1627,68 +1624,77 @@ established DTLS connection. Any outstanding packets that have
 not been decoded yet will simply be treated as lost between the
 SCTP endpoints and SCTP's retransmission will retransmit any user
 message data that requires it. Also, the algorithm for when to
-discard a DTLS connection can be much simpler.<a href="#section-1.3.1-2.3" class="pilcrow">¶</a>
+discard a DTLS connection can be much simpler.<a href="#section-1.3.1-2.3.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-1.3.1-2.4">DTLS/SCTP rekeying can put restrictions on user message sizes
+            <li class="normal" id="section-1.3.1-2.4">
+              <p id="section-1.3.1-2.4.1">DTLS/SCTP rekeying can put restrictions on user message sizes
 unless the right APIs exist to the SCTP implementation to
 determine the state of user messages. No such restriction exists
-in DTLS in SCTP.<a href="#section-1.3.1-2.4" class="pilcrow">¶</a>
+in DTLS in SCTP.<a href="#section-1.3.1-2.4.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-1.3.1-2.5">By using the CRYPTO chunk that is acting on SCTP packet level
+            <li class="normal" id="section-1.3.1-2.5">
+              <p id="section-1.3.1-2.5.1">By using the CRYPTO chunk that is acting on SCTP packet level
 instead of user messages the consideration for extensions are
 quite different. Only extensions that would affect the common
 header or how packets are formed would interact with this
 mechanism, any extension that just defines new chunks or
 parameters for existing chunks is expected to just work and be
 secured by the mechanism. DTLS/SCTP instead interact with
-extensions that affects how user messages are handled.<a href="#section-1.3.1-2.5" class="pilcrow">¶</a>
+extensions that affects how user messages are handled.<a href="#section-1.3.1-2.5.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-1.3.1-2.6">A known downside is that the defined DTLS in SCTP usage creates a
+            <li class="normal" id="section-1.3.1-2.6">
+              <p id="section-1.3.1-2.6.1">A known downside is that the defined DTLS in SCTP usage creates a
 limitation on the maximum SCTP packet size that can be used of
 2<sup>14</sup> bytes. If the DTLS implementation does not support
 the maximum DTLS record size the maximum supported packet size
 might be even lower. However, this value needs to be compared to
 the supported MTU of IP, and are thus in reality often not an
 actual limitation. Only for some special deployments or over
-loopback may this limitation be visible.<a href="#section-1.3.1-2.6" class="pilcrow">¶</a>
+loopback may this limitation be visible.<a href="#section-1.3.1-2.6.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <p id="section-1.3.1-3">There are several significant differences in regard to
    implementation between the two realizations.<a href="#section-1.3.1-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1.3.1-4.1">DTLS in SCTP do requires the CRYPTO chunk to be implemented in
+<li class="normal" id="section-1.3.1-4.1">
+              <p id="section-1.3.1-4.1.1">DTLS in SCTP do requires the CRYPTO chunk to be implemented in
 the SCTP stack implementation, and not as an adaptation layer
 above the SCTP stack which DTLS/SCTP instead requires. This has
 some extra challenges for operating system level
 implementations. However, as some updates anyway will be required
 to support the corrected SCTP-AUTH the implementation burden is
-likely similar in this regard.<a href="#section-1.3.1-4.1" class="pilcrow">¶</a>
+likely similar in this regard.<a href="#section-1.3.1-4.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-1.3.1-4.2">
               <p id="section-1.3.1-4.2.1">DTLS in SCTP can use a DTLS implementation that does not rely on
 features from outside of the core protocol, where DTLS/SCTP
 required a number of features as listed below:<a href="#section-1.3.1-4.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1.3.1-4.2.2.1">DTLS Connection Index to identify which DTLS connection that
-should process the DTLS record.<a href="#section-1.3.1-4.2.2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-1.3.1-4.2.2.1">
+                  <p id="section-1.3.1-4.2.2.1.1">DTLS Connection Index to identify which DTLS connection that
+should process the DTLS record.<a href="#section-1.3.1-4.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-1.3.1-4.2.2.2">Support for DTLS records of the maximum size of 16 KB.<a href="#section-1.3.1-4.2.2.2" class="pilcrow">¶</a>
+                <li class="normal" id="section-1.3.1-4.2.2.2">
+                  <p id="section-1.3.1-4.2.2.2.1">Support for DTLS records of the maximum size of 16 KB.<a href="#section-1.3.1-4.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-1.3.1-4.2.2.3">Optional to support negotiation of maximum DTLS record size
+                <li class="normal" id="section-1.3.1-4.2.2.3">
+                  <p id="section-1.3.1-4.2.2.3.1">Optional to support negotiation of maximum DTLS record size
 unless not supporting 16 KB records when it is
 required. Even if implementing the negotiation,
 interoperability failure may occur. DTLS in SCTP will only
 require supporting DTLS record sizes that matches the
 largest IP packet size that endpoint support or the SCTP
-implementation.<a href="#section-1.3.1-4.2.2.3" class="pilcrow">¶</a>
+implementation.<a href="#section-1.3.1-4.2.2.3.1" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-1.3.1-4.2.2.4">Implementation is required to support turning off the DTLS
-replay protection.<a href="#section-1.3.1-4.2.2.4" class="pilcrow">¶</a>
+                <li class="normal" id="section-1.3.1-4.2.2.4">
+                  <p id="section-1.3.1-4.2.2.4.1">Implementation is required to support turning off the DTLS
+replay protection.<a href="#section-1.3.1-4.2.2.4.1" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-1.3.1-4.2.2.5">Implementation is required to not use DTLS Key-update
+                <li class="normal" id="section-1.3.1-4.2.2.5">
+                  <p id="section-1.3.1-4.2.2.5.1">Implementation is required to not use DTLS Key-update
 functionality. Where DTLS in SCTP is agnostic to its usage,
 and it provides a useful tool to ensure that the key lifetime
-never is an issue.<a href="#section-1.3.1-4.2.2.5" class="pilcrow">¶</a>
+never is an issue.<a href="#section-1.3.1-4.2.2.5.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 </li>
@@ -1856,7 +1862,7 @@ IANA below in <a href="#iana-protection-engines" class="auto internal xref">Sect
 <figure id="figure-2">
         <div id="section-3-2.1">
           <div class="alignLeft art-svg artwork" id="section-3-2.1.1">
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="208" width="528" viewBox="0 0 528 208" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="208" width="528" viewBox="0 0 528 208" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
               <path d="M 8,64 L 8,192" fill="none" stroke="black"></path>
               <path d="M 136,64 L 136,96" fill="none" stroke="black"></path>
               <path d="M 232,64 L 232,96" fill="none" stroke="black"></path>
@@ -2471,14 +2477,17 @@ that the implementation will be configurable by the ULP to meet its demand.<a hr
 <p id="section-8.1-2">Likely criteria to impact the need for rekeying through the usage of
 new DTLS connection are:<a href="#section-8.1-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-8.1-3.1">Maximum time since last authentication of the peer<a href="#section-8.1-3.1" class="pilcrow">¶</a>
+<li class="normal" id="section-8.1-3.1">
+            <p id="section-8.1-3.1.1">Maximum time since last authentication of the peer<a href="#section-8.1-3.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-8.1-3.2">Amount of data transferred since last forward secrecy preserving
-rekeying<a href="#section-8.1-3.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-8.1-3.2">
+            <p id="section-8.1-3.2.1">Amount of data transferred since last forward secrecy preserving
+rekeying<a href="#section-8.1-3.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-8.1-3.3">The cipher suit's maximum key usage being reached. Although for
+          <li class="normal" id="section-8.1-3.3">
+            <p id="section-8.1-3.3.1">The cipher suit's maximum key usage being reached. Although for
 DTLS 1.3 usage of the Key Update mechanism can generate new keys
-without forward secrecy properties.<a href="#section-8.1-3.3" class="pilcrow">¶</a>
+without forward secrecy properties.<a href="#section-8.1-3.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -2495,7 +2504,7 @@ The following state machine applies.<a href="#section-8.2-1" class="pilcrow">¶<
 <figure id="figure-3">
           <div id="section-8.2-2.1">
             <div class="alignLeft art-svg artwork" id="section-8.2-2.1.1">
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="560" width="472" viewBox="0 0 472 560" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="560" width="472" viewBox="0 0 472 560" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
                 <path d="M 8,48 L 8,528" fill="none" stroke="black"></path>
                 <path d="M 96,32 L 96,64" fill="none" stroke="black"></path>
                 <path d="M 96,144 L 96,176" fill="none" stroke="black"></path>
@@ -2754,10 +2763,12 @@ registered are provided in <a href="#iana-protection-engines-table" class="auto 
 </div>
 </section>
 </div>
+<div id="sec-combined-references">
 <section id="section-12">
       <h2 id="name-references">
 <a href="#section-12" class="section-number selfRef">12. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
+<div id="sec-normative-references">
 <section id="section-12.1">
         <h3 id="name-normative-references">
 <a href="#section-12.1" class="section-number selfRef">12.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
@@ -2805,6 +2816,8 @@ registered are provided in <a href="#iana-protection-engines-table" class="auto 
 <dd class="break"></dd>
 </dl>
 </section>
+</div>
+<div id="sec-informative-references">
 <section id="section-12.2">
         <h3 id="name-informative-references">
 <a href="#section-12.2" class="section-number selfRef">12.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
@@ -2828,15 +2841,15 @@ registered are provided in <a href="#iana-protection-engines-table" class="auto 
 <dd class="break"></dd>
 <dt id="I-D.ietf-tls-rfc8446bis">[I-D.ietf-tls-rfc8446bis]</dt>
         <dd>
-<span class="refAuthor">Rescorla, E.</span>, <span class="refTitle">"The Transport Layer Security (TLS) Protocol Version 1.3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-rfc8446bis-07</span>, <time datetime="2023-03-26" class="refDate">26 March 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-07">https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-07</a>&gt;</span>. </dd>
+<span class="refAuthor">Rescorla, E.</span>, <span class="refTitle">"The Transport Layer Security (TLS) Protocol Version 1.3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-rfc8446bis-11</span>, <time datetime="2024-09-14" class="refDate">14 September 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-11">https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-11</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-tsvwg-dtls-over-sctp-bis">[I-D.ietf-tsvwg-dtls-over-sctp-bis]</dt>
         <dd>
-<span class="refAuthor">Westerlund, M.</span>, <span class="refAuthor">Mattsson, J. P.</span>, and <span class="refAuthor">C. Porfiri</span>, <span class="refTitle">"Datagram Transport Layer Security (DTLS) over Stream Control Transmission Protocol (SCTP)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tsvwg-dtls-over-sctp-bis-06</span>, <time datetime="2023-04-24" class="refDate">24 April 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tsvwg-dtls-over-sctp-bis-06">https://datatracker.ietf.org/doc/html/draft-ietf-tsvwg-dtls-over-sctp-bis-06</a>&gt;</span>. </dd>
+<span class="refAuthor">Westerlund, M.</span>, <span class="refAuthor">Mattsson, J. P.</span>, and <span class="refAuthor">C. Porfiri</span>, <span class="refTitle">"Datagram Transport Layer Security (DTLS) over Stream Control Transmission Protocol (SCTP)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tsvwg-dtls-over-sctp-bis-08</span>, <time datetime="2024-05-03" class="refDate">3 May 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tsvwg-dtls-over-sctp-bis-08">https://datatracker.ietf.org/doc/html/draft-ietf-tsvwg-dtls-over-sctp-bis-08</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-uta-rfc6125bis">[I-D.ietf-uta-rfc6125bis]</dt>
         <dd>
-<span class="refAuthor">Saint-Andre, P.</span> and <span class="refAuthor">R. Salz</span>, <span class="refTitle">"Service Identity in TLS"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-uta-rfc6125bis-14</span>, <time datetime="2023-06-27" class="refDate">27 June 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-uta-rfc6125bis-14">https://datatracker.ietf.org/doc/html/draft-ietf-uta-rfc6125bis-14</a>&gt;</span>. </dd>
+<span class="refAuthor">Saint-Andre, P.</span> and <span class="refAuthor">R. Salz</span>, <span class="refTitle">"Service Identity in TLS"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-uta-rfc6125bis-15</span>, <time datetime="2023-08-10" class="refDate">10 August 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-uta-rfc6125bis-15">https://datatracker.ietf.org/doc/html/draft-ietf-uta-rfc6125bis-15</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="ANSSI-DAT-NT-003">[ANSSI-DAT-NT-003]</dt>
       <dd>
@@ -2844,7 +2857,9 @@ registered are provided in <a href="#iana-protection-engines-table" class="auto 
 <dd class="break"></dd>
 </dl>
 </section>
+</div>
 </section>
+</div>
 <div id="authors-addresses">
 <section id="appendix-A">
       <h2 id="name-authors-addresses">
