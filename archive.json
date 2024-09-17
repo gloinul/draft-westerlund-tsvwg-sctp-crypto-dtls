@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-06-29T01:55:03.348441+00:00",
+  "timestamp": "2024-09-17T01:16:49.452523+00:00",
   "repo": "gloinul/draft-westerlund-tsvwg-sctp-crypto-dtls",
   "labels": [
     {
@@ -73,6 +73,38 @@
           "updatedAt": "2023-06-28T12:20:46Z"
         }
       ]
+    },
+    {
+      "number": 4,
+      "id": "I_kwDOIc8ll85xgHC_",
+      "title": "Describe confidentiality properties",
+      "url": "https://github.com/gloinul/draft-westerlund-tsvwg-sctp-crypto-dtls/issues/4",
+      "state": "OPEN",
+      "author": "emanjon",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "As pointed out by a person from Linux, the DTLS in crypto chunk is encrypting a lot more information. Current best practice is to encrypt as much as possible. Studies show that unencrypted metadata can reveal a lot of information to an eavesdropping attacker.",
+      "createdAt": "2023-09-20T06:21:24Z",
+      "updatedAt": "2023-09-20T06:21:24Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 5,
+      "id": "I_kwDOIc8ll853j9-0",
+      "title": "DTLS Connection identification",
+      "url": "https://github.com/gloinul/draft-westerlund-tsvwg-sctp-crypto-dtls/issues/5",
+      "state": "OPEN",
+      "author": "gloinul",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Moving to using SCTP user messages to transport DTLS handshake messages from using the crypto chunk directly we lost the DCI indication on each handshake message. This needs to be provided for the handshake messages over the SCTP user message. Solutions to consider:\r\n- Using Stream IDs for the different handshakes\r\n- Using a one-byte pre-abmle to each handshake message carrying the DTLS connection ID\r\n- Use DTLS connection IDs. \r\n- Something else?",
+      "createdAt": "2023-11-22T09:28:12Z",
+      "updatedAt": "2023-11-22T09:28:12Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
